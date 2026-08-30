@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glidji Conciergerie — Équipe</title>
+<style>
+  :root{
+    --onyx:#0A0A0A; --onyx-soft:#161513;
+    --gold:#B8935A; --gold-light:#E6D9BE; --gold-deep:#8C6A34;
+    --ivory:#FBF8F2; --platinum:#C9C6BE; --platinum-light:#EDEBE5;
+    --burgundy:#5C1A22;
+    --white:#FFFFFF; --ink:#2B2B2B; --muted:#7A7568;
+    --ok:#3E6B4F; --err:#8C2E2E;
+    --radius:6px;
+    --shadow: 0 1px 3px rgba(10,10,10,.08), 0 8px 24px rgba(10,10,10,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI", Arial, sans-serif;
+    background:var(--platinum-light);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  h1,h2{font-family:Georgia,"Times New Roman",serif; margin:0 0 4px 0; color:var(--onyx);}
+  h1{font-size:22px;} h2{font-size:17px;}
+  .wrap{max-width:620px; margin:0 auto; padding:20px 16px 60px;}
+  .card{background:var(--white); border-radius:12px; box-shadow:var(--shadow); padding:20px; margin-bottom:16px;}
+  .field{margin-bottom:14px;}
+  .client-search{position:relative;}
+  .client-search-results{display:none; position:absolute; top:100%; left:0; right:0; z-index:30; background:var(--white); border:1px solid var(--platinum); border-top:none; border-radius:0 0 8px 8px; max-height:220px; overflow-y:auto; box-shadow:var(--shadow);}
+  .csr-item{padding:10px 12px; font-size:14px; cursor:pointer;}
+  .csr-item:hover{background:var(--gold-light);}
+  .csr-empty{padding:10px 12px; font-size:12px; color:var(--muted);}
+  label{display:block; font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:5px;}
+  input,select,textarea{width:100%; padding:11px 12px; border:1px solid var(--platinum); border-radius:var(--radius); font-size:16px; background:var(--white); color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:none; border-color:var(--gold);}
+  button{font-family:inherit; cursor:pointer; border:none; border-radius:var(--radius); padding:12px 18px; font-size:15px; font-weight:600;}
+  .btn-gold{background:var(--gold); color:var(--white);}
+  .btn-gold:hover{background:var(--gold-deep);}
+  .btn-ghost{background:transparent; color:var(--onyx); border:1px solid var(--platinum);}
+  .btn-block{width:100%;}
+  .hint{font-size:12px; color:var(--muted); margin-top:4px;}
+  .tabs{display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tabs button{flex:0 0 auto; white-space:nowrap; background:var(--white); color:var(--onyx-soft); border:1px solid var(--platinum);}
+  .tabs button.active{background:var(--onyx); color:var(--white); border-color:var(--onyx);}
+  .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(100px); background:var(--onyx); color:var(--white); padding:12px 20px; border-radius:8px; font-size:14px; opacity:0; transition:.25s; z-index:50; max-width:90%; text-align:center;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast.err{background:var(--err);}
+  .sent-item{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--platinum-light); font-size:13px;}
+  .fe-card{border:1px solid var(--platinum); border-radius:8px; padding:14px; margin-bottom:12px;}
+  .fe-card .num{font-weight:700; font-size:13px; color:var(--gold-deep);}
+  .fe-card .obj{font-family:Georgia,serif; font-size:16px; margin:4px 0 8px;}
+  .fe-notes-alert{background:#FFF4D6; border:3px solid var(--burgundy); border-radius:6px; padding:10px 12px; margin:8px 0 12px; font-size:13px;}
+  .fe-notes-alert .fe-notes-label{font-weight:800; color:var(--burgundy); text-transform:uppercase; letter-spacing:.03em; font-size:11px; margin-bottom:4px;}
+  .fe-notes-alert .fe-notes-body{white-space:pre-wrap; font-weight:600;}
+  .msg-badge{display:inline-block; background:var(--burgundy); color:var(--white); border-radius:10px; min-width:16px; padding:0 5px; font-size:10px; font-weight:800; line-height:16px; text-align:center; margin-left:4px;}
+  .msg-list{max-height:55vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:6px 0; margin-bottom:14px;}
+  .msg-bubble{max-width:80%; padding:9px 13px; border-radius:12px; font-size:14px; line-height:1.4;}
+  .msg-bubble .msg-meta{font-size:10px; opacity:.7; margin-bottom:3px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+  .msg-bubble.from-me{align-self:flex-end; background:var(--onyx); color:var(--gold-light); border-bottom-right-radius:2px;}
+  .msg-bubble.from-team{align-self:flex-start; background:var(--platinum-light); color:var(--ink); border-bottom-left-radius:2px;}
+  .msg-composer{display:flex; gap:8px; align-items:flex-end;}
+  .msg-composer textarea{flex:1; resize:vertical; font-family:inherit;}
+  .invmat-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;}
+  .invmat-card{background:var(--platinum-light); border-radius:var(--radius); padding:8px; text-align:center;}
+  .invmat-card img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:6px; margin-bottom:4px;}
+  .invmat-nom{font-weight:600; font-size:12px;}
+  .invmat-qte{font-size:11px; color:var(--muted);}
+  .fe-row{display:flex; font-size:13px; padding:2px 0;}
+  .fe-row .l{width:110px; color:var(--muted);}
+  .fe-items{margin-top:8px; font-size:13px;}
+  .fe-items li{margin-bottom:2px;}
+  .empty{text-align:center; color:var(--muted); padding:30px 10px; font-size:14px;}
+  .lock-screen{display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;}
+  .pin-input{font-size:28px; letter-spacing:8px; text-align:center;}
+  .top-bar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+  .top-bar .btn-ghost{padding:8px 12px; font-size:12px;}
+
+/* ---- CALENDRIER ---- */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px}
+.cal-head{text-align:center;font-size:11px;font-weight:700;color:#888;padding:4px 0}
+.cal-cell{min-height:36px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:default}
+.cal-cell.today{background:#b8860b22;border:2px solid #b8860b;font-weight:700}
+.cal-cell.has-event{background:#2e7d3222;border:2px solid #2e7d32;cursor:pointer}
+.cal-cell .cal-dot{width:6px;height:6px;border-radius:50%;background:#2e7d32;margin-top:2px}
+.cal-popup{position:fixed;inset:0;background:#0008;z-index:200;display:flex;align-items:center;justify-content:center}
+.cal-popup-inner{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;max-height:80vh;overflow-y:auto}
+.cal-prochain-card{background:#f5f5f5;border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;border-left:4px solid #b8860b}
+.msg-attach-preview{max-width:200px;border-radius:8px;margin-top:6px}
+.msg-audio{width:100%;margin-top:6px}
+.msg-file-link{display:inline-block;margin-top:6px;padding:4px 8px;background:#e3e8f0;border-radius:4px;font-size:12px;text-decoration:none;color:#1a3c5e}
+
+/* ---- HUB NAVIGATION ---- */
+.hub-welcome{text-align:center;padding:22px 0 18px;}
+.hub-welcome-name{font-family:Georgia,"Times New Roman",serif;font-size:1.15rem;font-weight:700;color:var(--onyx);}
+.hub-welcome-sub{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.hub-tile{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:22px 14px 18px;cursor:pointer;border:1px solid var(--platinum);transition:transform .12s;text-align:center;position:relative;-webkit-tap-highlight-color:transparent;user-select:none;}
+.hub-tile:active{transform:scale(.96);}
+.hub-tile-ico{font-size:2.1rem;line-height:1;margin-bottom:9px;}
+.hub-tile-name{font-size:.85rem;font-weight:700;color:var(--onyx);}
+.hub-tile-desc{font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.3;}
+.hub-tile-badge{position:absolute;top:9px;right:11px;background:var(--burgundy);color:#fff;font-size:.6rem;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px;}
+.hub-tile-full{grid-column:1/-1;}
+.btn-back-hub{display:none;background:transparent;border:1px solid var(--platinum);color:var(--onyx);border-radius:var(--radius);padding:7px 12px;font-size:13px;font-weight:600;}
+</style>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.fr.u1YzuBbBpqg.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb498814" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<body>
+
+<div id="app">
+    <div class="wrap">
+      <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn-back-hub" id="btnBackHub" style="display: none;">← Accueil</button>
+          <h1 id="appTitle">Glidji Équipe</h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-ghost" onclick="showGithubModal()" style="padding:8px 12px;font-size:13px;" title="Publier sur GitHub Pages">🐙</button>
+          <button class="btn-ghost" id="btnLock">🔒 Verrouiller</button>
+        </div>
+      </div>
+      <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
+      <div id="tabContent">
+    <div class="hub-welcome">
+      <div class="hub-welcome-name">Bonjour Gile 👋</div>
+      <div class="hub-welcome-sub">Que voulez-vous faire ?</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="showEquipeTab('commande')">
+        <div class="hub-tile-ico">🍽️</div>
+        <div class="hub-tile-name">Commande cantine</div>
+        <div class="hub-tile-desc">Saisir le repas du jour</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('historique')">
+        <div class="hub-tile-ico">📋</div>
+        <div class="hub-tile-name">Historique</div>
+        <div class="hub-tile-desc">Toutes les commandes</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('fiches')">
+        <div class="hub-tile-ico">📁</div>
+        <div class="hub-tile-name">Fiches équipe</div>
+        <div class="hub-tile-desc">Prestations à venir</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('inventaire')">
+        <div class="hub-tile-ico">📦</div>
+        <div class="hub-tile-name">Inventaire</div>
+        <div class="hub-tile-desc">Compter le matériel</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('avances')">
+        <div class="hub-tile-ico">💰</div>
+        <div class="hub-tile-name">Caisse d'équipe</div>
+        <div class="hub-tile-desc">Avances et dépenses</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('messages')" style="position:relative;">
+        <div class="hub-tile-ico">💬</div>
+        <div class="hub-tile-name">Messages</div>
+        <div class="hub-tile-desc">Chat avec Hello</div>
+        <div class="hub-tile-badge" id="msgBadgeHub" style="display:none;"></div>
+      </div>
+      <div class="hub-tile hub-tile-full" onclick="showEquipeTab('achats')">
+        <div class="hub-tile-ico">🛒</div>
+        <div class="hub-tile-name">Achats</div>
+        <div class="hub-tile-desc">Saisir une liste d'achats</div>
+      </div>
+    </div></div>
+    </div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+/* =====================================================================
+   GLIDJI — Interface équipe
+   Fonctionne uniquement en ligne (nécessite une connexion internet).
+   Ne stocke localement que : la configuration de connexion, le code PIN
+   de cet appareil, et un état de verrouillage temporaire (session).
+   ===================================================================== */
+const LS_KEY = 'glidji_equipe_device_v1';
+const SS_UNLOCKED = 'glidji_equipe_unlocked_v1';
+
+function loadDeviceConfig() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || null; } catch (e) { return null; }
+}
+function saveDeviceConfig(cfg) { localStorage.setItem(LS_KEY, JSON.stringify(cfg)); }
+
+function escapeHtml(s) {
+  return (s || '').toString().replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return d && m && y ? `${d}/${m}/${y}` : iso;
+}
+function todayIso() { return new Date().toISOString().slice(0, 10); }
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+function parseFirebaseConfig(text) {
+  const fields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+  const out = {};
+  fields.forEach(f => {
+    const re = new RegExp(f + '\\s*:\\s*["\']([^"\']+)["\']');
+    const m = text.match(re);
+    if (m) out[f] = m[1];
+  });
+  return out;
+}
+
+let db = null;
+let authReady = Promise.resolve();
+
+function initFirebase(configText) {
+  const parsed = parseFirebaseConfig(configText);
+  if (!parsed.apiKey || !parsed.projectId) return false;
+  try {
+    const app = firebase.apps && firebase.apps.length
+      ? firebase.apps[0]
+      : firebase.initializeApp(parsed);
+    db = firebase.firestore(app);
+    try { db.settings({ experimentalForceLongPolling: true, merge: true }); } catch(_) {}
+    if (firebase.auth) {
+      authReady = firebase.auth(app).signInAnonymously().catch(e => {
+        console.warn('[Glidji Équipe] Auth anonyme échouée (' + (e.code || '') + ') :', e.message);
+      });
+    } else {
+      authReady = Promise.resolve();
+    }
+    return true;
+  } catch (e) {
+    console.error('Init Firebase:', e);
+    return false;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   ECRAN 1 : CONFIGURATION INITIALE (une seule fois par appareil)
+   --------------------------------------------------------------------- */
+function renderSetup() {
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="card" style="margin-top:40px;">
+        <h1>Glidji Conciergerie</h1>
+        <p class="hint" style="margin-bottom:18px;">Configuration de cet appareil — à faire une seule fois. Demandez la configuration et le code PIN à Hello.</p>
+        <div class="field">
+          <label>Configuration (collée depuis Glidji, section Réglages)</label>
+          <textarea id="s_config" rows="6" style="font-family:monospace; font-size:12px;" placeholder="Collez ici le bloc de configuration complet"></textarea>
+        </div>
+        <div class="field">
+          <label>Code PIN de cet appareil</label>
+          <input type="text" id="s_pin" placeholder="Le code donné par Hello" inputmode="numeric">
+        </div>
+        <button class="btn-gold btn-block" id="btnSetup">Enregistrer et continuer →</button>
+      </div>
+    </div>`;
+  document.getElementById('btnSetup').addEventListener('click', () => {
+    const configText = document.getElementById('s_config').value.trim();
+    const pin = document.getElementById('s_pin').value.trim();
+    const parsed = parseFirebaseConfig(configText);
+    if (!parsed.apiKey || !parsed.projectId) { toast('Configuration incomplète — merci de coller le bloc complet.', true); return; }
+    if (pin.length < 4) { toast('Le code PIN doit contenir au moins 4 caractères.', true); return; }
+    saveDeviceConfig({ configText, pin });
+    renderLock();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   ECRAN 2 : VERROUILLAGE PAR CODE PIN
+   --------------------------------------------------------------------- */
+function renderLock() {
+  document.getElementById('app').innerHTML = `
+    <div class="lock-screen">
+      <div class="card" style="max-width:340px; width:100%; text-align:center;">
+        <h1 style="margin-bottom:18px;">🔒 Glidji Équipe</h1>
+        <div class="field">
+          <input type="password" id="l_pin" class="pin-input" inputmode="numeric" maxlength="12" placeholder="····">
+        </div>
+        <button class="btn-gold btn-block" id="btnUnlock">Déverrouiller</button>
+        <p class="hint" style="margin-top:16px;"><a href="#" id="linkResetDevice" style="color:var(--muted);">Reconfigurer cet appareil</a></p>
+      </div>
+    </div>`;
+  const pinInput = document.getElementById('l_pin');
+  pinInput.focus();
+  function tryUnlock() {
+    const cfg = loadDeviceConfig();
+    if (pinInput.value === cfg.pin) {
+      sessionStorage.setItem(SS_UNLOCKED, '1');
+      if (!getStaffName()) { renderNamePrompt(); } else { renderMain(); }
+    } else {
+      toast('Code PIN incorrect.', true);
+      pinInput.value = '';
+    }
+  }
+  document.getElementById('btnUnlock').addEventListener('click', tryUnlock);
+  pinInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
+  document.getElementById('linkResetDevice').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Effacer la configuration de cet appareil ? Vous devrez la recoller.')) {
+      localStorage.removeItem(LS_KEY);
+      sessionStorage.removeItem(SS_UNLOCKED);
+      renderSetup();
+    }
+  });
+}
+
+function renderNamePrompt() {
+  document.getElementById('app').innerHTML = `
+    <div class="lock-screen">
+      <div class="card" style="max-width:340px; width:100%; text-align:center;">
+        <h1 style="margin-bottom:8px;">👋 Avant de commencer</h1>
+        <p class="hint" style="margin-bottom:16px;">Votre prénom permet de savoir qui a fait quoi (commandes, comptages, messages).</p>
+        <div class="field">
+          <input type="text" id="np_prenom" placeholder="Votre prénom">
+        </div>
+        <button class="btn-gold btn-block" id="btnConfirmName">Continuer →</button>
+      </div>
+    </div>`;
+  const input = document.getElementById('np_prenom');
+  input.focus();
+  function confirmName() {
+    const val = input.value.trim();
+    if (!val) { toast('Merci de renseigner votre prénom.', true); return; }
+    localStorage.setItem(STAFF_NAME_KEY, val);
+    renderMain();
+  }
+  document.getElementById('btnConfirmName').addEventListener('click', confirmName);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmName(); });
+}
+
+/* ---------------------------------------------------------------------
+   ECRAN 3 : INTERFACE PRINCIPALE
+   --------------------------------------------------------------------- */
+let sentThisSession = [];
+let clientsCache = [];
+
+/* tab courant pour le rafraîchissement auto (caisse hors-ligne) */
+let _equipeTabActif = null;
+
+async function renderMain() {
+  const cfg = loadDeviceConfig();
+  if (!initFirebase(cfg.configText)) {
+    document.getElementById('app').innerHTML = `<div class="wrap"><div class="card"><p>⛔ Connexion impossible. Vérifiez votre accès internet, puis rechargez la page.</p></div></div>`;
+    return;
+  }
+  try { await authReady; } catch(_) {}
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn-back-hub" id="btnBackHub">← Accueil</button>
+          <h1 id="appTitle">Glidji Équipe</h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-ghost" onclick="showGithubModal()" style="padding:8px 12px;font-size:13px;" title="Publier sur GitHub Pages">🐙</button>
+          <button class="btn-ghost" id="btnLock">🔒 Verrouiller</button>
+        </div>
+      </div>
+      <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
+      <div id="tabContent"></div>
+    </div>`;
+  document.getElementById('btnLock').addEventListener('click', () => {
+    sessionStorage.removeItem(SS_UNLOCKED);
+    renderLock();
+  });
+  document.getElementById('btnBackHub').addEventListener('click', renderHub);
+  renderHub();
+  updateOfflineBadge();
+  startMessagesPolling();
+}
+
+function renderHub() {
+  _equipeTabActif = null;
+  const backBtn = document.getElementById('btnBackHub');
+  const titleEl = document.getElementById('appTitle');
+  if (backBtn) backBtn.style.display = 'none';
+  if (titleEl) titleEl.textContent = 'Glidji Équipe';
+
+  const lastSeen = localStorage.getItem(MSG_LAST_SEEN_KEY);
+  const msgUnread = messagesCache.filter(m => m.side === 'owner' && (!lastSeen || m.createdAt > lastSeen)).length;
+
+  document.getElementById('tabContent').innerHTML = `
+    <div class="hub-welcome">
+      <div class="hub-welcome-name">Bonjour${getStaffName() ? ' ' + escapeHtml(getStaffName()) : ''} 👋</div>
+      <div class="hub-welcome-sub">Que voulez-vous faire ?</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="showEquipeTab('commande')">
+        <div class="hub-tile-ico">🍽️</div>
+        <div class="hub-tile-name">Commande cantine</div>
+        <div class="hub-tile-desc">Saisir le repas du jour</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('historique')">
+        <div class="hub-tile-ico">📋</div>
+        <div class="hub-tile-name">Historique</div>
+        <div class="hub-tile-desc">Toutes les commandes</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('fiches')">
+        <div class="hub-tile-ico">📁</div>
+        <div class="hub-tile-name">Fiches équipe</div>
+        <div class="hub-tile-desc">Prestations à venir</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('inventaire')">
+        <div class="hub-tile-ico">📦</div>
+        <div class="hub-tile-name">Inventaire</div>
+        <div class="hub-tile-desc">Compter le matériel</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('avances')">
+        <div class="hub-tile-ico">💰</div>
+        <div class="hub-tile-name">Caisse d'équipe</div>
+        <div class="hub-tile-desc">Avances et dépenses</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('messages')" style="position:relative;">
+        <div class="hub-tile-ico">💬</div>
+        <div class="hub-tile-name">Messages</div>
+        <div class="hub-tile-desc">Chat avec Hello</div>
+        <div class="hub-tile-badge" id="msgBadgeHub" style="display:${msgUnread > 0 ? 'flex' : 'none'};">${msgUnread || ''}</div>
+      </div>
+      <div class="hub-tile hub-tile-full" onclick="showEquipeTab('achats')">
+        <div class="hub-tile-ico">🛒</div>
+        <div class="hub-tile-name">Achats</div>
+        <div class="hub-tile-desc">Saisir une liste d'achats</div>
+      </div>
+    </div>`;
+}
+
+function showEquipeTab(name) {
+  const labels = {
+    commande: 'Commande cantine', historique: 'Historique cantine',
+    fiches: 'Fiches équipe', inventaire: 'Inventaire matériel',
+    avances: "Caisse d'équipe", messages: 'Messages', achats: 'Achats'
+  };
+  _equipeTabActif = name;
+  const backBtn = document.getElementById('btnBackHub');
+  const titleEl = document.getElementById('appTitle');
+  if (backBtn) { backBtn.style.display = 'inline-block'; }
+  if (titleEl) titleEl.textContent = labels[name] || 'Glidji Équipe';
+  if (name === 'commande')   renderTabCommande();
+  if (name === 'historique') renderTabHistorique();
+  if (name === 'fiches')     renderTabFiches();
+  if (name === 'inventaire') renderTabInventaire();
+  if (name === 'avances')    renderTabAvances();
+  if (name === 'messages')   renderTabMessages();
+  if (name === 'achats')     renderTabAchats();
+}
+
+async function renderTabCommande() {
+  const wrap = document.getElementById('tabContent');
+  wrap.innerHTML = `<div class="card"><p class="hint">Chargement de la liste des clients…</p></div>`;
+  try { await authReady; } catch(_) {}
+  try {
+    const snap = await db.collection('clients').get();
+    clientsCache = [];
+    snap.forEach(d => clientsCache.push({ id: d.id, nom: d.data().nom }));
+    clientsCache.sort((a, b) => a.nom.localeCompare(b.nom));
+  } catch (e) {
+    wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger les clients : ${escapeHtml(e.message)}</p></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="card">
+      <h2>Ajouter une commande du jour</h2>
+      <div class="field">
+        <label>Client</label>
+        <div class="client-search">
+          <input type="text" id="cc_client_search" autocomplete="off" placeholder="Tapez un nom…">
+          <input type="hidden" id="cc_client">
+          <div class="client-search-results" id="cc_client_results"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="cc_date" value="${todayIso()}">
+      </div>
+      <div class="field">
+        <label>Repas</label>
+        <textarea id="cc_designation" rows="2" placeholder="Ex : Salade d'avocat et assiette de fruits"></textarea>
+      </div>
+      <button class="btn-gold btn-block" id="btnSendCommande">Envoyer →</button>
+    </div>
+    <div class="card">
+      <h2>Envoyées aujourd'hui</h2>
+      <div id="sentWrap"></div>
+    </div>`;
+  updateOfflineBadge();
+  renderSentList();
+  wireClientSearch();
+  document.getElementById('btnSendCommande').addEventListener('click', sendCommande);
+}
+
+// Normalise un nom pour une recherche tolerante (accents, casse, titres de
+// civilite) — identique a la logique de l'application principale, pour que
+// l'equipe retrouve un client aussi facilement que Hello.
+function normalizeNom(s) {
+  return (s || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\b(m|mr|mme|mlle|dr|pr|me)\.?\s+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function wireClientSearch() {
+  const input = document.getElementById('cc_client_search');
+  const hidden = document.getElementById('cc_client');
+  const results = document.getElementById('cc_client_results');
+
+  function showResults(query) {
+    const nq = normalizeNom(query);
+    const filtered = nq ? clientsCache.filter(c => normalizeNom(c.nom).includes(nq)) : clientsCache;
+    if (!filtered.length) {
+      results.innerHTML = '<div class="csr-empty">Aucun client trouvé</div>';
+      results.style.display = 'block';
+      return;
+    }
+    results.innerHTML = filtered.slice(0, 40).map(c => `<div class="csr-item" data-id="${c.id}">${escapeHtml(c.nom)}</div>`).join('');
+    results.style.display = 'block';
+    results.querySelectorAll('.csr-item').forEach(item => {
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const client = clientsCache.find(c => c.id === item.dataset.id);
+        if (!client) return;
+        hidden.value = client.id;
+        input.value = client.nom;
+        results.style.display = 'none';
+      });
+    });
+  }
+
+  input.addEventListener('focus', () => showResults(input.value));
+  input.addEventListener('input', () => { hidden.value = ''; showResults(input.value); });
+  input.addEventListener('blur', () => { setTimeout(() => { results.style.display = 'none'; }, 150); });
+}
+
+function renderSentList() {
+  const wrap = document.getElementById('sentWrap');
+  if (!sentThisSession.length) { wrap.innerHTML = `<p class="hint">Rien envoyé pour l'instant depuis cet appareil aujourd'hui.</p>`; return; }
+  wrap.innerHTML = sentThisSession.slice().reverse().map(s => `
+    <div class="sent-item"><span>${escapeHtml(s.clientNom)} — ${escapeHtml(s.designation)}</span></div>
+  `).join('');
+}
+
+const OFFLINE_QUEUE_KEY = 'glidji_equipe_offline_queue_v1';
+function getOfflineQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY)) || []; } catch (e) { return []; } }
+function saveOfflineQueue(list) { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(list)); }
+
+// Envoi avec repli hors-ligne automatique, generalise a n'importe quelle
+// collection (commandes cantine, mouvements de caisse, etc.) - avant, seule
+// commandesCantine beneficiait de cette file d'attente ; les depenses/avances
+// de la Caisse d'equipe echouaient silencieusement sans connexion, avec
+// risque reel de perte d'une depense jamais redeclaree.
+async function envoyerAvecRepliHorsLigne(collection, payload) {
+  try { await authReady; } catch(_) {}
+  try {
+    await db.collection(collection).add(payload);
+    return { envoye: true, viaFile: false };
+  } catch (e) {
+    const queue = getOfflineQueue();
+    queue.push({ collection, payload });
+    saveOfflineQueue(queue);
+    updateOfflineBadge();
+    return { envoye: true, viaFile: true };
+  }
+}
+
+async function sendCommande() {
+  const clientId = document.getElementById('cc_client').value;
+  const client = clientsCache.find(c => c.id === clientId);
+  const date = document.getElementById('cc_date').value;
+  const designation = document.getElementById('cc_designation').value.trim();
+
+  if (!client) { toast('Merci de choisir un client.', true); return; }
+  if (!date) { toast('Merci de choisir une date.', true); return; }
+  if (!designation) { toast('Merci de décrire le repas.', true); return; }
+
+  const payload = {
+    clientId: client.id, clientNom: client.nom,
+    date, designation, montant: null,
+    synced: false,
+    auteur: getStaffName() || 'Équipe',
+    createdAt: new Date().toISOString(),
+  };
+
+  const btn = document.getElementById('btnSendCommande');
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+  const resultat = await envoyerAvecRepliHorsLigne('commandesCantine', payload);
+  sentThisSession.push({ clientNom: client.nom, designation: designation + (resultat.viaFile ? ' (en attente de connexion)' : '') });
+  document.getElementById('cc_designation').value = '';
+  renderSentList();
+  toast(resultat.viaFile
+    ? 'Pas de connexion : commande enregistrée sur cet appareil, elle sera envoyée automatiquement dès que possible.'
+    : 'Commande envoyée pour ' + client.nom + '.', resultat.viaFile);
+  btn.disabled = false; btn.textContent = 'Envoyer →';
+}
+
+async function flushOfflineQueue() {
+  const queue = getOfflineQueue();
+  if (!queue.length) return;
+  try { await authReady; } catch(_) {}
+  const remaining = [];
+  let nbEnvoyes = 0;
+  for (const item of queue) {
+    // Retro-compatibilite : un element mis en file AVANT cette mise a jour
+    // n'a pas de champ "collection" (seule commandesCantine existait alors) -
+    // on le traite comme tel pour ne jamais perdre une commande deja en attente.
+    const collection = item.collection || 'commandesCantine';
+    const payload = item.collection ? item.payload : item;
+    try {
+      await db.collection(collection).add(payload);
+      nbEnvoyes++;
+    } catch (e) {
+      remaining.push(item.collection ? item : { collection: 'commandesCantine', payload: item });
+    }
+  }
+  saveOfflineQueue(remaining);
+  updateOfflineBadge();
+  if (nbEnvoyes > 0) {
+    toast(nbEnvoyes + ' élément(s) en attente envoyé(s) automatiquement.');
+    // Si l'écran Caisse est actuellement affiché, on le rafraîchit automatiquement.
+    if (_equipeTabActif === 'avances' && typeof renderTabAvances === 'function') renderTabAvances();
+  }
+}
+function updateOfflineBadge() {
+  const badge = document.getElementById('offlineBadge');
+  if (!badge) return;
+  const n = getOfflineQueue().length;
+  if (n > 0) { badge.textContent = n + ' élément(s) en attente de connexion'; badge.style.display = 'block'; }
+  else { badge.style.display = 'none'; }
+}
+window.addEventListener('online', () => flushOfflineQueue());
+
+async function renderTabHistorique() {
+  const wrap = document.getElementById('tabContent');
+  wrap.innerHTML = `<div class="card"><p class="hint">Chargement de l'historique…</p></div>`;
+  try { await authReady; } catch(_) {}
+  try {
+    const snap = await db.collection('commandesCantine').get();
+    const commandes = [];
+    snap.forEach(d => commandes.push({ id: d.id, ...d.data() }));
+    commandes.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+    if (!commandes.length) {
+      wrap.innerHTML = `<div class="card"><div class="empty">Aucune commande cantine enregistrée pour l'instant.</div></div>`;
+      return;
+    }
+    wrap.innerHTML = `<div class="card"><h2>Historique cantine <span class="hint">(toutes les commandes envoyées depuis cet ou d'autres appareils)</span></h2>
+      ${commandes.map(c => `
+        <div class="fe-card">
+          <div class="obj">${escapeHtml(c.designation)}</div>
+          <div class="fe-row"><div class="l">Client</div><div>${escapeHtml(c.clientNom)}</div></div>
+          <div class="fe-row"><div class="l">Date</div><div>${fmtDate(c.date)}</div></div>
+          ${c.auteur ? `<div class="fe-row"><div class="l">Ajouté par</div><div>${escapeHtml(c.auteur)}</div></div>` : ''}
+          <div class="fe-row"><div class="l">Statut</div><div>${c.synced ? '✅ Traitée par Hello' : '⏳ En attente de traitement'}</div></div>
+        </div>`).join('')}
+    </div>`;
+  } catch (e) {
+    wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger l'historique : ${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+/* =====================================================================
+   INVENTAIRE MATERIEL — catalogue permanent + comptages mensuels legers,
+   meme principe que cote application principale : une photo par article,
+   prise une seule fois au catalogue ; les comptages mensuels ne stockent
+   qu'un nombre, jamais de photo, pour rester leger a grande echelle.
+   ===================================================================== */
+function moisActuelInventaire() { return todayIso().slice(0, 7); }
+function compressImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 300;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+let catPhotoData = null;
+let catPhotoEnCoursDeTraitement = false;
+
+async function renderTabInventaire() {
+  const wrap = document.getElementById('tabContent');
+  try { await authReady; } catch(_) {}
+  wrap.innerHTML = `
+    <div class="card">
+      <h2>Ajouter au catalogue <span class="hint">(photo une seule fois par article)</span></h2>
+      <div class="field">
+        <label>Photo</label>
+        <input type="file" id="cat_photo" accept="image/*">
+        <div id="cat_photo_preview" style="margin-top:8px;"></div>
+      </div>
+      <div class="field">
+        <label>Nom de l'article</label>
+        <input type="text" id="cat_nom" placeholder="Ex : Chaise pliante blanche">
+      </div>
+      <button class="btn-gold btn-block" id="btnAddCatalogueMateriel">+ Ajouter au catalogue</button>
+    </div>
+    <div class="card">
+      <h2>Compter un article <span class="hint">(pas de nouvelle photo, juste la quantité de ce mois)</span></h2>
+      <div class="field">
+        <label>Rechercher dans le catalogue</label>
+        <input type="text" id="comptage_search" placeholder="Nom de l'article…">
+      </div>
+      <div id="comptageSearchResults"></div>
+    </div>
+    <div class="card">
+      <h2>Déclarer une perte <span class="hint">(casse, perte, vol, péremption…)</span></h2>
+      <div class="field">
+        <label>Rechercher l'article concerné</label>
+        <input type="text" id="perte_search" placeholder="Nom de l'article…">
+      </div>
+      <div id="perteSearchResults"></div>
+    </div>
+    <div class="card">
+      <h2>Comptage du mois en cours</h2>
+      <div id="comptageListWrap"><p class="hint">Chargement…</p></div>
+    </div>`;
+
+  document.getElementById('cat_photo').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    catPhotoEnCoursDeTraitement = true;
+    document.getElementById('btnAddCatalogueMateriel').disabled = true;
+    document.getElementById('btnAddCatalogueMateriel').textContent = 'Traitement de la photo…';
+    try {
+      catPhotoData = await compressImageFile(file);
+      document.getElementById('cat_photo_preview').innerHTML = `<img src="${catPhotoData}" style="max-height:80px; border-radius:6px;">`;
+    } catch (err) {
+      toast('Impossible de traiter cette image.', true);
+    }
+    catPhotoEnCoursDeTraitement = false;
+    document.getElementById('btnAddCatalogueMateriel').disabled = false;
+    document.getElementById('btnAddCatalogueMateriel').textContent = '+ Ajouter au catalogue';
+  });
+
+  document.getElementById('btnAddCatalogueMateriel').addEventListener('click', async () => {
+    if (catPhotoEnCoursDeTraitement) { toast('La photo est encore en cours de traitement, patientez un instant.', true); return; }
+    const nom = document.getElementById('cat_nom').value.trim();
+    if (!nom) { toast('Merci de renseigner le nom de l\'article.', true); return; }
+    const btn = document.getElementById('btnAddCatalogueMateriel');
+    try {
+      const snap = await db.collection('catalogueMateriel').get();
+      const nomNorm = nom.toLowerCase().trim();
+      let existantSimilaire = null;
+      snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().trim() === nomNorm) existantSimilaire = data.nom; });
+      if (existantSimilaire && !confirm('Un article similaire existe déjà dans le catalogue ("' + existantSimilaire + '"). Ajouter quand même comme référence distincte ? (Préférez chercher l\'article existant plutôt que d\'en recréer un.)')) {
+        return;
+      }
+    } catch (e) { /* si la verification echoue, on n'empeche pas l'ajout */ }
+    btn.disabled = true;
+    try {
+      await db.collection('catalogueMateriel').add({ nom, photoB64: catPhotoData || null, auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString() });
+      document.getElementById('cat_nom').value = '';
+      document.getElementById('cat_photo').value = '';
+      document.getElementById('cat_photo_preview').innerHTML = '';
+      catPhotoData = null;
+      toast('Article ajouté au catalogue.');
+    } catch (e) {
+      toast('Échec de l\'envoi : ' + e.message, true);
+    }
+    btn.disabled = false;
+  });
+
+  document.getElementById('comptage_search').addEventListener('input', rechercherPourComptage);
+  document.getElementById('perte_search').addEventListener('input', rechercherPourPerte);
+  chargerComptageMoisEnCours();
+}
+
+const MOTIFS_PERTE = ['Casse', 'Perte', 'Vol', 'Péremption', 'Usure', 'Autre'];
+async function rechercherPourPerte() {
+  const wrap = document.getElementById('perteSearchResults');
+  const q = document.getElementById('perte_search').value.trim();
+  if (!q) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<p class="hint">Recherche…</p>`;
+  try {
+    const snap = await db.collection('catalogueMateriel').get();
+    const nq = q.toLowerCase();
+    const resultats = [];
+    snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().includes(nq)) resultats.push({ id: d.id, ...data }); });
+    if (!resultats.length) { wrap.innerHTML = `<p class="hint">Aucun article du catalogue ne correspond.</p>`; return; }
+    wrap.innerHTML = resultats.slice(0, 15).map(c => `
+      <div style="display:flex; align-items:center; gap:6px; padding:6px 0; border-bottom:1px solid var(--platinum); flex-wrap:wrap;">
+        <span style="flex:1; font-size:14px;">${escapeHtml(c.nom)}</span>
+        <input type="number" min="1" value="1" placeholder="Qté" style="width:60px;" id="pqte_${c.id}">
+        <select id="pmotif_${c.id}" style="width:110px;">${MOTIFS_PERTE.map(m => `<option value="${m}">${m}</option>`).join('')}</select>
+        <button class="btn-danger btn-sm" data-declarer="${c.id}" data-nom="${escapeHtml(c.nom)}">Déclarer</button>
+      </div>`).join('');
+    wrap.querySelectorAll('[data-declarer]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const catalogueId = btn.dataset.declarer;
+        const nom = btn.dataset.nom;
+        const quantite = Number(document.getElementById('pqte_' + catalogueId).value) || 1;
+        const motif = document.getElementById('pmotif_' + catalogueId).value;
+        try {
+          await db.collection('pertes').add({
+            catalogueId, nom, quantite, motif, date: todayIso(),
+            auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
+          });
+          document.getElementById('perte_search').value = '';
+          wrap.innerHTML = '';
+          toast('Perte déclarée : ' + nom + '.');
+        } catch (e) {
+          toast('Échec : ' + e.message, true);
+        }
+      });
+    });
+  } catch (e) {
+    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+async function rechercherPourComptage() {
+  const wrap = document.getElementById('comptageSearchResults');
+  const q = document.getElementById('comptage_search').value.trim();
+  if (!q) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<p class="hint">Recherche…</p>`;
+  try {
+    const snap = await db.collection('catalogueMateriel').get();
+    const nq = q.toLowerCase();
+    const resultats = [];
+    snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().includes(nq)) resultats.push({ id: d.id, ...data }); });
+    if (!resultats.length) { wrap.innerHTML = `<p class="hint">Aucun article du catalogue ne correspond.</p>`; return; }
+    wrap.innerHTML = resultats.slice(0, 15).map(c => `
+      <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--platinum);">
+        <span style="flex:1; font-size:14px;">${escapeHtml(c.nom)}</span>
+        <input type="number" min="0" placeholder="Qté" style="width:70px;" id="qte_${c.id}">
+        <button class="btn-gold btn-sm" data-saisir="${c.id}" data-nom="${escapeHtml(c.nom)}">OK</button>
+      </div>`).join('');
+    wrap.querySelectorAll('[data-saisir]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const catalogueId = btn.dataset.saisir;
+        const nom = btn.dataset.nom;
+        const quantite = Number(document.getElementById('qte_' + catalogueId).value);
+        if (!(quantite >= 0)) { toast('Quantité invalide.', true); return; }
+        try {
+          await db.collection('inventaireMateriel').add({
+            catalogueId, nom, mois: moisActuelInventaire(), quantite,
+            auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
+          });
+          document.getElementById('comptage_search').value = '';
+          wrap.innerHTML = '';
+          toast('Comptage enregistré.');
+          chargerComptageMoisEnCours();
+        } catch (e) {
+          toast('Échec : ' + e.message, true);
+        }
+      });
+    });
+  } catch (e) {
+    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+async function chargerComptageMoisEnCours() {
+  const wrap = document.getElementById('comptageListWrap');
+  if (!wrap) return;
+  try {
+    const mois = moisActuelInventaire();
+    const snap = await db.collection('inventaireMateriel').get();
+    const items = [];
+    snap.forEach(d => { const data = d.data(); if (data.mois === mois) items.push(data); });
+    items.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    if (!items.length) {
+      wrap.innerHTML = `<p class="hint">Aucun comptage ce mois-ci pour l'instant.</p>`;
+      return;
+    }
+    wrap.innerHTML = items.map(i => `
+      <div class="fe-row"><div class="l">${escapeHtml(i.nom)}</div><div>${i.quantite} (${escapeHtml(i.auteur || '')})</div></div>`).join('');
+  } catch (e) {
+    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+
+async function renderTabFiches() {
+  const wrap = document.getElementById('tabContent');
+  wrap.innerHTML = `<div class="card"><p class="hint">Chargement des fiches équipe…</p></div>`;
+  try { await authReady; } catch(_) {}
+  try {
+    const snap = await db.collection('fichesEquipe').get();
+    const fiches = [];
+    const aujourdhui = todayIso();
+    snap.forEach(d => {
+      const f = d.data();
+      // Seules les prestations a venir restent visibles a l'equipe - une
+      // prestation passee n'a plus d'utilite operationnelle une fois l'evenement
+      // termine, et encombrerait la liste inutilement au fil des mois.
+      if ((f.datePrestation || '') >= aujourdhui) fiches.push(f);
+    });
+    fiches.sort((a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || ''));
+
+    if (!fiches.length) {
+      wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.</div></div>`;
+      return;
+    }
+    wrap.innerHTML = `<div class="card"><h2>Prestations à venir <span class="hint">(sans information financière)</span></h2>
+      ${fiches.map(f => `
+        <div class="fe-card">
+          <div class="num">${escapeHtml(f.type)} N° ${escapeHtml(f.numero)}</div>
+          <div class="obj">${escapeHtml(f.objet)}</div>
+          ${f.notes ? `<div class="fe-notes-alert"><div class="fe-notes-label">⚠️ Allergies / consignes client / notes complémentaires</div><div class="fe-notes-body">${escapeHtml(f.notes)}</div></div>` : ''}
+          <div class="fe-row"><div class="l">Client</div><div>${escapeHtml(f.clientNom)}</div></div>
+          <div class="fe-row"><div class="l">Lieu</div><div>${escapeHtml(f.lieu)}</div></div>
+          <div class="fe-row"><div class="l">Date</div><div>${fmtDate(f.datePrestation)}</div></div>
+          <div class="fe-row"><div class="l">Heure</div><div>${escapeHtml(f.heure)}</div></div>
+          <div class="fe-row"><div class="l">Convives</div><div>${escapeHtml(f.convives)}</div></div>
+          <ul class="fe-items">${(f.items || []).map(it => `<li>${escapeHtml(it.designation)} ${it.qte > 1 ? '× ' + it.qte : ''}</li>`).join('')}</ul>
+        </div>`).join('')}
+    </div>`;
+  } catch (e) {
+    wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger les fiches : ${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+/* =====================================================================
+   MESSAGES — chat simple avec Hello, commun aux deux entites.
+   ===================================================================== */
+const STAFF_NAME_KEY = 'glidji_equipe_prenom_v1';
+const MSG_LAST_SEEN_KEY = 'glidji_equipe_msg_last_seen_v1';
+let messagesCache = [];
+let messagesPollTimer = null;
+
+function getStaffName() { return localStorage.getItem(STAFF_NAME_KEY) || ''; }
+
+async function fetchMessages() {
+  try { await authReady; } catch(_) {}
+  const snap = await db.collection('messages').get();
+  const list = [];
+  snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+  list.sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+  return list;
+}
+
+async function refreshMessagesBadgeOnly() {
+  try {
+    messagesCache = await fetchMessages();
+    /* Si l'écran Messages est actif, on rafraîchit la liste ; sinon le badge */
+    if (_equipeTabActif === 'messages' && document.getElementById('msgListWrap')) {
+      renderMessagesListUI();
+    } else {
+      updateMsgBadgeTab();
+    }
+  } catch (e) { console.error('Actualisation messages:', e); }
+}
+
+function updateMsgBadgeTab() {
+  const lastSeen = localStorage.getItem(MSG_LAST_SEEN_KEY);
+  const unread = messagesCache.filter(m => m.side === 'owner' && (!lastSeen || m.createdAt > lastSeen)).length;
+  /* Badge sur la tuile hub */
+  const hubBadge = document.getElementById('msgBadgeHub');
+  if (hubBadge) {
+    if (unread > 0) { hubBadge.textContent = unread; hubBadge.style.display = 'flex'; }
+    else { hubBadge.style.display = 'none'; }
+  }
+  /* Badge legacy (conservé pour compat) */
+  const badge = document.getElementById('msgBadgeTab');
+  if (!badge) return;
+  if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline-block'; }
+  else { badge.style.display = 'none'; }
+}
+
+function startMessagesPolling() {
+  if (messagesPollTimer) clearInterval(messagesPollTimer);
+  refreshMessagesBadgeOnly();
+  flushOfflineQueue();
+  messagesPollTimer = setInterval(() => { refreshMessagesBadgeOnly(); flushOfflineQueue(); }, 30000);
+}
+
+
+let avPhotoRecuData = null;
+let avPhotoEnCoursDeTraitement = false;
+
+async function renderTabAvances() {
+  const wrap = document.getElementById('tabContent');
+  wrap.innerHTML = `<div class="card"><p class="hint">Chargement…</p></div>`;
+  try { await authReady; } catch(_) {}
+
+  let compteActifId = null;
+  try {
+    const metaSnap = await db.collection('caisseMeta').doc('actif').get();
+    compteActifId = metaSnap && metaSnap.exists ? metaSnap.data().compteActifId : null;
+  } catch (e) {
+    wrap.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
+    return;
+  }
+
+  if (!compteActifId) {
+    wrap.innerHTML = `<div class="card"><div class="empty">Aucun compte de caisse actif pour l'instant. Demandez à Hello d'en ouvrir un.</div></div>`;
+    return;
+  }
+
+  let mouvements = [];
+  try {
+    const snap = await db.collection('caisseMouvements').where('compteId', '==', compteActifId).get();
+    snap.forEach(d => mouvements.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    try {
+      const snap = await db.collection('caisseMouvements').get();
+      snap.forEach(d => { const data = d.data(); if (data.compteId === compteActifId) mouvements.push({ id: d.id, ...data }); });
+    } catch (e2) {
+      wrap.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e2.message)}</p></div>`;
+      return;
+    }
+  }
+  mouvements.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+  const totalAvances = mouvements.filter(m => m.type === 'avance').reduce((s, m) => s + (m.montant || 0), 0);
+  const totalDepenses = mouvements.filter(m => m.type === 'depense').reduce((s, m) => s + (m.montant || 0), 0);
+  const solde = totalAvances - totalDepenses;
+
+  wrap.innerHTML = `
+    <div class="card">
+      <h2>Caisse d'équipe <span class="hint">(visible par toute l'équipe)</span></h2>
+      <div style="display:flex; justify-content:space-around; text-align:center; margin:16px 0; font-size:14px;">
+        <div><div class="hint">Avances</div><strong>${totalAvances.toLocaleString('fr-FR')} FCFA</strong></div>
+        <div><div class="hint">Dépensé</div><strong>${totalDepenses.toLocaleString('fr-FR')} FCFA</strong></div>
+        <div><div class="hint">Solde</div><strong style="color:${solde < 0 ? '#B3261E' : '#3a6b2a'};">${solde.toLocaleString('fr-FR')} FCFA</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ajouter une dépense</h2>
+      <div class="field"><label>Article</label><input type="text" id="cx_nom" placeholder="Ex : Carottes"></div>
+      <div class="field"><label>Montant (FCFA)</label><input type="number" id="cx_montant" min="0"></div>
+      <div class="field">
+        <label>Photo du reçu <span class="hint">(facultatif)</span></label>
+        <input type="file" id="cx_photo" accept="image/*">
+        <div id="cx_photo_preview" style="margin-top:8px;"></div>
+      </div>
+      <button class="btn-gold btn-block" id="btnAjouterDepenseEquipe">Envoyer</button>
+    </div>
+
+    <div class="card">
+      <h2>Ajouter une avance reçue</h2>
+      <div class="field"><label>Montant reçu (FCFA)</label><input type="number" id="cx_montantAvance" min="0"></div>
+      <button class="btn-ghost btn-block" id="btnAjouterAvanceEquipe">Envoyer</button>
+    </div>
+
+    <div class="card">
+      <h2>Mouvements récents</h2>
+      ${!mouvements.length ? '<div class="empty">Aucun mouvement pour l\'instant.</div>' : mouvements.map(m => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--platinum); font-size:14px;">
+          <div>
+            <div>${m.type === 'avance' ? '↑ Avance' : '↓ ' + escapeHtml(m.nom || '')}</div>
+            <div class="hint" style="font-size:12px;">${escapeHtml(m.auteur || 'Équipe')} · ${m.date || ''}</div>
+          </div>
+          <div style="font-weight:600; color:${m.type === 'avance' ? '#3a6b2a' : '#B3261E'};">${(m.montant || 0).toLocaleString('fr-FR')} FCFA</div>
+        </div>`).join('')}
+    </div>
+  `;
+
+  document.getElementById('cx_photo').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    avPhotoEnCoursDeTraitement = true;
+    const btn = document.getElementById('btnAjouterDepenseEquipe');
+    btn.disabled = true;
+    btn.textContent = 'Traitement de la photo…';
+    try {
+      avPhotoRecuData = await compressImageFile(file);
+      document.getElementById('cx_photo_preview').innerHTML = `<img src="${avPhotoRecuData}" style="max-height:90px; border-radius:6px;">`;
+    } catch (err) {
+      toast('Impossible de traiter cette image.', true);
+    }
+    avPhotoEnCoursDeTraitement = false;
+    btn.disabled = false;
+    btn.textContent = 'Envoyer';
+  });
+
+  // Revérifie le compte actif REELLEMENT courant juste avant l'envoi, plutôt
+  // que de se fier a la valeur figee au chargement de l'onglet - sans ca, un
+  // mouvement pourrait s'attacher a un compte deja cloture par Hello entre
+  // temps, a l'insu de la personne qui saisit sur son telephone.
+  async function verifierCompteEncoreValide() {
+    try {
+      const metaSnap = await db.collection('caisseMeta').doc('actif').get();
+      const idReel = metaSnap && metaSnap.exists ? metaSnap.data().compteActifId : null;
+      return idReel === compteActifId;
+    } catch (e) {
+      // Pas de reseau au moment de la verification : on laisse passer, la
+      // file d'attente hors-ligne fera son travail avec l'id connu au
+      // dernier chargement - mieux vaut ca qu'un blocage total sans connexion.
+      return true;
+    }
+  }
+
+  document.getElementById('btnAjouterDepenseEquipe').addEventListener('click', async () => {
+    if (avPhotoEnCoursDeTraitement) { toast('La photo est encore en cours de traitement, patientez.', true); return; }
+    const nom = document.getElementById('cx_nom').value.trim();
+    const montant = Number(document.getElementById('cx_montant').value) || 0;
+    if (!nom || montant <= 0) { toast('Renseignez l\'article et son montant.', true); return; }
+    const btn = document.getElementById('btnAjouterDepenseEquipe');
+    btn.disabled = true;
+    if (!(await verifierCompteEncoreValide())) {
+      toast('⚠️ Le compte a changé pendant que vous étiez sur cet écran (probablement clôturé). Affichage actualisé — vérifiez avant de renvoyer.', true);
+      btn.disabled = false;
+      renderTabAvances();
+      return;
+    }
+    const payload = {
+      compteId: compteActifId, type: 'depense', nom, montant,
+      date: todayIso(), auteur: getStaffName() || 'Équipe',
+      photoB64: avPhotoRecuData || null, createdAt: new Date().toISOString(),
+    };
+    const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
+    avPhotoRecuData = null;
+    if (resultat.viaFile) {
+      toast('Pas de connexion : dépense enregistrée sur cet appareil, elle sera envoyée automatiquement dès que possible.', true);
+      btn.disabled = false;
+    } else {
+      toast('Dépense envoyée.');
+      renderTabAvances();
+    }
+  });
+
+  document.getElementById('btnAjouterAvanceEquipe').addEventListener('click', async () => {
+    const montant = Number(document.getElementById('cx_montantAvance').value) || 0;
+    if (montant <= 0) { toast('Renseignez un montant.', true); return; }
+    const btn = document.getElementById('btnAjouterAvanceEquipe');
+    btn.disabled = true;
+    if (!(await verifierCompteEncoreValide())) {
+      toast('⚠️ Le compte a changé pendant que vous étiez sur cet écran (probablement clôturé). Affichage actualisé — vérifiez avant de renvoyer.', true);
+      btn.disabled = false;
+      renderTabAvances();
+      return;
+    }
+    const payload = {
+      compteId: compteActifId, type: 'avance', nom: '', montant,
+      date: todayIso(), auteur: getStaffName() || 'Équipe',
+      photoB64: null, createdAt: new Date().toISOString(),
+    };
+    const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
+    if (resultat.viaFile) {
+      toast('Pas de connexion : avance enregistrée sur cet appareil, elle sera envoyée automatiquement dès que possible.', true);
+      btn.disabled = false;
+    } else {
+      toast('Avance envoyée.');
+      renderTabAvances();
+    }
+  });
+}
+
+
+async function renderTabMessages() {
+  const wrap = document.getElementById('tabContent');
+  let staffName = getStaffName();
+  if (!staffName) {
+    wrap.innerHTML = `
+      <div class="card">
+        <h2>Avant de commencer</h2>
+        <div class="field">
+          <label>Votre prénom</label>
+          <input type="text" id="staff_name_input" placeholder="Ex : Ama">
+        </div>
+        <button class="btn-gold btn-block" id="btnSaveStaffName">Continuer →</button>
+      </div>`;
+    document.getElementById('btnSaveStaffName').addEventListener('click', () => {
+      const val = document.getElementById('staff_name_input').value.trim();
+      if (!val) { toast('Merci de renseigner votre prénom.', true); return; }
+      localStorage.setItem(STAFF_NAME_KEY, val);
+      renderTabMessages();
+    });
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="card">
+      <h2>Messages <span class="hint">(connecté en tant que ${escapeHtml(staffName)} — <a href="#" id="linkChangeStaffName" style="color:var(--muted);">changer</a>)</span></h2>
+      <div id="msgListWrap" class="msg-list"><p class="hint">Chargement…</p></div>
+      <div class="msg-composer">
+        <textarea id="msg_input" rows="2" placeholder="Écrire un message…"></textarea>
+        <button class="btn-gold" id="btnSendMsg">Envoyer</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">
+        <label class="btn-ghost" style="padding:8px 12px;font-size:13px;cursor:pointer;border-radius:6px;">
+          📎 Fichier<input type="file" id="msg_file_input" style="display:none;" onchange="handleMsgFile(this)">
+        </label>
+        <button class="btn-ghost" id="btnRecord" onclick="toggleRecord()" style="padding:8px 12px;font-size:13px;">🎤 Vocal</button>
+        <span id="attach-preview" style="font-size:12px;color:var(--muted);"></span>
+      </div>
+    </div>`;
+  document.getElementById('linkChangeStaffName').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem(STAFF_NAME_KEY);
+    renderTabMessages();
+  });
+  document.getElementById('btnSendMsg').addEventListener('click', sendMessage);
+  document.getElementById('msg_input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  try {
+    messagesCache = await fetchMessages();
+    renderMessagesListUI();
+  } catch (e) {
+    document.getElementById('msgListWrap').innerHTML = `<p class="hint">⛔ Impossible de charger les messages : ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+function renderMessagesListUI() {
+  const wrap = document.getElementById('msgListWrap');
+  if (!wrap) return;
+  if (!messagesCache.length) {
+    wrap.innerHTML = `<p class="hint">Aucun message pour l'instant.</p>`;
+  } else {
+    wrap.innerHTML = messagesCache.map(m => `
+      <div class="msg-bubble ${m.side === 'team' ? 'from-me' : 'from-team'}">
+        <div class="msg-meta">${escapeHtml(m.author || (m.side === 'owner' ? 'Hello' : 'Équipe'))} · ${fmtDateTime(m.createdAt)}</div>
+        <div>${escapeHtml(m.body || '')}</div>
+        ${m.imageData ? `<img src="${m.imageData}" class="msg-attach-preview" alt="photo">` : ''}
+        ${m.audioData ? `<audio controls class="msg-audio" src="${m.audioData}"></audio>` : ''}
+        ${m.fileData  ? `<a class="msg-file-link" href="${m.fileData}" download="${m.fileName||'fichier'}">📄 ${escapeHtml(m.fileName||'Pièce jointe')}</a>` : ''}
+      </div>`).join('');
+  }
+  wrap.scrollTop = wrap.scrollHeight;
+  localStorage.setItem(MSG_LAST_SEEN_KEY, new Date().toISOString());
+  updateMsgBadgeTab();
+}
+function fmtDateTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+async function sendMessage() {
+  const input = document.getElementById('msg_input');
+  const body = input.value.trim();
+  if (!body && !window._msgAttachData) return;
+  const btn = document.getElementById('btnSendMsg');
+  btn.disabled = true;
+  try {
+    const payload = { body: body || '', side: 'team', author: getStaffName(), createdAt: new Date().toISOString() };
+    if (window._msgAttachData) {
+      if (window._msgAttachData.type === 'image') payload.imageData = window._msgAttachData.data;
+      if (window._msgAttachData.type === 'audio') payload.audioData = window._msgAttachData.data;
+      if (window._msgAttachData.type === 'file')  payload.fileData  = window._msgAttachData.data;
+      payload.fileName = window._msgAttachData.name;
+    }
+    await db.collection('messages').add(payload);
+    input.value = '';
+    window._msgAttachData = null;
+    const attachPrev = document.getElementById('attach-preview');
+    if (attachPrev) attachPrev.textContent = '';
+    messagesCache = await fetchMessages();
+    renderMessagesListUI();
+  } catch (e) {
+    toast('Échec de l\'envoi : ' + e.message, true);
+  }
+  btn.disabled = false;
+}
+
+/* ----- ACHATS EQUIPE ----- */
+var _achatLignes = [];
+function renderTabAchats() {
+  var content = document.getElementById('tabContent');
+  function renderListe() {
+    return _achatLignes.length === 0 ? '<p class="hint">Aucun achat saisi.</p>' :
+      '<table style="width:100%;font-size:14px;border-collapse:collapse;margin-bottom:12px;">' +
+      '<tr><th style="text-align:left;padding:4px;color:var(--muted);font-size:12px;">Désignation</th>' +
+      '<th style="text-align:right;padding:4px;color:var(--muted);font-size:12px;">Montant (FCFA)</th><th></th></tr>' +
+      _achatLignes.map(function(l,i){
+        return '<tr><td style="padding:4px;">' + escapeHtml(l.designation) + '</td>' +
+          '<td style="text-align:right;padding:4px;">' + l.montant.toLocaleString('fr-FR') + '</td>' +
+          '<td style="padding:4px;"><button onclick="supprimerAchat('+i+')" style="background:none;border:none;color:var(--err);cursor:pointer;font-size:16px;">✕</button></td></tr>';
+      }).join('') +
+      '<tr style="border-top:2px solid var(--platinum);font-weight:700;">' +
+      '<td style="padding:6px 4px;">TOTAL</td>' +
+      '<td style="text-align:right;padding:6px 4px;">' +
+      _achatLignes.reduce(function(s,l){return s+l.montant;},0).toLocaleString('fr-FR') + ' FCFA</td><td></td></tr></table>';
+  }
+  content.innerHTML = '<div class="card">' +
+    '<h2>Saisie des achats</h2>' +
+    '<div class="field"><label>Désignation</label><input type="text" id="achat_designation" placeholder="Ex : Tomates, Huile…"></div>' +
+    '<div class="field"><label>Montant (FCFA)</label><input type="number" id="achat_montant" placeholder="0" min="0"></div>' +
+    '<button class="btn-ghost btn-block" onclick="ajouterAchat()" style="margin-bottom:16px;">+ Ajouter cet achat</button>' +
+    '<div id="achat-liste">' + renderListe() + '</div>' +
+    '<button class="btn-gold btn-block" id="btnEnvoyerAchats" style="margin-top:8px;" onclick="envoyerAchats()">Envoyer la liste</button>' +
+    '</div>';
+}
+function ajouterAchat() {
+  var d = document.getElementById('achat_designation').value.trim();
+  var m = parseFloat(document.getElementById('achat_montant').value);
+  if (!d) { toast('Renseigne la désignation', true); return; }
+  if (isNaN(m) || m <= 0) { toast('Montant invalide', true); return; }
+  _achatLignes.push({designation: d, montant: m});
+  document.getElementById('achat_designation').value = '';
+  document.getElementById('achat_montant').value = '';
+  renderTabAchats();
+  document.getElementById('achat_designation').focus();
+}
+function supprimerAchat(i) {
+  _achatLignes.splice(i, 1);
+  renderTabAchats();
+}
+async function envoyerAchats() {
+  if (!_achatLignes.length) { toast('Aucun achat a envoyer', true); return; }
+  var btn = document.getElementById('btnEnvoyerAchats');
+  btn.disabled = true;
+  try {
+    var total = _achatLignes.reduce(function(s,l){return s+l.montant;},0);
+    var auteur = getStaffName() || 'Equipe';
+    var date   = todayIso();
+
+    // 1. Enregistrer la liste globale dans achatsEquipe
+    await db.collection('achatsEquipe').add({
+      lignes: _achatLignes,
+      total: total,
+      auteur: auteur,
+      date: date,
+      createdAt: new Date().toISOString()
+    });
+
+    // 2. Lire le compte de caisse actif
+    var compteActifId = null;
+    try {
+      var metaSnap = await db.collection('caisseMeta').doc('actif').get();
+      if (metaSnap && metaSnap.exists) compteActifId = metaSnap.data().compteActifId;
+    } catch(e2) { /* pas de caisse active, on continue sans */ }
+
+    // 3. Créer un mouvement de caisse séparé par ligne d'achat
+    for (var i = 0; i < _achatLignes.length; i++) {
+      var ligne = _achatLignes[i];
+      var payload = {
+        type: 'depense',
+        nom: ligne.designation,
+        montant: ligne.montant,
+        date: date,
+        auteur: auteur,
+        createdAt: new Date().toISOString(),
+        sourceAchats: true
+      };
+      if (compteActifId) payload.compteId = compteActifId;
+      await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
+    }
+
+    _achatLignes = [];
+    toast('Achats envoyes et enregistres dans la caisse (' + total.toLocaleString('fr-FR') + ' FCFA)');
+    renderTabAchats();
+  } catch(e) {
+    toast('Erreur : ' + e.message, true);
+  }
+  btn.disabled = false;
+}
+
+
+/* ----- CALENDRIER ----- */
+function renderTabCalendrier() {
+  var content = document.getElementById('tabContent');
+  var now = new Date();
+  var year = now.getFullYear(), month = now.getMonth();
+  var firstDay = new Date(year, month, 1).getDay();
+  var daysInMonth = new Date(year, month+1, 0).getDate();
+  var monthNames = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  var dayNames = ['Di','Lu','Ma','Me','Je','Ve','Sa'];
+  var eventDates = {};
+  (histoCache||[]).forEach(function(op) {
+    if (!op.date) return;
+    var parts = op.date.split('-');
+    var y=parseInt(parts[0],10), m=parseInt(parts[1],10)-1, d=parseInt(parts[2],10);
+    if (y===year && m===month) { if (!eventDates[d]) eventDates[d]=[]; eventDates[d].push(op); }
+  });
+  var grid = '<div class="cal-grid">';
+  dayNames.forEach(function(d){ grid+='<div class="cal-head">'+d+'</div>'; });
+  var offset = (firstDay===0)?6:firstDay-1;
+  for(var i=0;i<offset;i++) grid+='<div class="cal-cell"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var cls='cal-cell'+(d===now.getDate()?' today':'')+(eventDates[d]?' has-event':'');
+    var oc=eventDates[d]?' onclick="showCalPopup('+d+')"':'';
+    grid+='<div class="'+cls+'"'+oc+'>'+d+(eventDates[d]?'<div class="cal-dot"></div>':'')+'</div>';
+  }
+  grid+='</div>';
+  window._calEventDates = eventDates;
+  var upcoming=(histoCache||[]).filter(function(op){
+    if(!op.date)return false;
+    var diff=(new Date(op.date)-now)/86400000;
+    return diff>=0&&diff<=30;
+  }).sort(function(a,b){return a.date.localeCompare(b.date);});
+  var upHtml='<h4 style="margin:12px 0 8px;">Prochaines prestations (30j)</h4>';
+  if(!upcoming.length) upHtml+='<p style="color:#888;font-size:13px;">Aucune dans les 30 prochains jours.</p>';
+  else upcoming.forEach(function(op){
+    upHtml+='<div class="cal-prochain-card" onclick="showFichePopup(this)" data-op="'+encodeURIComponent(JSON.stringify(op))+'">'+
+      '<div><b>'+(op.nomEvenement||op.client||'Prestation')+'</b></div>'+
+      '<div style="font-size:12px;color:#666;">'+(op.date||'')+' &mdash; '+(op.lieu||'')+'</div></div>';
+  });
+  content.innerHTML='<div class="card"><h2>'+monthNames[month]+' '+year+'</h2>'+grid+upHtml+'</div>';
+}
+function showCalPopup(day){
+  var events=(window._calEventDates||{})[day]||[];
+  var div=document.createElement('div'); div.className='cal-popup';
+  div.innerHTML='<div class="cal-popup-inner"><h4 style="margin-bottom:12px;">Prestations du '+day+'</h4>'+
+    events.map(function(op){return '<div class="cal-prochain-card" style="cursor:default;"><b>'+(op.nomEvenement||op.client||'Prestation')+'</b><br><span style="font-size:12px;color:#666;">'+(op.lieu||'')+' '+(op.heure||'')+'</span></div>';}).join('')+
+    '<button class="btn" style="margin-top:12px;width:100%;" onclick="this.closest(\'.cal-popup\').remove()">Fermer</button></div>';
+  document.body.appendChild(div);
+}
+function showFichePopup(el){
+  var op=JSON.parse(decodeURIComponent(el.getAttribute('data-op')));
+  var div=document.createElement('div'); div.className='cal-popup';
+  div.innerHTML='<div class="cal-popup-inner"><h4 style="margin-bottom:12px;">Fiche prestation</h4>'+
+    '<table style="width:100%;font-size:13px;">'+
+    '<tr><td style="color:#888;width:80px;">Evenement</td><td><b>'+(op.nomEvenement||op.client||'-')+'</b></td></tr>'+
+    '<tr><td style="color:#888;">Date</td><td>'+(op.date||'-')+'</td></tr>'+
+    '<tr><td style="color:#888;">Lieu</td><td>'+(op.lieu||'-')+'</td></tr>'+
+    '<tr><td style="color:#888;">Type</td><td>'+(op.type||'-')+'</td></tr>'+
+    '<tr><td style="color:#888;">Heure</td><td>'+(op.heure||'-')+'</td></tr>'+
+    '</table><button class="btn" style="margin-top:12px;width:100%;" onclick="this.closest(\'.cal-popup\').remove()">Fermer</button></div>';
+  document.body.appendChild(div);
+}
+function checkAndSendReminders(){
+  if(!('Notification' in window))return;
+  var now=new Date(), in48h=new Date(now.getTime()+48*3600*1000);
+  var upcoming=(histoCache||[]).filter(function(op){
+    if(!op.date)return false; var d=new Date(op.date); return d>=now&&d<=in48h;
+  });
+  if(!upcoming.length)return;
+  if(Notification.permission==='granted'){
+    upcoming.forEach(function(op){
+      new Notification('Rappel prestation 48h',{body:(op.nomEvenement||op.client||'Prestation')+' - '+(op.date||''),icon:'/favicon.ico'});
+    });
+  } else if(Notification.permission!=='denied'){
+    Notification.requestPermission().then(function(p){ if(p==='granted') checkAndSendReminders(); });
+  }
+}
+/* ----- MESSAGES ENRICHIS — helpers uniquement (renderTabMessages et sendMessage non modifiés) ----- */
+var _mediaRecorder=null, _audioChunks=[];
+function handleMsgFile(inp){
+  var file=inp.files[0]; if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var isImage=file.type.startsWith('image/'), isAudio=file.type.startsWith('audio/');
+    window._msgAttachData={type:isImage?'image':isAudio?'audio':'file',data:e.target.result,name:file.name};
+    var prev=document.getElementById('attach-preview');
+    if(prev) prev.textContent='Joint : '+file.name;
+  };
+  reader.readAsDataURL(file);
+}
+function toggleRecord(){
+  var btn=document.getElementById('btnRecord');
+  if(_mediaRecorder&&_mediaRecorder.state==='recording'){_mediaRecorder.stop();btn.textContent='Vocal';return;}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    _audioChunks=[];
+    _mediaRecorder=new MediaRecorder(stream);
+    _mediaRecorder.ondataavailable=function(e){_audioChunks.push(e.data);};
+    _mediaRecorder.onstop=function(){
+      var blob=new Blob(_audioChunks,{type:'audio/webm'});
+      var r=new FileReader();
+      r.onload=function(e){
+        window._msgAttachData={type:'audio',data:e.target.result,name:'vocal.webm'};
+        var prev=document.getElementById('attach-preview'); if(prev) prev.textContent='Vocal enregistre';
+      };
+      r.readAsDataURL(blob);
+      stream.getTracks().forEach(function(t){t.stop();});
+    };
+    _mediaRecorder.start(); btn.textContent='Stop';
+  }).catch(function(){toast('Micro non disponible',true);});
+}
+
+
+/* =====================================================================
+   GITHUB PAGES — publication de l'app Équipe
+   ===================================================================== */
+const EQ_GITHUB_KEY = 'glidji_github_pages_v1';
+function eqGhCfg() { try { return JSON.parse(localStorage.getItem(EQ_GITHUB_KEY)||'{}'); } catch(_){return{};} }
+function eqGhSave(c){ localStorage.setItem(EQ_GITHUB_KEY, JSON.stringify(c)); }
+async function eqGhApi(token, method, path, body) {
+  const opts = { method, headers: { 'Authorization':'token '+token, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' }};
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const resp = await fetch('https://api.github.com'+path, opts);
+  const data = await resp.json().catch(()=>({}));
+  if (!resp.ok) throw new Error('GitHub '+ resp.status +': '+(data.message||'erreur'));
+  return data;
+}
+function eqB64(str) {
+  const bytes = new TextEncoder().encode(str); let bin='';
+  bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin);
+}
+async function eqGhPush(token, owner, repo, filePath, content, msg) {
+  let sha; try { const ex = await eqGhApi(token,'GET','/repos/'+owner+'/'+repo+'/contents/'+filePath); sha=ex.sha; } catch(_){}
+  const body = { message:msg, content:eqB64(content) }; if(sha) body.sha=sha;
+  return eqGhApi(token,'PUT','/repos/'+owner+'/'+repo+'/contents/'+filePath, body);
+}
+function showGithubModal() {
+  const cfg = eqGhCfg();
+  const existing = document.getElementById('gh-modal-equipe');
+  if (existing) { existing.remove(); return; }
+  const modal = document.createElement('div');
+  modal.id = 'gh-modal-equipe';
+  modal.style.cssText = 'position:fixed;inset:0;background:#0009;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
+      <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;display:block;margin-bottom:4px;">Token GitHub (scope : repo)</label>
+        <input type="password" id="gh_eq_token" value="${escapeHtml(cfg.token||'')}"
+          placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+          style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-family:monospace;font-size:13px;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;display:block;margin-bottom:4px;">Nom du dépôt</label>
+        <input type="text" id="gh_eq_repo" value="${escapeHtml(cfg.repo||'glidji')}"
+          placeholder="glidji" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+      </div>
+      ${cfg.owner ? `<p style="font-size:12px;color:#888;margin-bottom:12px;">🔗 https://${escapeHtml(cfg.owner)}.github.io/${escapeHtml(cfg.repo||'glidji')}/Glidji_Equipe_v2.html</p>` : ''}
+      <div id="gh_eq_status" style="font-size:13px;color:#888;min-height:18px;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="eqGhPublish()" style="flex:1;background:#B8935A;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;">🚀 Publier l'app Équipe</button>
+        <button onclick="document.getElementById('gh-modal-equipe').remove()" style="background:#f0f0f0;border:none;border-radius:6px;padding:11px 16px;cursor:pointer;font-size:16px;">✕</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+}
+async function eqGhPublish() {
+  const token = (document.getElementById('gh_eq_token')||{}).value?.trim();
+  const repo  = (document.getElementById('gh_eq_repo') ||{}).value?.trim() || 'glidji';
+  const st = document.getElementById('gh_eq_status');
+  if (!token) { if(st) st.textContent='⛔ Renseignez votre token.'; return; }
+  const btns = document.querySelectorAll('#gh-modal-equipe button');
+  btns.forEach(b=>b.disabled=true);
+  if (st) st.textContent = 'Connexion à GitHub…';
+  try {
+    eqGhSave({ ...eqGhCfg(), token, repo });
+    const user = await eqGhApi(token,'GET','/user');
+    const owner = user.login;
+    try { await eqGhApi(token,'GET','/repos/'+owner+'/'+repo); } catch(_) {
+      await eqGhApi(token,'POST','/user/repos',{ name:repo, description:'Application Glidji', private:false, auto_init:true });
+    }
+    try { await eqGhApi(token,'POST','/repos/'+owner+'/'+repo+'/pages',{ source:{branch:'main',path:'/'} }); } catch(_){}
+    eqGhSave({ ...eqGhCfg(), owner });
+    if (st) st.textContent = 'Encodage et envoi (patientez ~30s)…';
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('input,textarea').forEach(el=>{el.value='';el.removeAttribute('value');if(el.tagName==='TEXTAREA')el.textContent='';});
+    const content = '<!DOCTYPE html>\n' + clone.outerHTML;
+    await eqGhPush(token, owner, repo, 'Glidji_Equipe_v2.html', content,
+      'Mise à jour Glidji_Equipe_v2.html — ' + new Date().toLocaleString('fr-FR'));
+    const url = 'https://'+owner+'.github.io/'+repo+'/Glidji_Equipe_v2.html';
+    if (st) st.innerHTML = '✅ <a href="'+url+'" target="_blank" style="color:#B8935A;">'+url+'</a> (actif ~2 min)';
+    toast('✅ App Équipe publiée !');
+  } catch(e) {
+    if(st) st.textContent = '⛔ '+e.message;
+    toast('⛔ '+e.message, true);
+  }
+  btns.forEach(b=>b.disabled=false);
+}
+
+/* =====================================================================
+   INITIALISATION
+   ===================================================================== */
+function init() {
+  const cfg = loadDeviceConfig();
+  if (!cfg) { renderSetup(); return; }
+  if (sessionStorage.getItem(SS_UNLOCKED) === '1') { renderMain(); return; }
+  renderLock();
+}
+init();
+</script>
+
+
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788094141153" name="I0_1788094141153" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.fr.u1YzuBbBpqg.O%2Fd%3D1%2Frs%3DAHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA%2Fm%3D__features__#id=I0_1788094141153&amp;_gfid=I0_1788094141153&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=10223437" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
+      <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;display:block;margin-bottom:4px;">Token GitHub (scope : repo)</label>
+        <input type="password" id="gh_eq_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-family:monospace;font-size:13px;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;display:block;margin-bottom:4px;">Nom du dépôt</label>
+        <input type="text" id="gh_eq_repo" placeholder="glidji" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+      </div>
+      
+      <div id="gh_eq_status" style="font-size:13px;color:#888;min-height:18px;margin-bottom:12px;">Encodage et envoi (patientez ~30s)…</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="eqGhPublish()" style="flex:1;background:#B8935A;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;" disabled="">🚀 Publier l'app Équipe</button>
+        <button onclick="document.getElementById('gh-modal-equipe').remove()" style="background:#f0f0f0;border:none;border-radius:6px;padding:11px 16px;cursor:pointer;font-size:16px;" disabled="">✕</button>
+      </div>
+    </div></div></body></html>
