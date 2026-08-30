@@ -526,7 +526,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
-      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display:none;"></span></button>
+      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display: inline-block;">8</span></button>
       <button data-view="dashboard">Tableau de bord</button>
       <button data-view="bilan">Bilan</button>
       <button data-view="paie">Employés &amp; Paie</button>
@@ -542,7 +542,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="audit">Journal d'audit</button>
       <button data-view="reglages" class="active">Réglages</button>
     </nav>
-    <span class="sync-badge ok" id="syncStatus" title="Glidji_Donnees.json">🔗 Lié : Glidji_Donnees.json</span>
+    <span class="sync-badge ok" id="syncStatus" title="Dernière synchronisation à 22:28">✅ Synch. 22:28</span>
   </header>
   <div class="menu-mobile-overlay" id="menuMobileOverlay"></div>
 
@@ -1758,27 +1758,20 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <div class="card">
         <h2>Fichier partagé <small>Pour utiliser cette application sur plusieurs ordinateurs avec les mêmes données, via OneDrive ou Google Drive. Nécessite Chrome ou Edge.</small></h2>
         <div id="shareFileWrap">
-      <p>Fichier actuellement lié : <strong>Glidji_Donnees.json</strong></p>
+      <p class="hint">Sur le <strong>premier</strong> ordinateur : créez le fichier et enregistrez-le dans votre dossier OneDrive ou Google Drive.<br>
+      Sur les <strong>autres</strong> ordinateurs : liez ce même fichier (déjà synchronisé par OneDrive/Drive).</p>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-gold btn-sm" id="btnSyncNow">🔄 Synchroniser maintenant</button>
-        <button class="btn btn-ghost btn-sm" id="btnReconfirm">🔑 Reconfirmer l'accès</button>
-        <button class="btn btn-danger btn-sm" id="btnUnlink">Délier ce fichier</button>
+        <button class="btn btn-gold btn-sm" id="btnCreateFile">📄 Créer un nouveau fichier partagé</button>
+        <button class="btn btn-ghost btn-sm" id="btnOpenFile">🔗 Lier un fichier existant</button>
       </div>
-      <p class="hint">Cliquez « Synchroniser maintenant » en arrivant sur cet ordinateur, avant de commencer à travailler, pour récupérer les documents créés ailleurs.</p>
     </div>
       </div>
 
       <div class="card">
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
-      <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
-      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-08-30).</p>
-      
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
-        <button class="btn btn-ghost btn-sm" id="btnReconfirmBackup">🔑 Reconfirmer l'accès</button>
-        <button class="btn btn-danger btn-sm" id="btnForgetBackup">Oublier ce dossier</button>
-      </div>
+      <p class="hint">Choisissez un dossier (idéalement dans OneDrive/Google Drive). Un fichier daté y sera déposé automatiquement chaque jour, à la première ouverture de l'application.</p>
+      <button class="btn btn-gold btn-sm" id="btnChooseBackupFolder">📁 Choisir un dossier de sauvegarde</button>
     </div>
       </div>
 
@@ -1867,13 +1860,13 @@ const firebaseConfig = {
           <button class="btn btn-gold btn-sm" id="btnSaveEquipeConfig">Enregistrer la configuration</button>
           <button class="btn btn-ghost btn-sm" id="btnTestEquipeConnection">Tester la connexion</button>
           <button class="btn btn-gold btn-sm" id="btnSyncNow" onclick="syncNowFirestore()" style="margin-left:6px;">🔄 Synchroniser maintenant</button>
-          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;"></span>
+          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;">✅ Connexion Firestore opérationnelle — lecture ET écriture fonctionnent. Vous pouvez synchroniser.</span>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--platinum);">
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">✅ 163 clients envoyés vers le cloud.</div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
     </section>
@@ -2052,7 +2045,7 @@ const firebaseConfig = {
         <div class="hub-module-item" onclick="showView('messages')">
           <div class="hub-module-ico">💬</div>
           <div class="hub-module-body"><div class="hub-module-name">Messages</div><div class="hub-module-desc">Communication avec l'équipe terrain</div></div>
-          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display:none;"></span>
+          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display: inline-block;">8</span>
           <span class="hub-module-arrow">›</span>
         </div>
       </div>
@@ -9250,16 +9243,9 @@ function initEquipeIfConfigured() {
     // tout faire en HTTP classique — plus lent de ~100ms mais compatible partout.
     // settings() DOIT être appelé avant toute opération Firestore.
     try { equipeDb.settings({ experimentalForceLongPolling: true, merge: true }); } catch(_) {}
-    // Cache offline natif Firestore : les écritures hors-ligne sont automatiquement
-    // mises en file par le SDK et rejouées dès que le réseau revient — sans code custom.
-    // synchronizeTabs:true = partage du cache entre onglets du même navigateur.
-    // Les erreurs failed-precondition (multi-onglets sans sync) et unimplemented
-    // (navigateur sans IndexedDB) sont ignorées silencieusement.
-    equipeDb.enablePersistence({ synchronizeTabs: true }).catch(err => {
-      if (err.code !== 'failed-precondition' && err.code !== 'unimplemented') {
-        console.warn('[Glidji] Persistence Firestore:', err.message);
-      }
-    });
+    // Note : enablePersistence() est incompatible avec experimentalForceLongPolling
+    // dans le SDK compat v10 → INTERNAL ASSERTION FAILED si combinés.
+    // La sync hors-ligne est gérée par pullFromFirestore() + auto-sync toutes les 3 min.
     // Auth anonyme : on STOCKE la promesse pour pouvoir l'attendre (await) avant
     // chaque opération Firestore. Sans ça les premières requêtes partent avant
     // que l'auth soit établie → rejetées si les règles exigent request.auth != null.
