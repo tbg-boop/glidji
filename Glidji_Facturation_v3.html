@@ -521,12 +521,12 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="registre">Registre</button>
       <button data-view="paiements">Paiements</button>
       <button data-view="relances">Relances <span id="relancesBadge" style="display:none; background:var(--burgundy); color:#fff; font-size:10px; font-weight:700; border-radius:8px; padding:1px 5px; margin-left:4px; vertical-align:middle;"></span></button>
-      <button data-view="cantine">Cantine</button>
+      <button data-view="cantine" class="">Cantine</button>
       <button data-view="achats">Achats</button>
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
-      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display:none;"></span></button>
+      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display: inline-block;">8</span></button>
       <button data-view="dashboard">Tableau de bord</button>
       <button data-view="bilan">Bilan</button>
       <button data-view="paie">Employés &amp; Paie</button>
@@ -551,7 +551,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     <button data-cat="accueil" class="" onclick="showHubCat('accueil')">
       <span class="hn-ico">🏠</span>Accueil
     </button>
-    <button data-cat="commercial" onclick="showHubCat('commercial')">
+    <button data-cat="commercial" onclick="showHubCat('commercial')" class="">
       <span class="hn-ico">💼</span>Commercial
       <span class="hn-badge" id="hubBadgeCommercial" style="display:none;"></span>
     </button>
@@ -825,7 +825,13 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         </div>
         <table style="margin-top:10px;">
           <thead><tr><th style="width:140px;">Date</th><th>Repas</th><th style="width:140px;">Montant (FCFA)</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="cantRepasBody"></tbody>
+          <tbody id="cantRepasBody">
+    <tr>
+      <td><input type="date" data-cant="0" data-field="date"></td>
+      <td><input type="text" data-cant="0" data-field="designation" list="cant_designations" placeholder="Ex : Salade d'avocat et assiette de fruits"></td>
+      <td><input type="number" class="num" data-cant="0" data-field="montant" min="0"></td>
+      <td><button class="row-remove" data-cant-remove="0" title="Retirer">✕</button></td>
+    </tr></tbody>
         </table>
         <datalist id="cant_designations"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddCantRow" style="margin-top:10px;">+ Ajouter une ligne</button>
@@ -840,12 +846,12 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
           <button class="btn btn-ghost btn-sm" id="btnPullCommandes">🔄 Récupérer les commandes de l'équipe</button>
           <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);"></span>
         </div>
-        <div id="cantPendingWrap"></div>
+        <div id="cantPendingWrap"><div class="empty"><div class="icon">🍽️</div>Aucun repas en attente de facturation.</div></div>
       </div>
 
       <div class="card">
         <h2>Historique des factures cantine</h2>
-        <div id="cantHistoryWrap"></div>
+        <div id="cantHistoryWrap"><div class="empty"><div class="icon">📋</div>Aucune facture cantine générée pour l'instant.</div></div>
       </div>
     </section>
 
@@ -1464,7 +1470,21 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         <p class="hint">Ces achats proviennent de l'application Équipe via Firebase. Une connexion Firebase active est nécessaire.</p>
         <button class="btn btn-gold btn-sm" id="btnRefreshAchatsEquipe" onclick="renderAchatsEquipe()">🔄 Actualiser</button>
       </div>
-      <div id="achatsEquipeWrap"><p class="hint">Cliquez sur Actualiser pour charger les achats.</p></div>
+      <div id="achatsEquipeWrap"><div class="achat-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div><strong>Clément</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
+          <div style="font-size:11px;color:var(--muted);">2026-08-26 18:09</div>
+        </div>
+        <div class="achat-ligne"><span>Sucre en poudre</span><span>750 FCFA</span></div><div class="achat-ligne"><span>Herbes de Provence</span><span>2 550 FCFA</span></div><div class="achat-ligne"><span>Miel naturel 1l</span><span>5 600 FCFA</span></div><div class="achat-ligne"><span>Vin domaine de la reine</span><span>1 400 FCFA</span></div><div class="achat-ligne"><span>Brocoli</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Grille a large bord</span><span>800 FCFA</span></div><div class="achat-ligne"><span>Four European noir</span><span>12 000 FCFA</span></div><div class="achat-ligne"><span>Pomme de terre</span><span>4 000 FCFA</span></div><div class="achat-ligne"><span>Ail</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Oignon</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Romarin frais</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Hibiscus</span><span>700 FCFA</span></div><div class="achat-ligne"><span>Fruit de la passion</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Betterave</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Beurre</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Crème fraîche</span><span>6 600 FCFA</span></div><div class="achat-ligne"><span>Foie gras</span><span>23 000 FCFA</span></div><div class="achat-ligne"><span>Parmesan</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Gambas 3,6k</span><span>36 000 FCFA</span></div><div class="achat-ligne"><span>Mandoline</span><span>6 000 FCFA</span></div><div class="achat-ligne"><span>Câble gaz ×2</span><span>10 900 FCFA</span></div><div class="achat-ligne"><span>Transport achats</span><span>1 500 FCFA</span></div>
+        <div class="achat-total"><span>Total</span><span>129 800 FCFA</span></div>
+      </div><div class="achat-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div><strong>Gile</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
+          <div style="font-size:11px;color:var(--muted);">2026-08-26 16:01</div>
+        </div>
+        <div class="achat-ligne"><span>Sac poubelle</span><span>2 340 FCFA</span></div><div class="achat-ligne"><span>Raisin sec 1kg</span><span>4 800 FCFA</span></div>
+        <div class="achat-total"><span>Total</span><span>7 140 FCFA</span></div>
+      </div></div>
     </section>
 
     <section class="view" id="view-prestations">
@@ -1794,7 +1814,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <div class="hint">Créez un token sur <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong> avec le scope <code>gist</code> uniquement.</div>
     </div>
     
-      <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/7dd3bd397c4dbd46eba753b91e5285bd" target="_blank" rel="noopener">7dd3bd397c4dbd46eba753b91e5285bd</a></p>
+      <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
       <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-08-30).</p>
       
     
@@ -1867,13 +1887,13 @@ const firebaseConfig = {
           <button class="btn btn-gold btn-sm" id="btnSaveEquipeConfig">Enregistrer la configuration</button>
           <button class="btn btn-ghost btn-sm" id="btnTestEquipeConnection">Tester la connexion</button>
           <button class="btn btn-gold btn-sm" id="btnSyncNow" onclick="syncNowFirestore()" style="margin-left:6px;">🔄 Synchroniser maintenant</button>
-          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;"></span>
+          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;">⚠️ Lecture OK, écriture bloquée — Délai dépassé (20s) — test écriture. Vérifiez votre connexion internet. → Timeout écriture. Vérifiez que la base Firestore est créée et que les règles autorisent l'écriture.</span>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--platinum);">
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">Envoi en cours… (32 / 163)</div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
     </section>
@@ -1904,11 +1924,11 @@ const firebaseConfig = {
           <span class="hub-module-arrow">›</span>
         </div>
         <!-- ── SYNCHRONISATION TOUT EN UN ── -->
-        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background:linear-gradient(135deg,#0d1a0d,#0a120a);border:1px solid #2a5a2a;">
-          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">🔄</div>
+        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background: linear-gradient(135deg, rgb(13, 26, 13), rgb(10, 18, 10)); border: 1px solid rgb(42, 90, 42);">
+          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">⚠️</div>
           <div class="hub-module-body">
             <div class="hub-module-name" style="color:#7ecb9a;">Tout synchroniser</div>
-            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Cantine, achats, inventaire, factures mobiles</div>
+            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Dernière sync : 13:15</div>
           </div>
           <span class="hub-module-arrow" style="color:#7ecb9a;">›</span>
         </div>
@@ -2052,7 +2072,7 @@ const firebaseConfig = {
         <div class="hub-module-item" onclick="showView('messages')">
           <div class="hub-module-ico">💬</div>
           <div class="hub-module-body"><div class="hub-module-name">Messages</div><div class="hub-module-desc">Communication avec l'équipe terrain</div></div>
-          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display:none;"></span>
+          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display: inline-block;">8</span>
           <span class="hub-module-arrow">›</span>
         </div>
       </div>
@@ -2202,7 +2222,7 @@ const firebaseConfig = {
   <button class="sr-submit" id="btnSrSubmit">Générer le document →</button>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">15 fiche(s) sur 15 ont échoué : Délai dépassé (15s) — envoi de la fiche 31-2/GC/08/2026. Vérifiez votre connexion internet.</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
