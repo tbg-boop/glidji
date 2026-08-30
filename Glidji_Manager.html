@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="fr" style="--gold: #B8935A;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Glidji Manager</title>
+<style>
+:root {
+  --gold: #B8935A;
+  --gold-light: #D4AA72;
+  --gold-deep: #8B6914;
+  --onyx: #0A0A0A;
+  --dark: #111111;
+  --dark2: #1A1A1A;
+  --dark3: #242424;
+  --dark4: #2E2E2E;
+  --text: #E8E4DC;
+  --muted: #888880;
+  --border: #333333;
+  --red: #C0392B;
+  --green: #27AE60;
+  --blue: #2980B9;
+  --radius: 12px;
+  --tab-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--onyx); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; }
+body { overflow-x: hidden; }
+
+/* ---- SETUP SCREEN ---- */
+#setup-screen {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0A0A0A 60%, #1a0e00 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px 16px;
+}
+.setup-logo { text-align: center; margin-bottom: 32px; }
+.setup-logo h1 { font-size: 28px; font-weight: 800; color: var(--gold); letter-spacing: 1px; }
+.setup-logo p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.setup-card { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 440px; }
+.setup-card h2 { font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 20px; }
+.setup-step { display: none; }
+.setup-step.active { display: block; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.field textarea, .field input, .field select {
+  width: 100%; background: var(--dark3); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 15px; padding: 12px; outline: none; resize: none;
+  -webkit-appearance: none; appearance: none;
+}
+.field textarea:focus, .field input:focus, .field select:focus { border-color: var(--gold); }
+.field textarea { font-family: monospace; font-size: 12px; min-height: 120px; }
+.pin-row { display: flex; gap: 10px; justify-content: center; margin: 16px 0; }
+.pin-digit {
+  width: 56px; height: 56px; background: var(--dark3); border: 2px solid var(--border);
+  border-radius: 10px; text-align: center; font-size: 24px; font-weight: 700;
+  color: var(--text); caret-color: var(--gold); outline: none;
+}
+.pin-digit:focus { border-color: var(--gold); }
+.btn { display: block; width: 100%; padding: 14px; border-radius: 10px; border: none;
+  font-size: 16px; font-weight: 700; cursor: pointer; text-align: center; transition: opacity .15s; }
+.btn:active { opacity: .75; }
+.btn-gold { background: var(--gold); color: var(--onyx); }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-sm { padding: 10px 14px; font-size: 14px; border-radius: 8px; width: auto; }
+.btn-icon { padding: 10px; border-radius: 8px; width: 44px; height: 44px; font-size: 18px; }
+.hint { color: var(--muted); font-size: 13px; text-align: center; margin: 12px 0; }
+.error-msg { color: var(--red); font-size: 13px; margin-top: 8px; text-align: center; }
+
+/* ---- LOCK SCREEN ---- */
+#lock-screen {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0A0A0A 60%, #1a0e00 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;
+}
+.lock-logo { text-align: center; margin-bottom: 40px; }
+.lock-logo h1 { font-size: 32px; font-weight: 800; color: var(--gold); }
+.lock-entity { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.lock-title { font-size: 18px; font-weight: 600; margin-bottom: 24px; text-align: center; }
+.numpad { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; justify-content: center; margin: 0 auto 24px; }
+.numpad-btn {
+  width: 72px; height: 72px; border-radius: 36px; background: var(--dark3);
+  border: 1px solid var(--border); color: var(--text); font-size: 24px;
+  font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent; transition: background .1s;
+}
+.numpad-btn:active { background: var(--dark4); }
+.numpad-del { font-size: 18px; }
+.pin-dots { display: flex; gap: 14px; justify-content: center; margin-bottom: 28px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 7px; background: var(--border); transition: background .15s; }
+.pin-dot.filled { background: var(--gold); }
+.lock-reset { color: var(--muted); font-size: 13px; text-align: center; margin-top: 12px; cursor: pointer; }
+
+/* ---- MAIN APP ---- */
+/* #app est masqué via style="display:none;" dans le HTML ; bootApp() le révèle */
+#app { height: 100vh; flex-direction: column; }
+.app-header {
+  background: var(--dark2); border-bottom: 1px solid var(--border);
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px; min-height: 56px;
+}
+.app-header h1 { font-size: 18px; font-weight: 700; color: var(--gold); flex: 1; }
+.entity-badge {
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 10px; font-size: 12px; font-weight: 700; color: var(--gold);
+}
+.sync-indicator { font-size: 20px; cursor: pointer; }
+
+.content-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--tab-h) + var(--safe-bottom) + 8px); }
+
+/* ---- TAB BAR ---- */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--tab-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--dark2); border-top: 1px solid var(--border);
+  display: flex; z-index: 100;
+}
+.tab-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 3px; cursor: pointer; padding: 8px 2px;
+  -webkit-tap-highlight-color: transparent; transition: opacity .1s;
+  background: none; border: none; color: var(--muted); font-size: 11px;
+}
+.tab-btn .tab-ico { font-size: 22px; line-height: 1; }
+.tab-btn.active { color: var(--gold); }
+.tab-btn.active .tab-ico { filter: drop-shadow(0 0 6px rgba(184,147,90,.5)); }
+
+/* ---- PANELS ---- */
+.panel { display: none; padding: 16px; }
+.panel.active { display: block; }
+.panel-title { font-size: 20px; font-weight: 800; color: var(--gold); margin-bottom: 16px; }
+.panel-sub { font-size: 13px; color: var(--muted); margin-top: -10px; margin-bottom: 16px; }
+
+/* ---- CARDS ---- */
+.card { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.card-label { font-size: 12px; color: var(--muted); }
+.card-value { font-size: 13px; font-weight: 600; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.badge-green { background: rgba(39,174,96,.2); color: #4ecb71; }
+.badge-orange { background: rgba(230,126,34,.2); color: #e6883a; }
+.badge-blue { background: rgba(41,128,185,.2); color: #5dade2; }
+.badge-grey { background: rgba(136,136,128,.2); color: var(--muted); }
+.badge-gold { background: rgba(184,147,90,.2); color: var(--gold); }
+
+/* ---- FACTURES ---- */
+.doc-type-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.doc-type-btn {
+  flex: 1; padding: 12px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: var(--dark3); color: var(--muted); font-size: 13px; font-weight: 700;
+  cursor: pointer; text-align: center; transition: all .15s;
+}
+.doc-type-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(184,147,90,.1); }
+.ligne-form { background: var(--dark3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; position: relative; }
+.ligne-remove { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; padding: 4px; }
+.ligne-inputs { display: grid; grid-template-columns: 1fr 60px 90px; gap: 8px; margin-top: 8px; }
+.ligne-inputs input { padding: 8px 10px; font-size: 14px; }
+.total-bar { background: var(--dark3); border: 1px solid var(--gold); border-radius: 10px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; margin: 16px 0; }
+.total-bar .label { font-size: 14px; color: var(--muted); }
+.total-bar .amount { font-size: 22px; font-weight: 800; color: var(--gold); }
+.facture-numero { background: var(--dark3); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 16px; font-family: monospace; font-size: 16px; color: var(--gold-light); }
+.factures-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+/* ---- CANTINE ---- */
+.cmd-card { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.cmd-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.cmd-client { font-size: 15px; font-weight: 700; }
+.cmd-date { font-size: 12px; color: var(--muted); }
+.cmd-designation { font-size: 14px; color: var(--text); margin-bottom: 10px; }
+.prix-row { display: flex; gap: 8px; align-items: center; }
+.prix-row input { flex: 1; padding: 10px; border-radius: 8px; background: var(--dark3); border: 1px solid var(--border); color: var(--text); font-size: 15px; }
+.prix-row button { padding: 10px 16px; border-radius: 8px; background: var(--gold); border: none; color: var(--onyx); font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap; }
+
+/* ---- CATALOGUE ---- */
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.cat-item { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.cat-photo { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--dark3); }
+.cat-photo-placeholder { width: 100%; aspect-ratio: 1; background: var(--dark3); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.cat-info { padding: 10px; }
+.cat-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+.cat-cat { font-size: 11px; color: var(--muted); }
+.cat-qty { font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 4px; }
+.cat-search { margin-bottom: 12px; }
+.cat-search input { width: 100%; padding: 12px 14px; background: var(--dark2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 15px; }
+
+/* ---- PROPOSITION MENU ---- */
+.menu-section { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+.menu-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.menu-section-title { font-size: 15px; font-weight: 700; color: var(--gold-light); }
+.plat-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--dark3); }
+.plat-item:last-of-type { border-bottom: none; }
+.plat-name { font-size: 14px; flex: 1; }
+.plat-del { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 4px 8px; }
+.plat-add-row { display: flex; gap: 8px; margin-top: 10px; }
+.plat-add-row input { flex: 1; padding: 10px; border-radius: 8px; background: var(--dark3); border: 1px solid var(--border); color: var(--text); font-size: 14px; }
+.plat-add-row button { padding: 10px 16px; background: var(--dark4); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; font-size: 18px; }
+
+/* ---- MENU DISPLAY (screenshot mode) ---- */
+#menu-display {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: linear-gradient(160deg, #0d0900 0%, #1a0e00 50%, #0d0900 100%);
+  overflow-y: auto; padding: 32px 20px 60px;
+}
+.menu-display-inner { max-width: 500px; margin: 0 auto; }
+.menu-display-header { text-align: center; margin-bottom: 36px; }
+.menu-display-logo { font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+.menu-display-divider { width: 60px; height: 2px; background: var(--gold); margin: 14px auto; }
+.menu-display-client { font-size: 16px; color: var(--text); margin-bottom: 6px; }
+.menu-display-event { font-size: 14px; color: var(--muted); }
+.menu-display-section { margin-bottom: 28px; }
+.menu-display-section-title {
+  font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 3px;
+  text-transform: uppercase; text-align: center; margin-bottom: 14px; position: relative;
+}
+.menu-display-section-title::before, .menu-display-section-title::after {
+  content: '— '; color: var(--gold-deep);
+}
+.menu-display-section-title::after { content: ' —'; }
+.menu-display-plat { text-align: center; font-size: 15px; color: var(--text); padding: 5px 0; line-height: 1.5; }
+.menu-display-plat-desc { font-size: 12px; color: var(--muted); font-style: italic; }
+.menu-close-btn {
+  position: fixed; top: 16px; right: 16px; background: rgba(0,0,0,.6);
+  border: 1px solid var(--border); border-radius: 24px; padding: 8px 16px;
+  color: var(--text); font-size: 14px; cursor: pointer; z-index: 201;
+}
+.menu-share-btn {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); border: none; border-radius: 24px; padding: 14px 32px;
+  color: var(--onyx); font-size: 15px; font-weight: 700; cursor: pointer; z-index: 201;
+}
+
+/* ---- NOTES ---- */
+.note-composer { background: var(--dark2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 16px; }
+.note-composer textarea { width: 100%; background: transparent; border: none; color: var(--text); font-size: 15px; resize: none; min-height: 90px; outline: none; }
+.note-card { background: var(--dark2); border-left: 3px solid var(--gold); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px; margin-bottom: 10px; }
+.note-text { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+.note-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.note-date { font-size: 11px; color: var(--muted); }
+.note-del { background: none; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 4px; }
+
+/* ---- TOAST ---- */
+#toast { position: fixed; bottom: calc(var(--tab-h) + var(--safe-bottom) + 12px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark3); border: 1px solid var(--border); border-radius: 24px; padding: 10px 20px; font-size: 14px; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .25s, transform .25s; z-index: 300; pointer-events: none; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.err { border-color: var(--red); color: #ff6b6b; }
+
+/* ---- LOADING ---- */
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-row { text-align: center; color: var(--muted); padding: 40px 0; }
+
+/* ---- PULL BTN ---- */
+.pull-btn { display: flex; align-items: center; gap: 8px; background: var(--dark3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 16px; }
+.pull-btn .ico { font-size: 20px; }
+
+/* ---- UTILS ---- */
+.sep { height: 1px; background: var(--border); margin: 16px 0; }
+.row { display: flex; gap: 10px; align-items: center; }
+.flex1 { flex: 1; }
+[hidden] { display: none !important; }
+.text-gold { color: var(--gold); }
+.text-muted { color: var(--muted); }
+.text-green { color: var(--green); }
+.text-red { color: var(--red); }
+.fw7 { font-weight: 700; }
+.fs12 { font-size: 12px; }
+.fs13 { font-size: 13px; }
+.mt8 { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.mb8 { margin-bottom: 8px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--dark3); color: var(--muted); }
+.achat-ligne { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--dark3); font-size: 14px; }
+.achat-ligne:last-child { border-bottom: none; }
+.achat-total { display: flex; justify-content: space-between; font-weight: 700; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); color: var(--gold); }
+
+/* ---- ENTITIES ---- */
+.entity-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.entity-option { flex: 1; padding: 14px; border-radius: 10px; border: 2px solid var(--border); background: var(--dark3); text-align: center; cursor: pointer; transition: all .15s; }
+.entity-option.selected { border-color: var(--gold); }
+.entity-option .ename { font-size: 14px; font-weight: 700; }
+.entity-option .ecode { font-size: 11px; color: var(--muted); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ========================================================
+     SETUP SCREEN
+======================================================== -->
+<div id="setup-screen" style="display: none;">
+  <div class="setup-logo">
+    <h1>🌟 Glidji Manager</h1>
+    <p>Application mobile de gestion terrain</p>
+  </div>
+  <div class="setup-card">
+
+    <!-- STEP 1: Firebase config -->
+    <div id="setup-step-1" class="setup-step">
+      <h2>⚙️ Configuration Firebase</h2>
+      <div class="field">
+        <label>Coller votre configuration Firebase (même config que l'ERP ou l'app Équipe)</label>
+        <textarea id="setup-config" placeholder="apiKey: &quot;...&quot;,
+projectId: &quot;...&quot;,
+..."></textarea>
+      </div>
+      <div class="field">
+        <label>Entité principale</label>
+        <div class="entity-row" id="setup-entity-row">
+          <div class="entity-option selected" data-entity="GLIDJI" onclick="selectSetupEntity(this)">
+            <div class="ename">Glidji Conciergerie</div>
+            <div class="ecode">GC</div>
+          </div>
+          <div class="entity-option" data-entity="SIMAG" onclick="selectSetupEntity(this)">
+            <div class="ename">SIMAG SARL U</div>
+            <div class="ecode">SIMAG</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-gold" onclick="setupStep1Next()">Continuer →</button>
+      <div id="setup-step1-err" class="error-msg"></div>
+    </div>
+
+    <!-- STEP 2: PIN creation -->
+    <div id="setup-step-2" class="setup-step">
+      <h2>🔑 Créer votre code PIN (4 chiffres)</h2>
+      <p class="hint">Ce code protège l'accès à l'application sur cet appareil.</p>
+      <div class="pin-row">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-c-0" oninput="pinMove(this,1,'create')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-c-1" oninput="pinMove(this,2,'create')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-c-2" oninput="pinMove(this,3,'create')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-c-3" oninput="pinDone('create')" inputmode="numeric" pattern="[0-9]">
+      </div>
+      <div id="setup-step2-err" class="error-msg"></div>
+    </div>
+
+    <!-- STEP 3: Confirm PIN -->
+    <div id="setup-step-3" class="setup-step active">
+      <h2>🔑 Confirmer votre PIN</h2>
+      <div class="pin-row">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-cc-0" oninput="pinMove(this,1,'confirm')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-cc-1" oninput="pinMove(this,2,'confirm')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-cc-2" oninput="pinMove(this,3,'confirm')" inputmode="numeric" pattern="[0-9]">
+        <input type="tel" maxlength="1" class="pin-digit" id="pin-cc-3" oninput="pinDone('confirm')" inputmode="numeric" pattern="[0-9]">
+      </div>
+      <div id="setup-step3-err" class="error-msg"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================================
+     LOCK SCREEN
+======================================================== -->
+<div id="lock-screen" style="display:none;">
+  <div class="lock-logo">
+    <h1>🌟 Manager</h1>
+    <div class="lock-entity" id="lock-entity-label"></div>
+  </div>
+  <div class="lock-title">Entrez votre PIN</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="ld0"></div>
+    <div class="pin-dot" id="ld1"></div>
+    <div class="pin-dot" id="ld2"></div>
+    <div class="pin-dot" id="ld3"></div>
+  </div>
+  <div class="numpad" id="numpad"></div>
+  <div id="lock-err" class="error-msg" style="margin-top:16px;"></div>
+  <div class="lock-reset" onclick="confirmReset()">Réinitialiser l'application</div>
+</div>
+
+<!-- ========================================================
+     MAIN APP
+======================================================== -->
+<div id="app" style="display: flex;">
+  <div class="app-header">
+    <h1 id="app-title">🌟 Glidji</h1>
+    <div class="entity-badge" id="app-entity-badge">GC</div>
+    <span class="sync-indicator" id="sync-dot" title="File hors-ligne" hidden="">🟡</span>
+    <span class="sync-indicator" onclick="manualFlush()" title="Synchroniser">📡</span>
+  </div>
+
+  <div class="content-area" id="content-area">
+    <!-- FACTURES -->
+    <div id="panel-factures" class="panel">
+      <div id="factures-list-view">
+        <div class="factures-list-header">
+          <div class="panel-title" style="margin-bottom:0;">📑 Factures</div>
+          <button class="btn btn-gold btn-sm" onclick="startNewFacture()">+ Nouvelle</button>
+        </div>
+        <p class="panel-sub" style="margin-top:6px;">Factures créées depuis ce téléphone</p>
+        <div id="factures-list"><div class="loading-row text-muted">Aucune facture mobile. Appuyez sur + Nouvelle.</div></div>
+      </div>
+      <div id="factures-form-view" style="display:none;">
+        <div class="row mb8">
+          <button class="btn btn-ghost btn-sm" onclick="showFacturesList()">← Retour</button>
+          <div class="panel-title flex1" style="margin:0 0 0 10px;">Nouvelle opération</div>
+        </div>
+        <!-- entity & type -->
+        <div class="field">
+          <label>Entité</label>
+          <select id="f-entity" onchange="updateFactureEntity()">
+            <option value="GLIDJI">Glidji Conciergerie</option>
+            <option value="SIMAG">SIMAG SARL U</option>
+          </select>
+        </div>
+        <div class="doc-type-row" id="f-type-row">
+          <div class="doc-type-btn selected" data-type="FACTURE" onclick="selectDocType(this)">Facture</div>
+          <div class="doc-type-btn" data-type="PROFORMA" onclick="selectDocType(this)">Proforma</div>
+          <div class="doc-type-btn" data-type="DEVIS" onclick="selectDocType(this)">Devis</div>
+        </div>
+        <div class="facture-numero" id="f-numero-preview">001m/GC/08/2026</div>
+        <!-- client & date -->
+        <div class="field">
+          <label>Client</label>
+          <input type="text" id="f-client" placeholder="Nom du client" list="f-clients-list">
+          <datalist id="f-clients-list"><option value="M Anani Eric"></option><option value="GLMMM NAR DU TOGO"></option><option value="Excelsiore"></option><option value="M AGBOGAN Espoir"></option><option value="ASK AFRICA TOGO []"></option><option value="RL HERMES"></option><option value="SCDT s/c TILLF Elpidio Agbekponou"></option><option value="G.L.P.M.S"></option><option value="M LASMOTHEY"></option><option value="Mme FIAWOO"></option><option value="RL de Perfection Ptah"></option><option value="YORK s/c VM Patrick Tetegan"></option><option value="AEOROPAGE LES CHEVALIERS"></option><option value="BOSKALIS"></option><option value="2TB&amp;CO CONSULTING"></option><option value="M PAAVI"></option><option value="Grande Loge Provinciale Maritime Sud (GLPMS)"></option><option value="Mme Princesse et Sœurs"></option><option value="(Comité, 33e anniversaire)"></option><option value="M SIMPARA (Comité)"></option><option value="M Franck BARRIGAH"></option><option value="RL PERFECTION PSCHENT"></option><option value="Grande Loge Provinciale Maritime Nord-GLPMN s/c GMPMN Ayanou Jean-Claude"></option><option value="TFPM Dogbe"></option><option value="Prof GASSOU Epse TETE-BENISSAN"></option><option value="Hervé YAOFE"></option><option value="(À préciser)"></option><option value="EXCELSIOR SARL U"></option><option value="VM Babaka (réception)"></option><option value="MONS"></option><option value="RL PERSEVERANCE ET"></option><option value="R∴L∴ Lumière du Septentrion s/c VF Bobby Aklesso"></option><option value="Mme Princesse JOHNSON"></option><option value="Mme MIVEDOR"></option><option value="RL TU"></option><option value="RLPS (TSI Persévérance et Sincérité)"></option><option value="Souverain Consistoire Osiris"></option><option value="M AKouete"></option><option value="Mme Angeline Bijou AMOUZOU"></option><option value="M Emmanuel Bellow"></option><option value="AEROPAGE LES CHEVALIERS D'HORUS s/c TIILF Balo Patrice"></option><option value="Mme Fiadjoe Joelle"></option><option value="Marque HF Ouriel"></option><option value="M Georges GASSOU"></option><option value="MM Bellow, Akibodé et Simpara"></option><option value="TRF Fiadjoe"></option><option value="SOROPTIMIST INTERNATIONAL CLUB LOME 1"></option><option value="RL PERFECTION"></option><option value="TI F Balo (comité Horus)"></option><option value="Prof BALO Komi"></option><option value="RL PS N°004 s/c"></option><option value="Dr Nutsigbe"></option><option value="Société Togolaise d'Ophtalmologie s/c Prof. Balo"></option><option value="M Fiadjoe Honoré"></option><option value="2TB&amp;CO CONSULTING s/c M TETE-BENISSAN Têvi"></option><option value="GMPMN Ayanou Jean-Claude"></option><option value="Prof Balo Komi (Aeropage Horus)"></option><option value="R\L\ TRADITION ET UNIVERSALITES N°042"></option><option value="GLNT s/c TRF Symenouh Raoul"></option><option value="SCDT"></option><option value="M Jean-Pierre KOUMAGNANOU"></option><option value="R ∴ L ∴ PERFECTION PSCHENT"></option><option value="AEROPAGE LES CHEVALIERS D’HORUS"></option><option value="Uncle John"></option><option value="John DAGBOVIE"></option><option value="R\L\ IMHOTEP N°049"></option><option value="Mme Dossou D'Almeida"></option><option value="RL Michel Ahouanmenou"></option><option value="Grande Loge Provinciale Maritime Sud (GLPMS) s/c GMPMS Tsatsou Honoré Fiadjoé"></option><option value="M Junior Hounou"></option><option value="M MINET"></option><option value="KCN"></option><option value="M Luc Akpondeou"></option><option value="MOS-TOGO s/c M Honoré Fiadjoe"></option><option value="RL Fleur des Temps"></option><option value="M David AGOUNKE"></option><option value="Tsatsou Honoré FIADJOE"></option><option value="R∴L∴ PERFECTION PSCHENT s/c TFPM ABIGUIME PETIK-ABALO"></option><option value="Mme Amouzou ANGE LINE"></option><option value="RRLL REAA de la GLNT"></option><option value="SOROPTIMIST (à confirmer, non précisé sur le document)"></option><option value="Dr NUTSIGBE Léontine"></option><option value="M ABIGUIME PETIK- ABALO"></option><option value="AEROPAGE LES CHEVALIERS D'HORUS s/c TIILF Kofi EKON"></option><option value="M Mensah Hervé"></option><option value="M ABIGUIME PETIK-ABALO"></option><option value="R ∴ L ∴ TRADITION ET"></option><option value="M E Abiguime Petik-Abalo s/c TRF Médard Tetegan"></option><option value="RL JEPHTE N°02"></option><option value="RL PERFECTION DJEHOUTY"></option><option value="ASK AFRICA TOGO"></option><option value="Mme MIMI"></option><option value="Constant Hounssinou"></option><option value="MM ZANUTEY, DOGBE, TETE-BENISSAN"></option><option value="MOS TOGO"></option><option value="M Koffi BABAKA"></option><option value="Mme De Souza Olivia"></option><option value="R\L\ JACQUES DE MOLAY N°38"></option><option value="Mme Gassou épse TETE-BENISSAN"></option><option value="TILLF KOFFI EKON"></option><option value="AREOPAGE LES CHEVALIERS D'HORUS s/c TIILF Kofi EKON"></option><option value="IADSS"></option><option value="Mme Marie Jo DE SOUZA"></option><option value="Léo DOVI"></option><option value="AURA CLUB"></option><option value="M D'Almeida"></option><option value="MM HOUNTONDJI,PIUS,HOR,HOUNOU,TETE-BENISSAN"></option><option value="M Franck LECADOU"></option><option value="M Gile"></option><option value="COMITE HERMES"></option><option value="ME Abiguime Petik-Abalo s/c TRF Medard Tetegan"></option><option value="M DORKENOO Boubounè"></option><option value="RL IMHOTEP N°49"></option><option value="R∴L∴ FLEURS DES TEMPS N°115"></option><option value="SCDT-REAA"></option><option value="MMBBAASS de RL Fleurs des Temps"></option><option value="RL Traditions Et Universalité s/c M Limazie"></option><option value="M Jean-Martial"></option><option value="COMLAN BIENVENU"></option><option value="RL IMHOTEP"></option><option value="R∴L∴FLEURS DES TEMPS N°115"></option><option value="Client à identifier (import historique)"></option><option value="M TETE-BENISSAN"></option><option value="RL PERFECTION DJEHOUTY 924/001 s/c Tete-Benissan Têvi"></option><option value="Dr Léontine NUTSIGBE"></option><option value="M Horacio Gbedey"></option><option value="R ∴ L ∴ Lumière du Septentrion"></option><option value="RL Fleurs des Temps"></option><option value="RLPS"></option><option value="FF HOUNTONDJI, HOUNOU, HOR et TETE-BENISSAN"></option><option value="RLPS s/c Innocent Gbedze"></option><option value="RL de Perfection Pschent"></option><option value="GLPMN s/c GMPMN Ayanou Jean-Claude"></option><option value="Abiguime Pétik-Abalo"></option><option value="M PATASSANG Aubin"></option><option value="AEROPAGE LES CHEVALIERS"></option><option value="M Marcel ABALO"></option><option value="M Charles AMEGANVI"></option><option value="RL HANAEL N°44"></option><option value="Innocent Gbedze (RLPS)"></option><option value="Mme AKOUTA"></option><option value="ADKONTACT BURKINA FASO"></option><option value="MALOU (TRF Malou)"></option><option value="ECNC"></option><option value="RL Hermès"></option><option value="RL ALLIANCE n°30 s/c VM"></option><option value="Ganyi"></option><option value="Conseil Suprême"></option><option value="M TORKO Marcel"></option><option value="VVMM AWESSO ET"></option><option value="Mme Fabiola"></option><option value="RL PERFECTION DJEHOUTY s/c Tete-Benissan Têvi"></option><option value="R∴L∴ TRADITION ET UNIVERSALITES N°042"></option><option value="2TB&amp;CO CONSULTING s/c TETE-BENISSAN TEVI"></option><option value="Grande Loge Provinciale"></option><option value="M EKON Francis"></option><option value="R\L\ Perseverance et Sincérité N°004"></option><option value="M SIMPARA"></option><option value="RL DJEHOUTY"></option><option value="OPEN DE LOME s/c M KPADE Junior"></option><option value="R∴L∴ PERFECTION PSCHENT"></option><option value="M. MARK"></option><option value="HG YORK s/c VM Patrick Tetegan"></option><option value="RL MICHEL"></option><option value="M Ayanou Jean-Claude"></option><option value="RL Traditions Et Universalité"></option><option value="GLNT"></option></datalist>
+        </div>
+        <div class="field">
+          <label>Date d'émission</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="field">
+          <label>Objet / Événement (optionnel)</label>
+          <input type="text" id="f-objet" placeholder="Ex : Cocktail anniversaire M. Doe">
+        </div>
+        <!-- lignes -->
+        <div class="field">
+          <label>Prestations / Articles</label>
+          <div id="f-lignes"><div class="ligne-form" id="ligne-0">
+    <button class="ligne-remove" onclick="removeLigne(0)">✕</button>
+    <div class="field" style="margin-bottom:0;">
+      <label>Désignation</label>
+      <input type="text" placeholder="Description de la prestation" onchange="ligneFld(0,'designation',this.value)" oninput="ligneFld(0,'designation',this.value)">
+    </div>
+    <div class="ligne-inputs">
+      <input type="number" placeholder="Qté" min="1" onchange="ligneFld(0,'qte',+this.value||1)" oninput="ligneFld(0,'qte',+this.value||1)">
+      <input type="number" placeholder="PU" min="0" onchange="ligneFld(0,'pu',+this.value||0)" oninput="ligneFld(0,'pu',+this.value||0)">
+      <input type="text" placeholder="= Total" readonly="" id="ligne-total-0" style="color:var(--muted);background:var(--dark4);">
+    </div>
+  </div></div>
+          <button class="btn btn-ghost mt8" onclick="addLigne()">+ Ajouter une ligne</button>
+        </div>
+        <!-- TVA -->
+        <div class="field">
+          <label>TVA</label>
+          <select id="f-tva" onchange="computeTotal()">
+            <option value="0">Sans TVA</option>
+            <option value="0.18">TVA 18%</option>
+          </select>
+        </div>
+        <!-- total -->
+        <div class="total-bar">
+          <span class="label">Total TTC</span>
+          <span class="amount" id="f-total">0 FCFA</span>
+        </div>
+        <!-- notes -->
+        <div class="field">
+          <label>Notes / Conditions (optionnel)</label>
+          <textarea id="f-notes" rows="3" placeholder="Conditions de paiement, remarques…"></textarea>
+        </div>
+        <button class="btn btn-gold" onclick="saveFacture()">💾 Enregistrer</button>
+        <div style="height:16px;"></div>
+      </div>
+    </div>
+
+    <!-- CANTINE -->
+    <div id="panel-cantine" class="panel">
+      <div class="panel-title">🍽️ Cantine</div>
+      <p class="panel-sub">Commandes de l'équipe en attente de prix ou d'approbation</p>
+      <button class="pull-btn" onclick="pullCantine()">
+        <span class="ico">🔄</span> Rafraîchir les commandes
+      </button>
+      <div id="cantine-status" class="hint" style="margin-top:-8px;margin-bottom:12px;"></div>
+      <div id="cantine-list"><div class="loading-row text-muted">Appuyez sur Rafraîchir</div></div>
+    </div>
+
+    <!-- ACHATS ÉQUIPE -->
+    <div id="panel-achats" class="panel">
+      <div class="panel-title">🛒 Achats Équipe</div>
+      <p class="panel-sub">Listes de courses et dépenses soumises</p>
+      <button class="pull-btn" onclick="pullAchats()">
+        <span class="ico">🔄</span> Rafraîchir les achats
+      </button>
+      <div id="achats-list"><div class="loading-row text-muted">Appuyez sur Rafraîchir</div></div>
+    </div>
+
+    <!-- CATALOGUE -->
+    <div id="panel-catalogue" class="panel">
+      <div class="panel-title">📦 Catalogue</div>
+      <p class="panel-sub">Matériels et équipements disponibles</p>
+      <div class="cat-search">
+        <input type="text" id="cat-search" placeholder="🔍 Rechercher…" oninput="filterCatalogue(this.value)">
+      </div>
+      <button class="pull-btn" onclick="pullCatalogue()">
+        <span class="ico">🔄</span> Rafraîchir le catalogue
+      </button>
+      <div class="cat-grid" id="catalogue-grid"></div>
+    </div>
+
+    <!-- PROPOSITION MENU -->
+    <div id="panel-menu" class="panel">
+      <div id="menu-list-view">
+        <div class="factures-list-header">
+          <div class="panel-title" style="margin-bottom:0;">🍴 Proposition menu</div>
+          <button class="btn btn-gold btn-sm" onclick="startNewMenu()">+ Nouvelle</button>
+        </div>
+        <p class="panel-sub" style="margin-top:6px;">Propositions envoyées à vos clients</p>
+        <div id="menu-list"><div class="loading-row text-muted">Aucune proposition. Appuyez sur + Nouvelle.</div></div>
+      </div>
+      <div id="menu-form-view" style="display:none;">
+        <div class="row mb8">
+          <button class="btn btn-ghost btn-sm" onclick="showMenuList()">← Retour</button>
+          <div class="panel-title flex1" style="margin:0 0 0 10px;">Nouvelle proposition</div>
+        </div>
+        <div class="field">
+          <label>Client / Destinataire</label>
+          <input type="text" id="m-client" placeholder="Nom du client">
+        </div>
+        <div class="field">
+          <label>Date de l'événement</label>
+          <input type="date" id="m-date">
+        </div>
+        <div class="field">
+          <label>Type d'événement</label>
+          <input type="text" id="m-type" placeholder="Ex : Cocktail, Dîner de gala, Mariage…">
+        </div>
+        <div class="sep"></div>
+        <div id="m-sections"></div>
+        <button class="btn btn-ghost mt8" onclick="addMenuSection()">+ Ajouter une section</button>
+        <div class="sep"></div>
+        <div class="row" style="gap:10px;margin-top:16px;">
+          <button class="btn btn-ghost flex1" onclick="previewMenu()">👁️ Aperçu</button>
+          <button class="btn btn-gold flex1" onclick="saveMenu()">💾 Enregistrer</button>
+        </div>
+        <div style="height:16px;"></div>
+      </div>
+    </div>
+
+    <!-- BLOC-NOTES -->
+    <div id="panel-notes" class="panel">
+      <div class="panel-title">📝 Bloc-notes</div>
+      <div class="note-composer">
+        <textarea id="note-input" placeholder="Votre note rapide…" rows="4"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="btn btn-gold btn-sm" onclick="saveNote()">💾 Enregistrer</button>
+        </div>
+      </div>
+      <div id="notes-list"><p class="hint">Aucune note. Écrivez quelque chose ci-dessus.</p></div>
+    </div>
+
+    <div id="panel-reglages" class="panel active">
+      <div class="panel-title">⚙️ Réglages</div>
+      <p class="panel-sub">Configuration et publication de l'application</p>
+
+      <!-- GitHub Pages -->
+      <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;">
+        <div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:4px;">🐙 Publication GitHub Pages</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Hébergez le Manager sur GitHub Pages — URL permanente gratuite</div>
+        <div class="field">
+          <label>Token GitHub (scope : repo)</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="password" id="gh_token_m" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:monospace;">
+            <button class="btn btn-sm" style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;" onclick="(function(){var i=document.getElementById('gh_token_m');i.type=i.type==='password'?'text':'password';})()">👁</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">github.com → Settings → Developer settings → Personal access tokens → scope <code>repo</code></div>
+        </div>
+        <div class="field">
+          <label>Nom du dépôt</label>
+          <input type="text" id="gh_repo_m" placeholder="glidji" style="width:180px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;padding:10px;">
+        </div>
+        <div id="gh_url_m" style="font-size:12px;color:var(--muted);margin-bottom:10px;">🔗 <a href="https://tbg-boop.github.io/glidji/" target="_blank" style="color:var(--gold);">https://tbg-boop.github.io/glidji/</a></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <button class="btn btn-gold btn-sm" id="btnGhSetupM" onclick="ghManagerSetup()">🔧 Créer / vérifier le dépôt</button>
+          <button class="btn btn-gold btn-sm" id="btnGhPublishM" onclick="ghManagerPublish()" disabled="">⏳ Publication…</button>
+        </div>
+        <div id="ghStatusM" style="font-size:12px;color:var(--muted);min-height:16px;">Encodage et envoi (patientez ~30s)…</div>
+      </div>
+
+      <!-- Réinitialisation -->
+      <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+        <div style="font-size:16px;font-weight:700;color:var(--red);margin-bottom:8px;">⚠️ Réinitialiser l'application</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Efface toute la configuration locale (Firebase, PIN, compteurs). Les données Firestore ne sont pas affectées.</p>
+        <button class="btn btn-sm" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-weight:600;" onclick="if(confirm('Réinitialiser complètement l\'application ?')){localStorage.clear();location.reload();}">Réinitialiser</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <nav class="tab-bar" id="tab-bar">
+    <button class="tab-btn" data-tab="factures" onclick="switchTab('factures')">
+      <span class="tab-ico">📑</span><span>Factures</span>
+    </button>
+    <button class="tab-btn" data-tab="cantine" onclick="switchTab('cantine')">
+      <span class="tab-ico">🍽️</span><span>Cantine</span>
+    </button>
+    <button class="tab-btn" data-tab="achats" onclick="switchTab('achats')">
+      <span class="tab-ico">🛒</span><span>Achats</span>
+    </button>
+    <button class="tab-btn" data-tab="catalogue" onclick="switchTab('catalogue')">
+      <span class="tab-ico">📦</span><span>Catalogue</span>
+    </button>
+    <button class="tab-btn" data-tab="menu" onclick="switchTab('menu')">
+      <span class="tab-ico">🍴</span><span>Menu</span>
+    </button>
+    <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">
+      <span class="tab-ico">📝</span><span>Notes</span>
+    </button>
+    <button class="tab-btn active" data-tab="reglages" onclick="switchTab('reglages')">
+      <span class="tab-ico">⚙️</span><span>Réglages</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MENU DISPLAY FULLSCREEN -->
+<div id="menu-display">
+  <button class="menu-close-btn" onclick="closeMenuDisplay()">✕ Fermer</button>
+  <div class="menu-display-inner" id="menu-display-inner"></div>
+  <button class="menu-share-btn" onclick="copyMenuText()">📋 Copier le texte</button>
+</div>
+
+<div id="toast"></div>
+
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<script>
+'use strict';
+
+/* ================================================================
+   CONSTANTS & HELPERS
+================================================================ */
+const DEVICE_KEY   = 'glidji_manager_device_v1';
+const COUNTERS_KEY = 'glidji_manager_counters_v1';
+const FACTURES_KEY = 'glidji_manager_factures_v1';
+const NOTES_KEY    = 'glidji_manager_notes_v1';
+const QUEUE_KEY    = 'glidji_manager_queue_v1';
+
+const ENTITY_CONFIG = {
+  GLIDJI: { label: 'Glidji Conciergerie', code: 'GC',    accent: '#B8935A' },
+  SIMAG:  { label: 'SIMAG SARL U',        code: 'SIMAG', accent: '#5C1A22' }
+};
+
+function load(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(_) { return def; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(_) {}
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+}
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function fmtMontant(n) {
+  return Number(n || 0).toLocaleString('fr-FR') + ' FCFA';
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* =====================================================================
+   GITHUB PAGES — publication depuis le Manager
+   ===================================================================== */
+const MANAGER_GITHUB_KEY = 'glidji_github_pages_v1'; // même clé que l'ERP (config partagée)
+
+function getMGithubCfg() {
+  try { return JSON.parse(localStorage.getItem(MANAGER_GITHUB_KEY) || '{}'); } catch(_) { return {}; }
+}
+function saveMGithubCfg(cfg) {
+  localStorage.setItem(MANAGER_GITHUB_KEY, JSON.stringify(cfg));
+}
+async function mGithubApi(token, method, path, body) {
+  const opts = { method, headers: {
+    'Authorization': 'token ' + token,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  }};
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const resp = await fetch('https://api.github.com' + path, opts);
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg = (data.errors && data.errors[0] && data.errors[0].message) || data.message || 'erreur';
+    throw new Error('GitHub ' + resp.status + ': ' + msg);
+  }
+  return data;
+}
+function mStrToB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+async function mGithubPush(token, owner, repo, filePath, content, message) {
+  let sha;
+  try {
+    const ex = await mGithubApi(token, 'GET', '/repos/' + owner + '/' + repo + '/contents/' + filePath);
+    sha = ex.sha;
+  } catch(_) {}
+  const body = { message, content: mStrToB64(content) };
+  if (sha) body.sha = sha;
+  return mGithubApi(token, 'PUT', '/repos/' + owner + '/' + repo + '/contents/' + filePath, body);
+}
+
+async function ghManagerSetup() {
+  const token = (document.getElementById('gh_token_m') || {}).value?.trim();
+  const repo  = (document.getElementById('gh_repo_m')  || {}).value?.trim() || 'glidji';
+  if (!token) { toast('⛔ Renseignez votre token GitHub.'); return; }
+  const btn = document.getElementById('btnGhSetupM');
+  const st  = document.getElementById('ghStatusM');
+  btn.disabled = true; btn.textContent = '⏳ Connexion…';
+  st.textContent = 'Connexion à GitHub…';
+  try {
+    saveMGithubCfg({ ...getMGithubCfg(), token, repo });
+    const user = await mGithubApi(token, 'GET', '/user');
+    const owner = user.login;
+    let exists = false;
+    try { await mGithubApi(token, 'GET', '/repos/' + owner + '/' + repo); exists = true; } catch(_) {
+      await mGithubApi(token, 'POST', '/user/repos', {
+        name: repo, description: 'Application Glidji — Gestion GLIDJI et SIMAG',
+        private: false, auto_init: true
+      });
+    }
+    try { await mGithubApi(token, 'POST', '/repos/' + owner + '/' + repo + '/pages',
+      { source: { branch: 'main', path: '/' } }); } catch(_) {}
+    saveMGithubCfg({ ...getMGithubCfg(), owner });
+    const url = 'https://' + owner + '.github.io/' + repo + '/';
+    const urlEl = document.getElementById('gh_url_m');
+    if (urlEl) urlEl.innerHTML = '🔗 <a href="' + url + '" target="_blank" style="color:var(--gold);">' + url + '</a>';
+    st.textContent = (exists ? '✅ Dépôt existant vérifié !' : '✅ Dépôt créé + Pages activé !');
+    toast(exists ? '✅ Dépôt vérifié !' : '✅ Dépôt créé !');
+  } catch(e) {
+    st.textContent = '⛔ ' + e.message;
+    toast('⛔ ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = '🔧 Créer / vérifier le dépôt';
+}
+
+async function ghManagerPublish() {
+  const token = (document.getElementById('gh_token_m') || {}).value?.trim();
+  const repo  = (document.getElementById('gh_repo_m')  || {}).value?.trim() || 'glidji';
+  if (!token) { toast('⛔ Renseignez votre token GitHub.'); return; }
+  const btn = document.getElementById('btnGhPublishM');
+  const st  = document.getElementById('ghStatusM');
+  btn.disabled = true; btn.textContent = '⏳ Publication…';
+  st.textContent = 'Encodage et envoi (patientez ~30s)…';
+  try {
+    saveMGithubCfg({ ...getMGithubCfg(), token, repo });
+    const user = await mGithubApi(token, 'GET', '/user');
+    const owner = user.login;
+    saveMGithubCfg({ ...getMGithubCfg(), owner });
+    // Clone + nettoyage des champs (évite la détection de secrets par GitHub)
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('input, textarea').forEach(el => {
+      el.value = ''; el.removeAttribute('value');
+      if (el.tagName === 'TEXTAREA') el.textContent = '';
+    });
+    const content = '<!DOCTYPE html>\n' + clone.outerHTML;
+    await mGithubPush(token, owner, repo, 'Glidji_Manager.html', content,
+      'Mise à jour Glidji_Manager.html — ' + new Date().toLocaleString('fr-FR'));
+    const url = 'https://' + owner + '.github.io/' + repo + '/Glidji_Manager.html';
+    st.innerHTML = '✅ Publié ! <a href="' + url + '" target="_blank" style="color:var(--gold);">' + url + '</a> (actif dans ~2 min)';
+    toast('✅ Manager publié sur GitHub Pages !');
+  } catch(e) {
+    st.textContent = '⛔ ' + e.message;
+    toast('⛔ ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = '🚀 Publier le Manager sur GitHub';
+}
+
+function initReglagesPanel() {
+  const cfg = getMGithubCfg();
+  const tokenEl = document.getElementById('gh_token_m');
+  const repoEl  = document.getElementById('gh_repo_m');
+  const urlEl   = document.getElementById('gh_url_m');
+  if (tokenEl && cfg.token) tokenEl.value = cfg.token;
+  if (repoEl  && cfg.repo)  repoEl.value  = cfg.repo;
+  if (urlEl   && cfg.owner && cfg.repo) {
+    const url = 'https://' + cfg.owner + '.github.io/' + cfg.repo + '/';
+    urlEl.innerHTML = '🔗 <a href="' + url + '" target="_blank" style="color:var(--gold);">' + url + '</a>';
+  }
+}
+
+let _toastTimer;
+function toast(msg, isErr = false) {
+  const el = document.getElementById('toast');
+  clearTimeout(_toastTimer);
+  el.textContent = msg;
+  el.className = 'show' + (isErr ? ' err' : '');
+  _toastTimer = setTimeout(() => { el.className = ''; }, 3500);
+}
+
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`Délai ${ms/1000}s — ${label}`)), ms))
+  ]);
+}
+
+function parseFirebaseConfig(text) {
+  const fields = ['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'];
+  const out = {};
+  fields.forEach(f => {
+    const re = new RegExp(f + '\\s*:\\s*["\']([^"\']+)["\']');
+    const m = text.match(re);
+    if (m) out[f] = m[1];
+  });
+  return out;
+}
+
+/* ================================================================
+   DEVICE CONFIG
+================================================================ */
+function getConfig() { return load(DEVICE_KEY, null); }
+function saveConfig(cfg) { save(DEVICE_KEY, cfg); }
+function getEntity() { return (getConfig() || {}).entity || 'GLIDJI'; }
+function getEntityCfg(entity) { return ENTITY_CONFIG[entity || getEntity()]; }
+
+/* ================================================================
+   MOBILE NUMBERING
+   Produces: 001m/GC/08/2026
+   Stored separately from ERP counters — no conflict.
+================================================================ */
+function nextManagerNumber(type, entity, dateIso) {
+  const counters = load(COUNTERS_KEY, {});
+  const ent = entity || getEntity();
+  const date = dateIso || todayIso();
+  const year = date.slice(0, 4);
+  const month = date.slice(5, 7);
+  if (!counters[ent]) counters[ent] = {};
+  if (!counters[ent][type]) counters[ent][type] = {};
+  const current = counters[ent][type][year] || 0;
+  const next = current + 1;
+  counters[ent][type][year] = next;
+  save(COUNTERS_KEY, counters);
+  const code = getEntityCfg(ent).code;
+  const numero = String(next).padStart(3, '0') + 'm/' + code + '/' + month + '/' + year;
+  return { seq: next, numero, year, month };
+}
+
+/* ================================================================
+   FIREBASE
+================================================================ */
+let fbApp = null, fbDb = null, fbAuthReady = Promise.resolve();
+
+function initFirebase(configText) {
+  if (fbDb) return true;
+  try {
+    const parsed = parseFirebaseConfig(configText);
+    if (!parsed.projectId || !parsed.apiKey) return false;
+    fbApp = firebase.apps && firebase.apps.length
+      ? firebase.apps[0]
+      : firebase.initializeApp(parsed);
+    fbDb = firebase.firestore(fbApp);
+    try { fbDb.settings({ experimentalForceLongPolling: true, merge: true }); } catch(_) {}
+    if (firebase.auth) {
+      fbAuthReady = firebase.auth(fbApp).signInAnonymously().catch(e => {
+        console.warn('[Manager] Auth anonyme Firebase:', e.message);
+      });
+    }
+    return true;
+  } catch(e) {
+    console.error('[Manager] Init Firebase:', e);
+    return false;
+  }
+}
+
+async function ensureReady() {
+  if (!fbDb) throw new Error('Firebase non configuré. Réinitialisez l\'application.');
+  await fbAuthReady;
+}
+
+/* ================================================================
+   OFFLINE QUEUE
+================================================================ */
+function enqueue(collection, payload, docId) {
+  const q = load(QUEUE_KEY, []);
+  q.push({ id: uid(), collection, payload, docId: docId || null, at: new Date().toISOString() });
+  save(QUEUE_KEY, q);
+  updateSyncDot();
+}
+
+async function flushQueue() {
+  let q = load(QUEUE_KEY, []);
+  if (!q.length) { updateSyncDot(); return; }
+  try { await ensureReady(); } catch(_) { return; }
+  const failed = [];
+  for (const item of q) {
+    try {
+      if (item.docId) {
+        await withTimeout(fbDb.collection(item.collection).doc(item.docId).set(item.payload, { merge: true }), 10000, 'flush ' + item.collection);
+      } else {
+        await withTimeout(fbDb.collection(item.collection).add(item.payload), 10000, 'flush ' + item.collection);
+      }
+    } catch(e) {
+      failed.push(item);
+    }
+  }
+  save(QUEUE_KEY, failed);
+  updateSyncDot();
+  if (failed.length === 0 && q.length > 0) toast('✅ Données synchronisées (' + q.length + ')');
+}
+
+function updateSyncDot() {
+  const q = load(QUEUE_KEY, []);
+  const el = document.getElementById('sync-dot');
+  if (el) el.hidden = (q.length === 0);
+}
+
+async function manualFlush() {
+  toast('Synchronisation…');
+  await flushQueue();
+}
+
+async function sendToFirestore(collection, payload, docId) {
+  try {
+    await ensureReady();
+    if (docId) {
+      await withTimeout(fbDb.collection(collection).doc(docId).set(payload, { merge: true }), 10000, 'envoi ' + collection);
+    } else {
+      await withTimeout(fbDb.collection(collection).add(payload), 10000, 'envoi ' + collection);
+    }
+    return true;
+  } catch(e) {
+    enqueue(collection, payload, docId);
+    return false;
+  }
+}
+
+/* ================================================================
+   SETUP SCREEN
+================================================================ */
+let _setupEntity = 'GLIDJI';
+let _setupConfig = '';
+let _pinCreate = '';
+
+function selectSetupEntity(el) {
+  document.querySelectorAll('#setup-entity-row .entity-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  _setupEntity = el.dataset.entity;
+}
+
+function setupStep1Next() {
+  const config = document.getElementById('setup-config').value.trim();
+  const parsed = parseFirebaseConfig(config);
+  const errEl = document.getElementById('setup-step1-err');
+  if (!parsed.projectId || !parsed.apiKey) {
+    errEl.textContent = 'Configuration Firebase invalide. Vérifiez le texte collé.';
+    return;
+  }
+  errEl.textContent = '';
+  _setupConfig = config;
+  document.getElementById('setup-step-1').classList.remove('active');
+  document.getElementById('setup-step-2').classList.add('active');
+  document.getElementById('pin-c-0').focus();
+}
+
+function pinMove(input, next, mode) {
+  if (input.value.length === 1 && next <= 3) {
+    const prefix = mode === 'create' ? 'pin-c-' : 'pin-cc-';
+    document.getElementById(prefix + next).focus();
+  }
+}
+
+function pinDone(mode) {
+  if (mode === 'create') {
+    const pin = [0,1,2,3].map(i => document.getElementById('pin-c-' + i).value).join('');
+    if (pin.length < 4) return;
+    if (!/^\d{4}$/.test(pin)) {
+      document.getElementById('setup-step2-err').textContent = '4 chiffres requis.';
+      return;
+    }
+    _pinCreate = pin;
+    document.getElementById('setup-step-2').classList.remove('active');
+    document.getElementById('setup-step-3').classList.add('active');
+    document.getElementById('pin-cc-0').focus();
+  } else {
+    const pin = [0,1,2,3].map(i => document.getElementById('pin-cc-' + i).value).join('');
+    if (pin.length < 4) return;
+    if (pin !== _pinCreate) {
+      document.getElementById('setup-step3-err').textContent = 'Les codes ne correspondent pas. Recommencez.';
+      [0,1,2,3].forEach(i => {
+        document.getElementById('pin-cc-' + i).value = '';
+        document.getElementById('pin-cc-' + i).value = '';
+      });
+      document.getElementById('pin-cc-0').focus();
+      return;
+    }
+    // Save config
+    saveConfig({ configText: _setupConfig, pin: _pinCreate, entity: _setupEntity, createdAt: new Date().toISOString() });
+    document.getElementById('setup-screen').style.display = 'none';
+    bootApp();
+  }
+}
+
+/* ================================================================
+   LOCK SCREEN
+================================================================ */
+let _lockInput = '';
+
+function buildNumpad() {
+  const pad = document.getElementById('numpad');
+  pad.innerHTML = '';
+  const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'numpad-btn' + (k === '⌫' ? ' numpad-del' : '');
+    btn.textContent = k;
+    if (k === '') { btn.style.visibility = 'hidden'; }
+    btn.onclick = () => numpadPress(k);
+    pad.appendChild(btn);
+  });
+}
+
+function numpadPress(k) {
+  const errEl = document.getElementById('lock-err');
+  errEl.textContent = '';
+  if (k === '⌫') {
+    _lockInput = _lockInput.slice(0, -1);
+  } else if (_lockInput.length < 4) {
+    _lockInput += k;
+  }
+  updateLockDots();
+  if (_lockInput.length === 4) {
+    const cfg = getConfig();
+    if (_lockInput === cfg.pin) {
+      document.getElementById('lock-screen').style.display = 'none';
+      bootApp();
+    } else {
+      errEl.textContent = 'Code incorrect. Réessayez.';
+      _lockInput = '';
+      updateLockDots();
+    }
+  }
+}
+
+function updateLockDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('ld' + i);
+    if (dot) dot.classList.toggle('filled', i < _lockInput.length);
+  }
+}
+
+function confirmReset() {
+  if (confirm('⚠️ Réinitialiser l\'application ? Toutes les données locales seront supprimées.')) {
+    [DEVICE_KEY, COUNTERS_KEY, FACTURES_KEY, NOTES_KEY, QUEUE_KEY].forEach(k => localStorage.removeItem(k));
+    location.reload();
+  }
+}
+
+/* ================================================================
+   BOOT & NAVIGATION
+================================================================ */
+function bootApp() {
+  const cfg = getConfig();
+  if (!cfg) return;
+  initFirebase(cfg.configText);
+  fbAuthReady.then(() => flushQueue());
+
+  // Update UI
+  const entCfg = getEntityCfg(cfg.entity);
+  document.getElementById('app-entity-badge').textContent = entCfg.code;
+  document.getElementById('app-title').textContent = '🌟 ' + entCfg.label.split(' ')[0];
+  document.documentElement.style.setProperty('--gold', entCfg.accent === '#5C1A22' ? '#c27b7b' : '#B8935A');
+
+  document.getElementById('app').style.display = 'flex';
+  updateSyncDot();
+
+  // Set default date fields to today
+  const today = todayIso();
+  const dateFields = ['f-date', 'm-date'];
+  dateFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = today; });
+
+  // Initialize facture form
+  document.getElementById('f-entity').value = cfg.entity;
+  updateFactureNumeroPreview();
+  addLigne();
+
+  // Load notes
+  renderNotes();
+  renderFacturesList();
+  renderMenuList();
+
+  // Pre-load clients datalist async
+  loadClientsDatalist();
+}
+
+let _currentTab = 'factures';
+function switchTab(tab) {
+  _currentTab = tab;
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  // Auto-trigger refreshes
+  if (tab === 'catalogue' && _catalogueItems.length === 0) pullCatalogue();
+  if (tab === 'reglages') initReglagesPanel();
+}
+
+/* ================================================================
+   MODULE: FACTURES
+================================================================ */
+let _factureLignes = [];
+
+function startNewFacture() {
+  document.getElementById('factures-list-view').style.display = 'none';
+  document.getElementById('factures-form-view').style.display = 'block';
+  // Reset form
+  document.getElementById('f-client').value = '';
+  document.getElementById('f-objet').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-tva').value = '0';
+  document.getElementById('f-date').value = todayIso();
+  _factureLignes = [];
+  document.getElementById('f-lignes').innerHTML = '';
+  addLigne();
+  selectDocType(document.querySelector('.doc-type-btn[data-type="FACTURE"]'));
+  updateFactureNumeroPreview();
+  document.getElementById('content-area').scrollTop = 0;
+}
+
+function showFacturesList() {
+  document.getElementById('factures-list-view').style.display = 'block';
+  document.getElementById('factures-form-view').style.display = 'none';
+  renderFacturesList();
+}
+
+function selectDocType(el) {
+  document.querySelectorAll('#f-type-row .doc-type-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  updateFactureNumeroPreview();
+}
+
+function updateFactureEntity() {
+  updateFactureNumeroPreview();
+}
+
+function updateFactureNumeroPreview() {
+  const type = (document.querySelector('.doc-type-btn.selected') || {}).dataset?.type || 'FACTURE';
+  const entity = document.getElementById('f-entity')?.value || getEntity();
+  const date = document.getElementById('f-date')?.value || todayIso();
+  const counters = load(COUNTERS_KEY, {});
+  const year = date.slice(0, 4);
+  const current = ((counters[entity] || {})[type] || {})[year] || 0;
+  const next = current + 1;
+  const code = getEntityCfg(entity).code;
+  const month = date.slice(5, 7);
+  const preview = String(next).padStart(3, '0') + 'm/' + code + '/' + month + '/' + year;
+  const el = document.getElementById('f-numero-preview');
+  if (el) el.textContent = preview;
+}
+
+function addLigne() {
+  const idx = _factureLignes.length;
+  _factureLignes.push({ designation: '', qte: 1, pu: 0 });
+  const container = document.getElementById('f-lignes');
+  const div = document.createElement('div');
+  div.className = 'ligne-form';
+  div.id = 'ligne-' + idx;
+  div.innerHTML = `
+    <button class="ligne-remove" onclick="removeLigne(${idx})">✕</button>
+    <div class="field" style="margin-bottom:0;">
+      <label>Désignation</label>
+      <input type="text" placeholder="Description de la prestation" onchange="ligneFld(${idx},'designation',this.value)" oninput="ligneFld(${idx},'designation',this.value)">
+    </div>
+    <div class="ligne-inputs">
+      <input type="number" placeholder="Qté" min="1" value="1" onchange="ligneFld(${idx},'qte',+this.value||1)" oninput="ligneFld(${idx},'qte',+this.value||1)">
+      <input type="number" placeholder="PU" min="0" value="0" onchange="ligneFld(${idx},'pu',+this.value||0)" oninput="ligneFld(${idx},'pu',+this.value||0)">
+      <input type="text" placeholder="= Total" readonly id="ligne-total-${idx}" style="color:var(--muted);background:var(--dark4);">
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function removeLigne(idx) {
+  _factureLignes[idx] = null;
+  const el = document.getElementById('ligne-' + idx);
+  if (el) el.remove();
+  computeTotal();
+}
+
+function ligneFld(idx, field, val) {
+  if (!_factureLignes[idx]) return;
+  _factureLignes[idx][field] = val;
+  const qte = _factureLignes[idx].qte || 1;
+  const pu = _factureLignes[idx].pu || 0;
+  const total = qte * pu;
+  const el = document.getElementById('ligne-total-' + idx);
+  if (el) el.value = total.toLocaleString('fr-FR');
+  computeTotal();
+}
+
+function computeTotal() {
+  const tvaRate = parseFloat(document.getElementById('f-tva')?.value || '0');
+  const lignesActives = _factureLignes.filter(Boolean);
+  const ht = lignesActives.reduce((s, l) => s + (l.qte || 1) * (l.pu || 0), 0);
+  const ttc = ht * (1 + tvaRate);
+  const el = document.getElementById('f-total');
+  if (el) el.textContent = ttc.toLocaleString('fr-FR') + ' FCFA';
+  return { ht, tva: ht * tvaRate, ttc };
+}
+
+async function saveFacture() {
+  const type = (document.querySelector('.doc-type-btn.selected') || {}).dataset?.type || 'FACTURE';
+  const entity = document.getElementById('f-entity').value || getEntity();
+  const client = document.getElementById('f-client').value.trim();
+  const date = document.getElementById('f-date').value || todayIso();
+  const lignes = _factureLignes.filter(l => l && l.designation.trim());
+
+  if (!client) { toast('Veuillez saisir le nom du client.', true); return; }
+  if (lignes.length === 0) { toast('Ajoutez au moins une prestation.', true); return; }
+
+  const { ht, tva, ttc } = computeTotal();
+  const { numero } = nextManagerNumber(type, entity, date);
+
+  const facture = {
+    id: uid(),
+    entity, type, client, date,
+    objet: document.getElementById('f-objet').value.trim(),
+    lignes: lignes.map(l => ({ designation: l.designation, qte: l.qte, pu: l.pu, total: l.qte * l.pu })),
+    montantHT: ht,
+    tva: tva,
+    montantTTC: ttc,
+    tvaRate: parseFloat(document.getElementById('f-tva').value || '0'),
+    notes: document.getElementById('f-notes').value.trim(),
+    numero,
+    createdAt: new Date().toISOString(),
+    importedInErp: false,
+  };
+
+  // Save locally
+  const factures = load(FACTURES_KEY, []);
+  factures.unshift(facture);
+  save(FACTURES_KEY, factures);
+
+  // Push to Firestore
+  toast('Enregistrement…');
+  const ok = await sendToFirestore('facturesMobile', facture, facture.id);
+  toast(ok ? `✅ ${facture.numero} enregistrée` : `✅ ${facture.numero} (sync en attente)`);
+  showFacturesList();
+}
+
+function renderFacturesList() {
+  const container = document.getElementById('factures-list');
+  if (!container) return;
+  const factures = load(FACTURES_KEY, []);
+  if (factures.length === 0) {
+    container.innerHTML = '<div class="loading-row text-muted">Aucune facture mobile. Appuyez sur + Nouvelle.</div>';
+    return;
+  }
+  container.innerHTML = factures.map(f => {
+    const synced = f.importedInErp ? '<span class="badge badge-green">Importée ERP</span>' : '<span class="badge badge-orange">En attente</span>';
+    return `<div class="card">
+      <div class="card-row">
+        <div class="fw7 text-gold">${escapeHtml(f.numero)}</div>
+        ${synced}
+      </div>
+      <div class="card-row mt8">
+        <div><span class="fs13 fw7">${escapeHtml(f.client)}</span> <span class="tag">${f.type}</span></div>
+        <div class="fs12 text-muted">${fmtDate(f.date)}</div>
+      </div>
+      <div class="card-row mt8">
+        <div class="fs12 text-muted">${escapeHtml(f.objet || '')}</div>
+        <div class="fw7 text-gold">${fmtMontant(f.montantTTC)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadClientsDatalist() {
+  try {
+    await ensureReady();
+    const snap = await withTimeout(fbDb.collection('clients').get(), 8000, 'clients');
+    const dl = document.getElementById('f-clients-list');
+    if (!dl) return;
+    dl.innerHTML = '';
+    snap.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.data().nom || d.id;
+      dl.appendChild(opt);
+    });
+  } catch(_) {}
+}
+
+/* ================================================================
+   MODULE: CANTINE
+================================================================ */
+async function pullCantine() {
+  const listEl = document.getElementById('cantine-list');
+  const statusEl = document.getElementById('cantine-status');
+  listEl.innerHTML = '<div class="loading-row"><span class="spinner"></span> Chargement…</div>';
+  try {
+    await ensureReady();
+    const snap = await withTimeout(
+      fbDb.collection('commandesCantine').orderBy('createdAt', 'desc').limit(100).get(),
+      15000, 'cantine'
+    );
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    if (statusEl) statusEl.textContent = items.length + ' commande(s) — ' + new Date().toLocaleTimeString('fr-FR');
+    renderCantineList(items);
+  } catch(e) {
+    listEl.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+function renderCantineList(items) {
+  const listEl = document.getElementById('cantine-list');
+  if (!items.length) { listEl.innerHTML = '<div class="loading-row text-muted">Aucune commande.</div>'; return; }
+  listEl.innerHTML = items.map(item => {
+    const syncedBadge = item.synced
+      ? '<span class="badge badge-grey">Récupérée ERP</span>'
+      : '<span class="badge badge-orange">En attente</span>';
+    const prixAffiché = item.montant ? fmtMontant(item.montant) : '';
+    return `<div class="cmd-card" id="cmd-${item.id}">
+      <div class="cmd-header">
+        <div>
+          <div class="cmd-client">${escapeHtml(item.clientNom || item.clientId || '—')}</div>
+          <div class="cmd-date">${fmtDate(item.date)} — ${escapeHtml(item.auteur || 'Équipe')}</div>
+        </div>
+        ${syncedBadge}
+      </div>
+      <div class="cmd-designation">${escapeHtml(item.designation || '')}</div>
+      ${prixAffiché ? `<div class="fw7 text-gold mb8">${prixAffiché}</div>` : ''}
+      <div class="prix-row">
+        <input type="number" placeholder="Prix (FCFA)" id="prix-${item.id}" value="${item.montant || ''}">
+        <button onclick="assignerPrix('${item.id}', document.getElementById('prix-${item.id}').value)">✓ Prix</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function assignerPrix(remoteId, montantStr) {
+  const montant = parseFloat(montantStr) || 0;
+  if (!montant) { toast('Entrez un montant valide.', true); return; }
+  try {
+    await ensureReady();
+    await withTimeout(
+      fbDb.collection('commandesCantine').doc(remoteId).update({ montant, montantAssigneAt: new Date().toISOString() }),
+      10000, 'assign prix'
+    );
+    toast('✅ Prix assigné : ' + fmtMontant(montant));
+    // Update visual
+    const card = document.getElementById('cmd-' + remoteId);
+    if (card) {
+      const priceDiv = card.querySelector('.fw7.text-gold.mb8');
+      if (priceDiv) priceDiv.textContent = fmtMontant(montant);
+    }
+  } catch(e) {
+    toast('Erreur : ' + e.message, true);
+  }
+}
+
+/* ================================================================
+   MODULE: ACHATS ÉQUIPE
+================================================================ */
+async function pullAchats() {
+  const listEl = document.getElementById('achats-list');
+  listEl.innerHTML = '<div class="loading-row"><span class="spinner"></span> Chargement…</div>';
+  try {
+    await ensureReady();
+    const snap = await withTimeout(fbDb.collection('achatsEquipe').get(), 15000, 'achats');
+    const items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+    if (!items.length) { listEl.innerHTML = '<div class="loading-row text-muted">Aucun achat soumis.</div>'; return; }
+    listEl.innerHTML = items.map(item => {
+      const lignes = (item.lignes || []).map(l =>
+        `<div class="achat-ligne"><span>${escapeHtml(l.designation || '')}</span><span>${fmtMontant(l.montant)}</span></div>`
+      ).join('');
+      return `<div class="card">
+        <div class="card-row mb8">
+          <span class="fw7">${escapeHtml(item.auteur || 'Équipe')}</span>
+          <span class="fs12 text-muted">${fmtDate(item.date || '')}</span>
+        </div>
+        ${lignes}
+        <div class="achat-total"><span>Total</span><span>${fmtMontant(item.total)}</span></div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    listEl.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+/* ================================================================
+   MODULE: CATALOGUE
+================================================================ */
+let _catalogueItems = [];
+let _catalogueFilter = '';
+
+async function pullCatalogue() {
+  const gridEl = document.getElementById('catalogue-grid');
+  gridEl.innerHTML = '<div class="loading-row" style="grid-column:1/-1;"><span class="spinner"></span> Chargement…</div>';
+  try {
+    await ensureReady();
+    const snap = await withTimeout(fbDb.collection('catalogueMateriel').get(), 20000, 'catalogue');
+    _catalogueItems = [];
+    snap.forEach(d => _catalogueItems.push({ id: d.id, ...d.data() }));
+    _catalogueItems.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    toast('Catalogue : ' + _catalogueItems.length + ' article(s)');
+    renderCatalogueGrid(_catalogueItems);
+  } catch(e) {
+    gridEl.innerHTML = `<div class="card" style="grid-column:1/-1;"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+function filterCatalogue(q) {
+  _catalogueFilter = q.toLowerCase();
+  const filtered = _catalogueItems.filter(item =>
+    (item.nom || '').toLowerCase().includes(_catalogueFilter) ||
+    (item.categorie || '').toLowerCase().includes(_catalogueFilter)
+  );
+  renderCatalogueGrid(filtered);
+}
+
+function renderCatalogueGrid(items) {
+  const gridEl = document.getElementById('catalogue-grid');
+  if (!items.length) { gridEl.innerHTML = '<p class="hint" style="grid-column:1/-1;">Aucun article trouvé.</p>'; return; }
+  gridEl.innerHTML = items.map(item => {
+    const photoHtml = item.photoB64
+      ? `<img class="cat-photo" src="${item.photoB64}" alt="${escapeHtml(item.nom)}" loading="lazy">`
+      : `<div class="cat-photo-placeholder">📦</div>`;
+    const qty = item.quantite !== undefined ? `<div class="cat-qty">Qté : ${item.quantite}</div>` : '';
+    return `<div class="cat-item">
+      ${photoHtml}
+      <div class="cat-info">
+        <div class="cat-name">${escapeHtml(item.nom || '—')}</div>
+        <div class="cat-cat">${escapeHtml(item.categorie || '')}</div>
+        ${qty}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ================================================================
+   MODULE: PROPOSITION MENU
+================================================================ */
+let _menuSections = [];
+
+function startNewMenu() {
+  document.getElementById('menu-list-view').style.display = 'none';
+  document.getElementById('menu-form-view').style.display = 'block';
+  _menuSections = [];
+  document.getElementById('m-client').value = '';
+  document.getElementById('m-date').value = todayIso();
+  document.getElementById('m-type').value = '';
+  document.getElementById('m-sections').innerHTML = '';
+  addMenuSection(); // Start with one section
+  document.getElementById('content-area').scrollTop = 0;
+}
+
+function showMenuList() {
+  document.getElementById('menu-list-view').style.display = 'block';
+  document.getElementById('menu-form-view').style.display = 'none';
+  renderMenuList();
+}
+
+function addMenuSection() {
+  const idx = _menuSections.length;
+  _menuSections.push({ titre: '', plats: [] });
+  const sectionNames = ['Entrée', 'Plat principal', 'Dessert', 'Accompagnement', 'Boissons', 'Amuse-bouche'];
+  const container = document.getElementById('m-sections');
+  const div = document.createElement('div');
+  div.className = 'menu-section';
+  div.id = 'msec-' + idx;
+  div.innerHTML = `
+    <div class="menu-section-header">
+      <input type="text" placeholder="Nom de la section (ex: Entrée)"
+        value="${sectionNames[idx] || ''}"
+        style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--gold-light);font-size:15px;font-weight:700;outline:none;width:calc(100% - 40px);"
+        oninput="menuSecTitle(${idx},this.value)" onchange="menuSecTitle(${idx},this.value)">
+      <button onclick="removeMenuSection(${idx})" style="background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;">✕</button>
+    </div>
+    <div id="msec-plats-${idx}"></div>
+    <div class="plat-add-row">
+      <input type="text" placeholder="Ajouter un plat…" id="msec-input-${idx}">
+      <button onclick="addMenuPlat(${idx})">+</button>
+    </div>
+  `;
+  container.appendChild(div);
+  if (sectionNames[idx]) menuSecTitle(idx, sectionNames[idx]);
+}
+
+function menuSecTitle(idx, val) { if (_menuSections[idx]) _menuSections[idx].titre = val; }
+
+function removeMenuSection(idx) {
+  _menuSections[idx] = null;
+  const el = document.getElementById('msec-' + idx);
+  if (el) el.remove();
+}
+
+function addMenuPlat(idx) {
+  const input = document.getElementById('msec-input-' + idx);
+  if (!input || !input.value.trim()) return;
+  const platName = input.value.trim();
+  input.value = '';
+  if (!_menuSections[idx]) return;
+  const platIdx = _menuSections[idx].plats.length;
+  _menuSections[idx].plats.push(platName);
+  const container = document.getElementById('msec-plats-' + idx);
+  const div = document.createElement('div');
+  div.className = 'plat-item';
+  div.id = `msec-${idx}-plat-${platIdx}`;
+  div.innerHTML = `<span class="plat-name">${escapeHtml(platName)}</span><button class="plat-del" onclick="removeMenuPlat(${idx},${platIdx})">✕</button>`;
+  container.appendChild(div);
+}
+
+function removeMenuPlat(sIdx, pIdx) {
+  if (!_menuSections[sIdx]) return;
+  _menuSections[sIdx].plats[pIdx] = null;
+  const el = document.getElementById(`msec-${sIdx}-plat-${pIdx}`);
+  if (el) el.remove();
+}
+
+function previewMenu() {
+  const client = document.getElementById('m-client').value.trim() || 'Client';
+  const date = document.getElementById('m-date').value;
+  const type = document.getElementById('m-type').value.trim();
+  const sections = _menuSections.filter(Boolean).map(s => ({
+    titre: s.titre, plats: (s.plats || []).filter(Boolean)
+  })).filter(s => s.plats.length > 0);
+  showMenuDisplay({ client, date, type, sections });
+}
+
+function showMenuDisplay(menu) {
+  const inner = document.getElementById('menu-display-inner');
+  const entCfg = getEntityCfg();
+  inner.innerHTML = `
+    <div class="menu-display-header">
+      <div class="menu-display-logo">${entCfg.label}</div>
+      <div class="menu-display-divider"></div>
+      <div class="menu-display-client">${escapeHtml(menu.client)}</div>
+      <div class="menu-display-event">${escapeHtml(menu.type || '')} ${menu.date ? '— ' + fmtDate(menu.date) : ''}</div>
+    </div>
+    ${menu.sections.map(s => `
+      <div class="menu-display-section">
+        <div class="menu-display-section-title">${escapeHtml(s.titre)}</div>
+        ${s.plats.map(p => `<div class="menu-display-plat">${escapeHtml(p)}</div>`).join('')}
+      </div>
+    `).join('')}
+    <div class="menu-display-divider" style="margin-top:36px;margin-bottom:8px;opacity:.4;"></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted);letter-spacing:2px;">Glidji Manager — Proposition exclusive</div>
+  `;
+  document.getElementById('menu-display').style.display = 'block';
+  // Store reference for copy
+  document.getElementById('menu-display')._currentMenu = menu;
+}
+
+function closeMenuDisplay() {
+  document.getElementById('menu-display').style.display = 'none';
+}
+
+function copyMenuText() {
+  const menu = document.getElementById('menu-display')._currentMenu;
+  if (!menu) return;
+  const entCfg = getEntityCfg();
+  let text = entCfg.label + '\n';
+  text += '━━━━━━━━━━━━━━━━━━━━\n';
+  text += menu.client + '\n';
+  if (menu.type) text += menu.type + (menu.date ? ' — ' + fmtDate(menu.date) : '') + '\n';
+  text += '\n';
+  menu.sections.forEach(s => {
+    text += '— ' + s.titre.toUpperCase() + ' —\n';
+    s.plats.forEach(p => { text += '  • ' + p + '\n'; });
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text).then(() => toast('✅ Texte copié !')).catch(() => toast('Copie manuelle ci-dessous.'));
+}
+
+async function saveMenu() {
+  const client = document.getElementById('m-client').value.trim();
+  const date = document.getElementById('m-date').value;
+  const type = document.getElementById('m-type').value.trim();
+  const sections = _menuSections.filter(Boolean).map(s => ({
+    titre: s.titre, plats: (s.plats || []).filter(Boolean)
+  })).filter(s => s.plats.length > 0);
+  if (!client) { toast('Entrez le nom du client.', true); return; }
+  if (sections.length === 0) { toast('Ajoutez au moins un plat.', true); return; }
+
+  const entity = getEntity();
+  const proposition = {
+    id: uid(), entity, client, date, type, sections,
+    createdAt: new Date().toISOString(), importedInErp: false,
+  };
+
+  // Save locally in factures storage key specific to menus
+  const menus = load('glidji_manager_menus_v1', []);
+  menus.unshift(proposition);
+  save('glidji_manager_menus_v1', menus);
+
+  const ok = await sendToFirestore('propositionsMenuMobile', proposition, proposition.id);
+  toast(ok ? '✅ Proposition enregistrée' : '✅ Proposition (sync en attente)');
+  showMenuList();
+}
+
+function renderMenuList() {
+  const container = document.getElementById('menu-list');
+  if (!container) return;
+  const menus = load('glidji_manager_menus_v1', []);
+  if (menus.length === 0) {
+    container.innerHTML = '<div class="loading-row text-muted">Aucune proposition. Appuyez sur + Nouvelle.</div>';
+    return;
+  }
+  container.innerHTML = menus.map(m => {
+    return `<div class="card" onclick="showMenuDisplay(${JSON.stringify(m).replace(/</g,'\\u003c')})">
+      <div class="card-row">
+        <div class="fw7">${escapeHtml(m.client)}</div>
+        <div class="fs12 text-muted">${fmtDate(m.date)}</div>
+      </div>
+      <div class="mt8 fs13 text-muted">${escapeHtml(m.type || '')} — ${m.sections.length} section(s)</div>
+      <div class="fs12 text-muted mt8">Appuyez pour afficher</div>
+    </div>`;
+  }).join('');
+}
+
+/* ================================================================
+   MODULE: BLOC-NOTES
+================================================================ */
+function saveNote() {
+  const input = document.getElementById('note-input');
+  const text = input.value.trim();
+  if (!text) { toast('Entrez du texte.', true); return; }
+  const notes = load(NOTES_KEY, []);
+  const note = {
+    id: uid(), text, entity: getEntity(), createdAt: new Date().toISOString(),
+  };
+  notes.unshift(note);
+  save(NOTES_KEY, notes);
+  input.value = '';
+  // Sync to Firestore (best-effort)
+  sendToFirestore('managerNotes', note, note.id);
+  renderNotes();
+  toast('✅ Note enregistrée');
+}
+
+function deleteNote(id) {
+  let notes = load(NOTES_KEY, []);
+  notes = notes.filter(n => n.id !== id);
+  save(NOTES_KEY, notes);
+  renderNotes();
+}
+
+function renderNotes() {
+  const container = document.getElementById('notes-list');
+  if (!container) return;
+  const notes = load(NOTES_KEY, []);
+  if (notes.length === 0) {
+    container.innerHTML = '<p class="hint">Aucune note. Écrivez quelque chose ci-dessus.</p>';
+    return;
+  }
+  container.innerHTML = notes.map(n => {
+    const dateStr = new Date(n.createdAt).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    return `<div class="note-card">
+      <div class="note-text">${escapeHtml(n.text)}</div>
+      <div class="note-footer">
+        <span class="note-date">${dateStr}</span>
+        <button class="note-del" onclick="deleteNote('${n.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+window.addEventListener('load', function() {
+  const cfg = getConfig();
+  if (!cfg) {
+    // First time: show setup
+    document.getElementById('setup-screen').style.display = 'flex';
+    return;
+  }
+  // Show lock screen
+  document.getElementById('lock-entity-label').textContent = getEntityCfg(cfg.entity).label;
+  document.getElementById('lock-screen').style.display = 'flex';
+  buildNumpad();
+});
+</script>
+
+
+</body></html>
