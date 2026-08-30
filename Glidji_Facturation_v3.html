@@ -521,12 +521,12 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="registre">Registre</button>
       <button data-view="paiements">Paiements</button>
       <button data-view="relances">Relances <span id="relancesBadge" style="display:none; background:var(--burgundy); color:#fff; font-size:10px; font-weight:700; border-radius:8px; padding:1px 5px; margin-left:4px; vertical-align:middle;"></span></button>
-      <button data-view="cantine" class="">Cantine</button>
+      <button data-view="cantine">Cantine</button>
       <button data-view="achats">Achats</button>
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
-      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display: inline-block;">8</span></button>
+      <button data-view="messages">Messages <span class="msg-badge" id="msgBadgeNav" style="display:none;"></span></button>
       <button data-view="dashboard">Tableau de bord</button>
       <button data-view="bilan">Bilan</button>
       <button data-view="paie">Employés &amp; Paie</button>
@@ -551,7 +551,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     <button data-cat="accueil" class="" onclick="showHubCat('accueil')">
       <span class="hn-ico">🏠</span>Accueil
     </button>
-    <button data-cat="commercial" onclick="showHubCat('commercial')" class="">
+    <button data-cat="commercial" onclick="showHubCat('commercial')">
       <span class="hn-ico">💼</span>Commercial
       <span class="hn-badge" id="hubBadgeCommercial" style="display:none;"></span>
     </button>
@@ -825,18 +825,9 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         </div>
         <table style="margin-top:10px;">
           <thead><tr><th style="width:140px;">Date</th><th>Repas</th><th style="width:140px;">Montant (FCFA)</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="cantRepasBody">
-    <tr>
-      <td><input type="date" data-cant="0" data-field="date"></td>
-      <td><input type="text" data-cant="0" data-field="designation" list="cant_designations" placeholder="Ex : Salade d'avocat et assiette de fruits"></td>
-      <td><input type="number" class="num" data-cant="0" data-field="montant" min="0"></td>
-      <td><button class="row-remove" data-cant-remove="0" title="Retirer">✕</button></td>
-    </tr></tbody>
+          <tbody id="cantRepasBody"></tbody>
         </table>
-        <datalist id="cant_designations"><option value="1 gravlax"></option><option value="Blanc de poulet 
-Filet de boeuf grillé 
-Salade de laitue"></option><option value="Blanc de poulet salade"></option><option value="Deux pattes Au thon"></option><option value="Filet de boeuf/Poêlé de légumes, Amanda"></option><option value="Filet de bœuf salade de laitue"></option><option value="Omelette aux légumes/salade de laitue"></option><option value="Riz sauce provençale avec filet de poisson"></option><option value="Salade de chou et de carotte"></option><option value="Sauce gombo, pâte de maïs 
-Portion de légumes"></option></datalist>
+        <datalist id="cant_designations"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddCantRow" style="margin-top:10px;">+ Ajouter une ligne</button>
         <div style="margin-top:14px;">
           <button class="btn btn-gold" id="btnSaveCantRepas">Enregistrer ces repas →</button>
@@ -847,106 +838,14 @@ Portion de légumes"></option></datalist>
         <h2>Repas en attente de facturation</h2>
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
           <button class="btn btn-ghost btn-sm" id="btnPullCommandes">🔄 Récupérer les commandes de l'équipe</button>
-          <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);">Aucune nouvelle commande — 9 commande(s) de l'équipe déjà en attente ci-dessous (à facturer).</span>
+          <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);"></span>
         </div>
-        <div id="cantPendingWrap"><div class="cant-client-group" data-client="mt45u9kn9wnncj">
-      <h3>M D'Almeida</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt703o6ayja5ay" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>21/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Filet de bœuf salade de laitue</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt703o6ayja5ay" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt703o6ayja5ay" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt703o6a4u2222" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>21/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Blanc de poulet salade</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt703o6a4u2222" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt703o6a4u2222" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyv5wpwt" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>24/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Riz sauce provençale avec filet de poisson</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyv5wpwt" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyv5wpwt" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyxym26x" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>24/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Salade de chou et de carotte</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyxym26x" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyxym26x" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt8tq6x5mun1ae" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>25/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Sauce gombo, pâte de maïs 
-Portion de légumes</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt8tq6x5mun1ae" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt8tq6x5mun1ae" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtbf3bl34crw5h" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>26/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Filet de boeuf/Poêlé de légumes, Amanda</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtbf3bl34crw5h" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtbf3bl34crw5h" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtbf3bl4yv25l4" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>26/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Omelette aux légumes/salade de laitue</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtbf3bl4yv25l4" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtbf3bl4yv25l4" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="mt45u9kn9wnncj">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="mt45u9kn9wnncj" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div><div class="cant-client-group" data-client="5t5cim9qtzra">
-      <h3>(À préciser)</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyqevo6k" data-client="5t5cim9qtzra" checked=""></td>
-          <td>19/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Deux pattes Au thon</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyqevo6k" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyqevo6k" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="5t5cim9qtzra">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="5t5cim9qtzra" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div><div class="cant-client-group" data-client="mt70b29w602uqw">
-      <h3>M Gile</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtelp8fwktbfda" data-client="mt70b29w602uqw" checked=""></td>
-          <td>29/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>1 gravlax</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtelp8fwktbfda" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtelp8fwktbfda" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="mt70b29w602uqw">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="mt70b29w602uqw" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div></div>
+        <div id="cantPendingWrap"></div>
       </div>
 
       <div class="card">
         <h2>Historique des factures cantine</h2>
-        <div id="cantHistoryWrap"><table><thead><tr>
-    <th>Date</th><th>N°</th><th>Client</th><th>Période</th><th style="text-align:right">Montant</th><th style="text-align:right">Statut</th><th></th>
-  </tr></thead><tbody><tr>
-      <td>24/08/2026</td>
-      <td>039/GC/08/2026</td>
-      <td>Mme Dossou D'Almeida</td>
-      <td>Repas cantine du 21/08/2026 au 21/08/2026</td>
-      <td style="text-align:right; font-weight:600;">1 FCFA</td>
-      <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-      <td><button class="btn btn-ghost btn-sm" data-view-op="mt7058foz0z6iz">Ouvrir</button></td>
-    </tr></tbody></table></div>
+        <div id="cantHistoryWrap"></div>
       </div>
     </section>
 
@@ -2153,7 +2052,7 @@ const firebaseConfig = {
         <div class="hub-module-item" onclick="showView('messages')">
           <div class="hub-module-ico">💬</div>
           <div class="hub-module-body"><div class="hub-module-name">Messages</div><div class="hub-module-desc">Communication avec l'équipe terrain</div></div>
-          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display: inline-block;">8</span>
+          <span id="hubMsgBadgeEquipe" class="hub-module-badge" style="display:none;"></span>
           <span class="hub-module-arrow">›</span>
         </div>
       </div>
@@ -2692,14 +2591,21 @@ function updateSyncStatus(state, detail) {
   if (!el) return;
   // Si hors ligne, on surcharge l'état affiché pour signaler le problème
   const offline = !navigator.onLine;
+  // Sauvegarder et afficher l'horodatage de la dernière sync réussie
+  if (state === 'ok' && !offline) {
+    const ts = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    localStorage.setItem('glidji_last_sync_ts', ts);
+  }
+  const lastTs = localStorage.getItem('glidji_last_sync_ts');
+  const okLabel = lastTs ? '✅ Synch. ' + lastTs : '✅ Synchronisé';
   const map = {
-    none:             ['💾 Local', ''],
-    linked:           ['🔗 Lié : ' + detail, 'ok'],
-    ok:               ['✅ Synchronisé', 'ok'],
+    none:               ['💾 Local', ''],
+    linked:             ['🔗 Lié : ' + detail, 'ok'],
+    ok:                 [okLabel, 'ok'],
     'needs-permission': ['⚠️ Reconnexion nécessaire', 'warn'],
-    error:            ['⛔ Erreur synchro', 'err'],
-    offline:          ['🔴 Hors ligne', 'err'],
-    syncing:          ['⏳ Sync…', 'warn'],
+    error:              ['⛔ Erreur synchro', 'err'],
+    offline:            ['🔴 Hors ligne', 'err'],
+    syncing:            ['⏳ Sync…', 'warn'],
   };
   const effectiveState = offline ? 'offline' : state;
   const [text, cls] = map[effectiveState] || map.none;
@@ -2707,7 +2613,7 @@ function updateSyncStatus(state, detail) {
   el.className = 'sync-badge ' + cls;
   el.title = offline
     ? 'Hors ligne — les données seront synchronisées au retour du réseau'
-    : (detail ? detail : '');
+    : (detail ? detail : (lastTs ? 'Dernière synchronisation à ' + lastTs : ''));
 }
 
 async function writeLinkedFile() {
@@ -5168,13 +5074,28 @@ function renderDashboard() {
     </div>`;
   }
 
+  // CA par entité (les deux, indépendamment de l'entité active)
+  const caGlidji = (() => {
+    try { return (JSON.parse(localStorage.getItem('glidji_operations_v1__GLIDJI') || '[]') || [])
+      .filter(o => o.type === 'FACTURE' && (o.dateEmission || '').slice(0, 4) === year)
+      .reduce((s, o) => s + (o.montantFinal || 0) + (o.avance || 0), 0); } catch(_) { return 0; }
+  })();
+  const caSimag = (() => {
+    try { return (JSON.parse(localStorage.getItem('glidji_operations_v1__SIMAG') || '[]') || [])
+      .filter(o => o.type === 'FACTURE' && (o.dateEmission || '').slice(0, 4) === year)
+      .reduce((s, o) => s + (o.montantFinal || 0) + (o.avance || 0), 0); } catch(_) { return 0; }
+  })();
+  const tauxConv = nbProformas > 0 ? Math.round(nbFactures / nbProformas * 100) + '%' : '—';
+
   document.getElementById('statGrid').innerHTML = `
     <div class="stat-card"><div class="num">${fmtFCFA(caFacture)}</div><div class="lbl">CA facturé ${year}</div></div>
     <div class="stat-card"><div class="num">${nbFactures}</div><div class="lbl">Factures ${year}</div></div>
-    <div class="stat-card"><div class="num">${nbProformas}</div><div class="lbl">Proforma ${year}</div></div>
-    <div class="stat-card"><div class="num">${nbClients}</div><div class="lbl">Clients au total</div></div>
-    <div class="stat-card"><div class="num" style="color:${totalImpaye > 0 ? 'var(--burgundy)' : 'inherit'};">${fmtFCFA(totalImpaye)}</div><div class="lbl">Impayés en cours (${nbDocsImpayes} document${nbDocsImpayes > 1 ? 's' : ''})</div></div>
+    <div class="stat-card"><div class="num">${nbProformas}</div><div class="lbl">Proformas ${year}</div></div>
+    <div class="stat-card" title="Factures / Proformas émis cette année"><div class="num">${tauxConv}</div><div class="lbl">Taux conversion</div></div>
+    <div class="stat-card"><div class="num" style="color:${totalImpaye > 0 ? 'var(--burgundy)' : 'inherit'};">${fmtFCFA(totalImpaye)}</div><div class="lbl">Impayés (${nbDocsImpayes} doc.)</div></div>
     <div class="stat-card"><div class="num">${fmtFCFA(totalAchats)}</div><div class="lbl">Achats ${year}</div></div>
+    <div class="stat-card" title="CA Glidji Conciergerie ${year}"><div class="num" style="font-size:1.1rem;">${fmtFCFA(caGlidji)}</div><div class="lbl">CA Glidji ${year}</div></div>
+    <div class="stat-card" title="CA SIMAG SARL U ${year}"><div class="num" style="font-size:1.1rem;">${fmtFCFA(caSimag)}</div><div class="lbl">CA SIMAG ${year}</div></div>
   `;
 
   const byClient = {};
