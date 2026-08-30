@@ -70,27 +70,27 @@ body { overflow-x: hidden; }
 
 /* ---- LOCK SCREEN ---- */
 #lock-screen {
-  min-height: 100vh;
+  height: 100vh; max-height: 100vh; overflow: hidden;
   background: linear-gradient(160deg, #0A0A0A 60%, #1a0e00 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px;
 }
-.lock-logo { text-align: center; margin-bottom: 40px; }
-.lock-logo h1 { font-size: 32px; font-weight: 800; color: var(--gold); }
-.lock-entity { font-size: 13px; color: var(--muted); margin-top: 6px; }
-.lock-title { font-size: 18px; font-weight: 600; margin-bottom: 24px; text-align: center; }
-.numpad { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; justify-content: center; margin: 0 auto 24px; }
+.lock-logo { text-align: center; margin-bottom: 20px; }
+.lock-logo h1 { font-size: 28px; font-weight: 800; color: var(--gold); }
+.lock-entity { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.lock-title { font-size: 17px; font-weight: 600; margin-bottom: 16px; text-align: center; }
+.numpad { display: grid; grid-template-columns: repeat(3, 64px); gap: 10px; justify-content: center; margin: 0 auto 16px; }
 .numpad-btn {
-  width: 72px; height: 72px; border-radius: 36px; background: var(--dark3);
-  border: 1px solid var(--border); color: var(--text); font-size: 24px;
+  width: 64px; height: 64px; border-radius: 32px; background: var(--dark3);
+  border: 1px solid var(--border); color: var(--text); font-size: 22px;
   font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;
   -webkit-tap-highlight-color: transparent; transition: background .1s;
 }
 .numpad-btn:active { background: var(--dark4); }
-.numpad-del { font-size: 18px; }
-.pin-dots { display: flex; gap: 14px; justify-content: center; margin-bottom: 28px; }
-.pin-dot { width: 14px; height: 14px; border-radius: 7px; background: var(--border); transition: background .15s; }
+.numpad-del { font-size: 16px; }
+.pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
+.pin-dot { width: 13px; height: 13px; border-radius: 7px; background: var(--border); transition: background .15s; }
 .pin-dot.filled { background: var(--gold); }
-.lock-reset { color: var(--muted); font-size: 13px; text-align: center; margin-top: 12px; cursor: pointer; }
+.lock-reset { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; cursor: pointer; }
 
 /* ---- MAIN APP ---- */
 /* #app est masqué via style="display:none;" dans le HTML ; bootApp() le révèle */
@@ -287,7 +287,7 @@ body { overflow-x: hidden; }
 <!-- ========================================================
      SETUP SCREEN
 ======================================================== -->
-<div id="setup-screen" style="display: none;">
+<div id="setup-screen" style="display:none;">
   <div class="setup-logo">
     <h1>🌟 Glidji Manager</h1>
     <p>Application mobile de gestion terrain</p>
@@ -295,7 +295,7 @@ body { overflow-x: hidden; }
   <div class="setup-card">
 
     <!-- STEP 1: Firebase config -->
-    <div id="setup-step-1" class="setup-step">
+    <div id="setup-step-1" class="setup-step active">
       <h2>⚙️ Configuration Firebase</h2>
       <div class="field">
         <label>Coller votre configuration Firebase (même config que l'ERP ou l'app Équipe)</label>
@@ -334,7 +334,7 @@ projectId: &quot;...&quot;,
     </div>
 
     <!-- STEP 3: Confirm PIN -->
-    <div id="setup-step-3" class="setup-step active">
+    <div id="setup-step-3" class="setup-step">
       <h2>🔑 Confirmer votre PIN</h2>
       <div class="pin-row">
         <input type="tel" maxlength="1" class="pin-digit" id="pin-cc-0" oninput="pinMove(this,1,'confirm')" inputmode="numeric" pattern="[0-9]">
@@ -351,19 +351,19 @@ projectId: &quot;...&quot;,
 <!-- ========================================================
      LOCK SCREEN
 ======================================================== -->
-<div id="lock-screen" style="display:none;">
+<div id="lock-screen" style="display: none;">
   <div class="lock-logo">
     <h1>🌟 Manager</h1>
-    <div class="lock-entity" id="lock-entity-label"></div>
+    <div class="lock-entity" id="lock-entity-label">Glidji Conciergerie</div>
   </div>
   <div class="lock-title">Entrez votre PIN</div>
   <div class="pin-dots">
-    <div class="pin-dot" id="ld0"></div>
-    <div class="pin-dot" id="ld1"></div>
-    <div class="pin-dot" id="ld2"></div>
-    <div class="pin-dot" id="ld3"></div>
+    <div class="pin-dot filled" id="ld0"></div>
+    <div class="pin-dot filled" id="ld1"></div>
+    <div class="pin-dot filled" id="ld2"></div>
+    <div class="pin-dot filled" id="ld3"></div>
   </div>
-  <div class="numpad" id="numpad"></div>
+  <div class="numpad" id="numpad"><button class="numpad-btn">1</button><button class="numpad-btn">2</button><button class="numpad-btn">3</button><button class="numpad-btn">4</button><button class="numpad-btn">5</button><button class="numpad-btn">6</button><button class="numpad-btn">7</button><button class="numpad-btn">8</button><button class="numpad-btn">9</button><button class="numpad-btn" style="visibility: hidden;"></button><button class="numpad-btn">0</button><button class="numpad-btn numpad-del">⌫</button></div>
   <div id="lock-err" class="error-msg" style="margin-top:16px;"></div>
   <div class="lock-reset" onclick="confirmReset()">Réinitialiser l'application</div>
 </div>
@@ -552,6 +552,22 @@ projectId: &quot;...&quot;,
       <div class="panel-title">⚙️ Réglages</div>
       <p class="panel-sub">Configuration et publication de l'application</p>
 
+      <!-- Firebase Config -->
+      <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;">
+        <div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:4px;">🔥 Configuration Firebase</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Même config que l'ERP ou l'app Équipe. Mettre à jour sans réinitialiser.</div>
+        <div class="field">
+          <label>Configuration Firebase (format JS ou JSON)</label>
+          <textarea id="reg-firebase-config" rows="5" spellcheck="false" style="font-family:monospace;font-size:12px;min-height:100px;width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;resize:vertical;" placeholder="apiKey: &quot;AIza...&quot;,
+projectId: &quot;mon-projet&quot;,
+appId: &quot;1:...&quot;"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-gold btn-sm" onclick="updateFirebaseConfig()">💾 Mettre à jour</button>
+          <div id="reg-firebase-status" style="font-size:12px;color:var(--muted);"></div>
+        </div>
+      </div>
+
       <!-- GitHub Pages -->
       <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;">
         <div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:4px;">🐙 Publication GitHub Pages</div>
@@ -559,7 +575,7 @@ projectId: &quot;...&quot;,
         <div class="field">
           <label>Token GitHub (scope : repo)</label>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="text" id="gh_token_m" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:monospace;">
+            <input type="text" id="gh_token_m" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false" style="flex:1;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:monospace;">
             <button class="btn btn-sm" style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;" onclick="(function(){var i=document.getElementById('gh_token_m');i.type=i.type==='password'?'text':'password';})()">👁</button>
           </div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px;">github.com → Settings → Developer settings → Personal access tokens → scope <code>repo</code></div>
@@ -618,7 +634,7 @@ projectId: &quot;...&quot;,
   <button class="menu-share-btn" onclick="copyMenuText()">📋 Copier le texte</button>
 </div>
 
-<div id="toast" class="">✅ Manager publié sur GitHub Pages !</div>
+<div id="toast" class="show">✅ Dépôt vérifié !</div>
 
 <!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -776,16 +792,39 @@ async function ghManagerPublish() {
 }
 
 function initReglagesPanel() {
-  const cfg = getMGithubCfg();
+  // Pré-remplir la config Firebase actuelle
+  const appCfg = getConfig();
+  const fbEl = document.getElementById('reg-firebase-config');
+  if (fbEl && appCfg && appCfg.configText) fbEl.value = appCfg.configText;
+
+  // Pré-remplir token GitHub
+  const ghCfg = getMGithubCfg();
   const tokenEl = document.getElementById('gh_token_m');
   const repoEl  = document.getElementById('gh_repo_m');
   const urlEl   = document.getElementById('gh_url_m');
-  if (tokenEl && cfg.token) tokenEl.value = cfg.token;
-  if (repoEl  && cfg.repo)  repoEl.value  = cfg.repo;
-  if (urlEl   && cfg.owner && cfg.repo) {
-    const url = 'https://' + cfg.owner + '.github.io/' + cfg.repo + '/';
+  if (tokenEl && ghCfg.token) tokenEl.value = ghCfg.token;
+  if (repoEl  && ghCfg.repo)  repoEl.value  = ghCfg.repo;
+  if (urlEl   && ghCfg.owner && ghCfg.repo) {
+    const url = 'https://' + ghCfg.owner + '.github.io/' + ghCfg.repo + '/';
     urlEl.innerHTML = '🔗 <a href="' + url + '" target="_blank" style="color:var(--gold);">' + url + '</a>';
   }
+}
+
+function updateFirebaseConfig() {
+  const newText = (document.getElementById('reg-firebase-config') || {}).value?.trim();
+  const statusEl = document.getElementById('reg-firebase-status');
+  if (!newText) { if (statusEl) statusEl.textContent = '⛔ Collez votre configuration Firebase.'; return; }
+  const parsed = parseFirebaseConfig(newText);
+  if (!parsed) { if (statusEl) statusEl.textContent = '⛔ Config invalide — vérifiez apiKey et projectId.'; return; }
+  // Mettre à jour la config sauvegardée
+  const cfg = getConfig() || {};
+  cfg.configText = newText;
+  saveConfig(cfg);
+  // Ré-initialiser Firebase avec la nouvelle config
+  fbApp = null; fbDb = null; fbAuthReady = Promise.resolve();
+  initFirebase(newText);
+  if (statusEl) statusEl.textContent = '✅ Config Firebase mise à jour !';
+  setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
 }
 
 let _toastTimer;
@@ -812,7 +851,8 @@ function parseFirebaseConfig(text) {
     const m = text.match(re);
     if (m) out[f] = m[1];
   });
-  return out;
+  // Valider que les champs indispensables sont présents
+  return (out.apiKey && out.projectId) ? out : null;
 }
 
 /* ================================================================
@@ -1088,6 +1128,9 @@ function bootApp() {
   renderFacturesList();
   renderMenuList();
 
+  // Pre-fill Réglages panel (token GitHub, dépôt) dès le boot
+  initReglagesPanel();
+
   // Pre-load clients datalist async
   loadClientsDatalist();
 }
@@ -1245,10 +1288,42 @@ async function saveFacture() {
   showFacturesList();
 }
 
-function renderFacturesList() {
+async function renderFacturesList() {
   const container = document.getElementById('factures-list');
   if (!container) return;
-  const factures = load(FACTURES_KEY, []);
+
+  // Afficher un spinner pendant la récupération
+  container.innerHTML = '<div class="loading-row"><span class="spinner"></span> Chargement…</div>';
+
+  // Source de vérité : Firestore. Fallback : cache localStorage
+  let factures = load(FACTURES_KEY, []);
+  try {
+    await ensureReady();
+    const entity = getEntity();
+    const snap = await withTimeout(
+      fbDb.collection('facturesMobile')
+        .where('entity', '==', entity)
+        .orderBy('createdAt', 'desc')
+        .limit(200)
+        .get(),
+      10000, 'facturesMobile'
+    );
+    if (!snap.empty) {
+      const remote = [];
+      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
+      // Conserver les factures locales pas encore dans Firestore (créées hors-ligne)
+      const remoteIds = new Set(remote.map(f => f.id));
+      const localOnly = factures.filter(f => !remoteIds.has(f.id));
+      factures = [...localOnly, ...remote];
+      factures.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+      // Mettre à jour le cache local avec les données Firestore
+      save(FACTURES_KEY, factures);
+    }
+  } catch (_) {
+    // Firestore indisponible — affichage du cache local (hors-ligne)
+    factures.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  }
+
   if (factures.length === 0) {
     container.innerHTML = '<div class="loading-row text-muted">Aucune facture mobile. Appuyez sur + Nouvelle.</div>';
     return;
