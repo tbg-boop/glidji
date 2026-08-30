@@ -559,7 +559,7 @@ projectId: &quot;...&quot;,
         <div class="field">
           <label>Token GitHub (scope : repo)</label>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="password" id="gh_token_m" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:monospace;">
+            <input type="text" id="gh_token_m" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:monospace;">
             <button class="btn btn-sm" style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;" onclick="(function(){var i=document.getElementById('gh_token_m');i.type=i.type==='password'?'text':'password';})()">👁</button>
           </div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px;">github.com → Settings → Developer settings → Personal access tokens → scope <code>repo</code></div>
@@ -618,7 +618,7 @@ projectId: &quot;...&quot;,
   <button class="menu-share-btn" onclick="copyMenuText()">📋 Copier le texte</button>
 </div>
 
-<div id="toast" class="show">✅ Dépôt vérifié !</div>
+<div id="toast" class="">✅ Manager publié sur GitHub Pages !</div>
 
 <!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
