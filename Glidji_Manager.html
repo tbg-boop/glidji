@@ -281,7 +281,7 @@ body { overflow-x: hidden; }
 .entity-option .ename { font-size: 14px; font-weight: 700; }
 .entity-option .ecode { font-size: 11px; color: var(--muted); margin-top: 3px; }
 </style>
-</head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb151570" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <!-- ========================================================
@@ -608,6 +608,7 @@ appId: &quot;1:...&quot;"></textarea>
     </button>
     <button class="tab-btn" data-tab="cantine" onclick="switchTab('cantine')">
       <span class="tab-ico">🍽️</span><span>Cantine</span>
+      <span id="cantineBadge" style="display:none; background:#B3261E; color:#fff; border-radius:9px; font-size:10px; font-weight:800; min-width:16px; height:16px; padding:0 4px; align-items:center; justify-content:center; margin-left:3px; line-height:16px;"></span>
     </button>
     <button class="tab-btn" data-tab="achats" onclick="switchTab('achats')">
       <span class="tab-ico">🛒</span><span>Achats</span>
@@ -900,6 +901,8 @@ function initFirebase(configText) {
       : firebase.initializeApp(parsed);
     fbDb = firebase.firestore(fbApp);
     try { fbDb.settings({ experimentalForceLongPolling: true, merge: true }); } catch(_) {}
+    // Note : enablePersistence() est incompatible avec experimentalForceLongPolling
+    // dans le SDK compat v10 → on utilise la queue hors-ligne maison à la place.
     if (firebase.auth) {
       fbAuthReady = firebase.auth(fbApp).signInAnonymously().catch(e => {
         console.warn('[Manager] Auth anonyme Firebase:', e.message);
@@ -1102,7 +1105,19 @@ function bootApp() {
   const cfg = getConfig();
   if (!cfg) return;
   initFirebase(cfg.configText);
-  fbAuthReady.then(() => flushQueue());
+  fbAuthReady.then(() => {
+    flushQueue();
+    updateCantineBadge();
+  });
+  // Auto-sync Firestore toutes les 3 minutes
+  if (!window._managerAutoSyncInterval) {
+    window._managerAutoSyncInterval = setInterval(() => {
+      if (navigator.onLine && fbDb) {
+        flushQueue().catch(() => {});
+        updateCantineBadge().catch(() => {});
+      }
+    }, 3 * 60 * 1000);
+  }
 
   // Update UI
   const entCfg = getEntityCfg(cfg.entity);
@@ -1379,9 +1394,28 @@ async function pullCantine() {
     snap.forEach(d => items.push({ id: d.id, ...d.data() }));
     if (statusEl) statusEl.textContent = items.length + ' commande(s) — ' + new Date().toLocaleTimeString('fr-FR');
     renderCantineList(items);
+    // Rafraîchir le badge de l'onglet
+    const nbPending = items.filter(i => !i.synced).length;
+    const badge = document.getElementById('cantineBadge');
+    if (badge) { badge.textContent = nbPending; badge.style.display = nbPending > 0 ? 'inline-flex' : 'none'; }
   } catch(e) {
     listEl.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
   }
+}
+
+async function updateCantineBadge() {
+  const badge = document.getElementById('cantineBadge');
+  if (!badge) return;
+  try {
+    if (!fbDb) { badge.style.display = 'none'; return; }
+    const snap = await withTimeout(
+      fbDb.collection('commandesCantine').where('synced', '==', false).get(),
+      8000, 'cantineBadge'
+    );
+    const n = snap.size;
+    if (n > 0) { badge.textContent = n; badge.style.display = 'inline-flex'; }
+    else { badge.style.display = 'none'; }
+  } catch(_) { badge.style.display = 'none'; }
 }
 
 function renderCantineList(items) {
@@ -1420,6 +1454,7 @@ async function assignerPrix(remoteId, montantStr) {
       10000, 'assign prix'
     );
     toast('✅ Prix assigné : ' + fmtMontant(montant));
+    updateCantineBadge();
     // Update visual
     const card = document.getElementById('cmd-' + remoteId);
     if (card) {
@@ -1758,4 +1793,4 @@ window.addEventListener('load', function() {
 </script>
 
 
-</body></html>
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788162115060" name="I0_1788162115060" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788162115060&amp;_gfid=I0_1788162115060&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=19035902" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe></body></html>
