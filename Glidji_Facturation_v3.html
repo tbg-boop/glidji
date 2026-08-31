@@ -542,7 +542,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="audit">Journal d'audit</button>
       <button data-view="reglages" class="active">Réglages</button>
     </nav>
-    <span class="sync-badge ok" id="syncStatus" title="Dernière synchronisation à 22:28">✅ Synch. 22:28</span>
+    <span class="sync-badge ok" id="syncStatus" title="Glidji_Donnees.json">🔗 Lié : Glidji_Donnees.json</span>
   </header>
   <div class="menu-mobile-overlay" id="menuMobileOverlay"></div>
 
@@ -1758,20 +1758,27 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <div class="card">
         <h2>Fichier partagé <small>Pour utiliser cette application sur plusieurs ordinateurs avec les mêmes données, via OneDrive ou Google Drive. Nécessite Chrome ou Edge.</small></h2>
         <div id="shareFileWrap">
-      <p class="hint">Sur le <strong>premier</strong> ordinateur : créez le fichier et enregistrez-le dans votre dossier OneDrive ou Google Drive.<br>
-      Sur les <strong>autres</strong> ordinateurs : liez ce même fichier (déjà synchronisé par OneDrive/Drive).</p>
+      <p>Fichier actuellement lié : <strong>Glidji_Donnees.json</strong></p>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-gold btn-sm" id="btnCreateFile">📄 Créer un nouveau fichier partagé</button>
-        <button class="btn btn-ghost btn-sm" id="btnOpenFile">🔗 Lier un fichier existant</button>
+        <button class="btn btn-gold btn-sm" id="btnSyncNow">🔄 Synchroniser maintenant</button>
+        <button class="btn btn-ghost btn-sm" id="btnReconfirm">🔑 Reconfirmer l'accès</button>
+        <button class="btn btn-danger btn-sm" id="btnUnlink">Délier ce fichier</button>
       </div>
+      <p class="hint">Cliquez « Synchroniser maintenant » en arrivant sur cet ordinateur, avant de commencer à travailler, pour récupérer les documents créés ailleurs.</p>
     </div>
       </div>
 
       <div class="card">
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
-      <p class="hint">Choisissez un dossier (idéalement dans OneDrive/Google Drive). Un fichier daté y sera déposé automatiquement chaque jour, à la première ouverture de l'application.</p>
-      <button class="btn btn-gold btn-sm" id="btnChooseBackupFolder">📁 Choisir un dossier de sauvegarde</button>
+      <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
+      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-08-31).</p>
+      
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
+        <button class="btn btn-ghost btn-sm" id="btnReconfirmBackup">🔑 Reconfirmer l'accès</button>
+        <button class="btn btn-danger btn-sm" id="btnForgetBackup">Oublier ce dossier</button>
+      </div>
     </div>
       </div>
 
@@ -1788,11 +1795,11 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     </div>
     
       <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
-      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-08-30).</p>
+      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-08-31).</p>
       
     
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
-      <button class="btn btn-gold btn-sm" id="btnGistSave">☁️ Sauvegarder maintenant</button>
+      <button class="btn btn-gold btn-sm" id="btnGistSave" disabled="">⏳ En cours…</button>
       <button class="btn btn-ghost btn-sm" id="btnGistRestore">⬇ Restaurer depuis le cloud</button>
       <button class="btn btn-danger btn-sm" id="btnGistForget">Oublier le token</button>
     </div>
@@ -1866,7 +1873,7 @@ const firebaseConfig = {
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">✅ 163 clients envoyés vers le cloud.</div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
     </section>
@@ -2195,7 +2202,7 @@ const firebaseConfig = {
   <button class="sr-submit" id="btnSrSubmit">Générer le document →</button>
 </div>
 
-<div class="toast show" id="toast">✅ Dépôt vérifié !</div>
+<div class="toast" id="toast">Configuration enregistrée. Cliquez « Tester la connexion » pour vérifier.</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
