@@ -1906,13 +1906,13 @@ const firebaseConfig = {
           <button class="btn btn-gold btn-sm" id="btnSaveEquipeConfig">Enregistrer la configuration</button>
           <button class="btn btn-ghost btn-sm" id="btnTestEquipeConnection">Tester la connexion</button>
           <button class="btn btn-gold btn-sm" id="btnSyncNow" onclick="syncNowFirestore()" style="margin-left:6px;">🔄 Synchroniser maintenant</button>
-          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;"></span>
+          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;">✅ Connexion Firestore opérationnelle — lecture ET écriture fonctionnent. Vous pouvez synchroniser.</span>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--platinum);">
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">✅ 15 fiches équipe envoyées vers le cloud.</div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
     </section>
@@ -2264,7 +2264,7 @@ const firebaseConfig = {
   <div style="font-size:14px;color:#888;line-height:1.6;">Cet appareil a été bloqué par l'administrateur.<br>Contactez votre responsable pour rétablir l'accès.</div>
 </div>
 
-<div class="toast" id="toast">✅ Sauvegarde cloud réussie !</div>
+<div class="toast show" id="toast">✅ Dépôt vérifié !</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
