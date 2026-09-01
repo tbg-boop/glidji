@@ -265,6 +265,24 @@
   .menu-ligne-desc:last-child{margin-bottom:0;}
   .doc-actions{max-width:800px; margin:14px auto 0; display:flex; gap:10px; justify-content:flex-end;}
 
+  /* ---------- Session 5 : Vue client devis ---------- */
+  #client-devis-overlay { position:fixed; inset:0; background:#f8f6f0; z-index:10000; overflow-y:auto; }
+  #client-devis-overlay .cdo-header { background:#1a1a1a; color:#D4AA72; text-align:center; padding:20px 16px; }
+  #client-devis-overlay .cdo-header img { max-height:48px; margin-bottom:8px; }
+  #client-devis-overlay .cdo-header h1 { font-size:20px; font-weight:700; margin:0; }
+  #client-devis-overlay .cdo-body { max-width:700px; margin:0 auto; padding:24px 16px; }
+  #client-devis-overlay .cdo-doc { background:#fff; border:1px solid #ddd; border-radius:8px; padding:24px; margin-bottom:24px; }
+  #client-devis-overlay .cdo-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+  #client-devis-overlay .btn-accept { background:#27AE60; color:#fff; border:none; border-radius:8px; padding:14px 28px; font-size:16px; font-weight:700; cursor:pointer; }
+  #client-devis-overlay .btn-decline { background:#fff; color:#C0392B; border:2px solid #C0392B; border-radius:8px; padding:14px 28px; font-size:16px; font-weight:700; cursor:pointer; }
+  #client-devis-overlay .cdo-status { text-align:center; padding:24px; font-size:18px; font-weight:700; }
+  #client-devis-overlay .cdo-status.accepted { color:#27AE60; }
+  #client-devis-overlay .cdo-status.declined { color:#C0392B; }
+  #client-devis-overlay .cdo-status.pending { color:#F39C12; }
+  .devis-lien-badge { background:rgba(39,174,96,0.12); color:#27AE60; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:8px; }
+  .devis-lien-badge.accepted { background:rgba(39,174,96,0.2); }
+  .devis-lien-badge.declined { background:rgba(192,57,43,0.12); color:#C0392B; }
+
   /* ---------- Alerte relances dashboard ---------- */
   .relances-alert{
     background:#fdf0f0; border-left:4px solid var(--burgundy);
@@ -540,6 +558,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="inventaire-materiel">Inventaire matériel</button>
       <button data-view="calendrier-materiel">Calendrier matériel</button>
       <button data-view="audit">Journal d'audit</button>
+      <button data-view="appareils">🔒 Appareils</button>
       <button data-view="reglages" class="active">Réglages</button>
     </nav>
     <span class="sync-badge ok" id="syncStatus" title="Glidji_Donnees.json">🔗 Lié : Glidji_Donnees.json</span>
@@ -806,6 +825,16 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
           <button class="btn btn-ghost btn-sm" id="btnExportPaiementsCsv">⬇ Exporter en CSV</button>
         </div>
         <div id="paiementsTableWrap"></div>
+      </div>
+
+      <!-- Session 6 : Caisse journalière Manager -->
+      <div class="card">
+        <h2>🧾 Caisse journalière (Manager) <small>Encaissements du jour enregistrés depuis l'app Manager mobile — synchronisés via Firebase.</small></h2>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+          <input type="date" id="caisse-erp-date" style="padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--beige-light);color:var(--ink);font-size:14px;">
+          <button class="btn btn-ghost btn-sm" onclick="loadCaisseERP()">🔍 Voir</button>
+        </div>
+        <div id="caisse-erp-wrap"><p class="hint" style="color:var(--muted);">Choisissez une date et cliquez sur Voir.</p></div>
       </div>
     </section>
 
@@ -1611,6 +1640,16 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       </div>
     </section>
 
+    <!-- ===================== VUE : APPAREILS ===================== -->
+    <section class="view" id="view-appareils">
+      <div class="card">
+        <h2>🔒 Appareils connectés <small>Tous les appareils ayant accès à vos applications Glidji via Firebase.</small></h2>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Bloquer un appareil lui interdit immédiatement l'accès. L'accès est vérifié toutes les 5 minutes et à chaque démarrage de l'application.</p>
+        <button class="btn btn-ghost btn-sm" onclick="loadAppareilsView()" style="margin-bottom:16px;">🔄 Rafraîchir</button>
+        <div id="appareils-list"><p class="hint" style="color:var(--muted);font-style:italic;">Chargement…</p></div>
+      </div>
+    </section>
+
     <!-- ===================== VUE : REGLAGES ===================== -->
     <section class="view active" id="view-reglages">
       <div class="card">
@@ -1772,7 +1811,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
       <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
-      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-08-31).</p>
+      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-01).</p>
       
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
@@ -1795,11 +1834,11 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     </div>
     
       <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
-      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-08-31).</p>
+      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-01).</p>
       
     
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
-      <button class="btn btn-gold btn-sm" id="btnGistSave" disabled="">⏳ En cours…</button>
+      <button class="btn btn-gold btn-sm" id="btnGistSave">☁️ Sauvegarder maintenant</button>
       <button class="btn btn-ghost btn-sm" id="btnGistRestore">⬇ Restaurer depuis le cloud</button>
       <button class="btn btn-danger btn-sm" id="btnGistForget">Oublier le token</button>
     </div>
@@ -1867,7 +1906,7 @@ const firebaseConfig = {
           <button class="btn btn-gold btn-sm" id="btnSaveEquipeConfig">Enregistrer la configuration</button>
           <button class="btn btn-ghost btn-sm" id="btnTestEquipeConnection">Tester la connexion</button>
           <button class="btn btn-gold btn-sm" id="btnSyncNow" onclick="syncNowFirestore()" style="margin-left:6px;">🔄 Synchroniser maintenant</button>
-          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;">✅ Connexion Firestore opérationnelle — lecture ET écriture fonctionnent. Vous pouvez synchroniser.</span>
+          <span id="equipeTestStatus" style="font-size:12px; color:var(--muted);display:block;margin-top:6px;"></span>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--platinum);">
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
@@ -2202,7 +2241,30 @@ const firebaseConfig = {
   <button class="sr-submit" id="btnSrSubmit">Générer le document →</button>
 </div>
 
-<div class="toast" id="toast">Configuration enregistrée. Cliquez « Tester la connexion » pour vérifier.</div>
+<!-- VUE CLIENT DEVIS (Session 5) -->
+<div id="client-devis-overlay" style="display:none;">
+  <div class="cdo-header">
+    <h1 id="cdo-societe-nom">Glidji</h1>
+    <p id="cdo-societe-sub" style="font-size:13px;color:#a89060;margin-top:4px;"></p>
+  </div>
+  <div class="cdo-body">
+    <div id="cdo-doc" class="cdo-doc"></div>
+    <div id="cdo-actions" class="cdo-actions">
+      <button class="btn-accept" onclick="repondreDevis('accepte')">✅ Accepter ce devis</button>
+      <button class="btn-decline" onclick="repondreDevis('refuse')">❌ Refuser</button>
+    </div>
+    <div id="cdo-status" class="cdo-status" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- LOCKOUT ERP (appareil bloqué) -->
+<div id="erp-lockout-overlay" style="display:none;position:fixed;inset:0;background:#0A0A0A;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;">
+  <div style="font-size:64px;margin-bottom:20px;">🔒</div>
+  <div style="font-size:22px;font-weight:700;color:#C0392B;margin-bottom:12px;">Accès révoqué</div>
+  <div style="font-size:14px;color:#888;line-height:1.6;">Cet appareil a été bloqué par l'administrateur.<br>Contactez votre responsable pour rétablir l'accès.</div>
+</div>
+
+<div class="toast" id="toast">✅ Sauvegarde cloud réussie !</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -3266,6 +3328,7 @@ function showView(name) {
   if (name === 'inventaire-materiel') renderInventaireMateriel();
   if (name === 'reglages') renderReglages();
   if (name === 'audit') renderAuditLog();
+  if (name === 'appareils') loadAppareilsView();
   if (name === 'notes') renderNotes();
   if (name === 'marge-prestations') renderMargePrestations();
 }
@@ -4303,7 +4366,7 @@ function renderRegistre() {
         <td style="text-align:right;"><span class="badge badge-${ps.statut}">${statusLabel(ps.statut)}</span>${ps.statut !== 'paye' && ps.statut !== 'indetermine' ? '<br><span style="font-size:11px; color:var(--muted);">' + fmtFCFA(ps.reste) + '</span>' : ''}</td>
         <td><button class="btn btn-ghost btn-sm" data-view-op="${o.id}">Ouvrir</button></td>
         <td><button class="btn btn-gold btn-sm" data-edit-op="${o.id}">Modifier</button></td>
-        <td>${ps.reste > 0 ? `<button class="btn btn-gold btn-sm" data-payer-op="${o.id}">💰 Payer</button>` : ''}</td>
+        <td>${o.type === 'DEVIS' ? `<button class="btn btn-ghost btn-sm" data-lien-devis="${o.id}" title="Générer un lien pour que le client accepte ce devis en ligne">🔗 Lien</button>` : (ps.reste > 0 ? `<button class="btn btn-gold btn-sm" data-payer-op="${o.id}">💰 Payer</button>` : '')}</td>
       </tr>`;
     }).join('')}</tbody></table>`;
     wrap.querySelectorAll('[data-view-op]').forEach(btn => {
@@ -4323,6 +4386,12 @@ function renderRegistre() {
       btn.addEventListener('click', () => {
         const op = ops.find(o => o.id === btn.dataset.payerOp);
         payerDepuisRegistre(op);
+      });
+    });
+    wrap.querySelectorAll('[data-lien-devis]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const op = ops.find(o => o.id === btn.dataset.lienDevis);
+        if (op) genererLienDevis(op);
       });
     });
   }
@@ -4414,8 +4483,62 @@ document.getElementById('btnExportAnnuel').addEventListener('click', () => {
    ===================================================================== */
 function renderPaiements() {
   document.getElementById('pay_date').value = document.getElementById('pay_date').value || todayIso();
+  // Initialiser la date caisse ERP avec aujourd'hui
+  const caisseDate = document.getElementById('caisse-erp-date');
+  if (caisseDate && !caisseDate.value) caisseDate.value = todayIso();
   renderAllocationTable();
   renderPaiementsHistory();
+}
+
+async function loadCaisseERP() {
+  const wrap = document.getElementById('caisse-erp-wrap');
+  const dateEl = document.getElementById('caisse-erp-date');
+  if (!wrap || !dateEl || !dateEl.value) return;
+  wrap.innerHTML = '<p style="color:var(--muted);font-style:italic;">Chargement…</p>';
+  const entity = getActiveEntity();
+  const docId = dateEl.value + '_' + entity;
+  try {
+    await ensureEquipeReady();
+    const doc = await equipeDb.collection('caisseJournaliere').doc(docId).get();
+    if (!doc.exists) {
+      wrap.innerHTML = `<p style="color:var(--muted);font-style:italic;">Aucune caisse pour le ${dateEl.value} (${entity}). Ouvrez l'app Manager et ajoutez des encaissements.</p>`;
+      return;
+    }
+    const jour = doc.data();
+    const modeIcons = { especes: '💵', cheque: '🏦', virement: '📲', carte: '💳' };
+    const totaux = { especes: 0, cheque: 0, virement: 0, carte: 0 };
+    (jour.encaissements || []).forEach(e => { if (totaux[e.mode] !== undefined) totaux[e.mode] += e.montant; });
+    totaux.total = totaux.especes + totaux.cheque + totaux.virement + totaux.carte;
+    const fmtM = v => (v || 0).toLocaleString('fr-FR') + ' F CFA';
+    const statutBadge = jour.statut === 'clos'
+      ? '<span style="background:rgba(39,174,96,0.12);color:#27AE60;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">🔒 Clôturée</span>'
+      : '<span style="background:rgba(243,156,18,0.12);color:#F39C12;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">⏳ En cours</span>';
+    const rows = (jour.encaissements || []).slice().reverse().map(e => `
+      <tr>
+        <td>${new Date(e.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td>${modeIcons[e.mode]||'💰'} ${e.mode}</td>
+        <td>${escapeHtml(e.client||'—')}</td>
+        <td style="text-align:right;font-weight:600;">${fmtM(e.montant)}</td>
+      </tr>`).join('');
+    wrap.innerHTML = `
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <strong>${dateEl.value}</strong> — ${entity} ${statutBadge}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px;">
+        ${Object.entries({especes:'💵 Espèces',cheque:'🏦 Chèques',virement:'📲 Virements',carte:'💳 Carte'}).map(([k,label])=>`
+          <div style="background:var(--beige-light);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:12px;color:var(--muted);">${label}</div>
+            <div style="font-size:16px;font-weight:700;color:var(--gold-deep);">${fmtM(totaux[k])}</div>
+          </div>`).join('')}
+        <div style="background:var(--beige-light);border:2px solid var(--gold);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:12px;color:var(--muted);">Total</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold-deep);">${fmtM(totaux.total)}</div>
+        </div>
+      </div>
+      ${rows ? `<table><thead><tr><th>Heure</th><th>Mode</th><th>Client</th><th style="text-align:right">Montant</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="hint">Aucun encaissement.</p>'}`;
+  } catch(e) {
+    wrap.innerHTML = `<p style="color:var(--red);">Erreur : ${escapeHtml(e.message)}<br><small>Vérifiez que la fonctionnalité Équipe est activée et que la collection <code>caisseJournaliere</code> est autorisée dans vos règles Firestore.</small></p>`;
+  }
 }
 
 function unpaidDocsForClient(clientId) {
@@ -6218,6 +6341,23 @@ function renderDetecterDoublonsCatalogue() {
 document.getElementById('btnDetecterDoublonsCatalogue').addEventListener('click', renderDetecterDoublonsCatalogue);
 
 let catalogueSelectionPourClient = new Set();
+let _ficheClientCible = null; // { id, nom } — rempli depuis la fiche client
+
+function preparerCatalogueClientDepuisFiche(clientId, clientNom) {
+  _ficheClientCible = { id: clientId, nom: clientNom };
+  catalogueSelectionPourClient.clear();
+  document.getElementById('cat_selectionCount').textContent = '0 article(s) sélectionné(s)';
+  // Naviguer vers la vue catalogue matériel + afficher un bandeau d'info
+  showView('inventaire-materiel');
+  const hint = document.getElementById('catalogueHintClient');
+  if (hint) {
+    hint.innerHTML = `📋 <strong>Catalogue pour : ${escapeHtml(clientNom)}</strong> — Cochez les articles à inclure puis cliquez sur "Générer le catalogue à envoyer". <button class="btn btn-ghost btn-sm" onclick="_ficheClientCible=null;this.closest('.hint').innerHTML='💡 Cochez des articles ci-dessous (assiettes, verres…) pour préparer un catalogue à envoyer à un client.'">✕ Annuler</button>`;
+    hint.style.background = '#FFF4D6';
+    hint.style.borderRadius = '6px';
+    hint.style.padding = '8px 12px';
+  }
+}
+
 document.getElementById('btnGenererCatalogueClient').addEventListener('click', genererCatalogueClient);
 function genererCatalogueClient() {
   if (!catalogueSelectionPourClient.size) { toast('Sélectionnez au moins un article.', true); return; }
@@ -6233,6 +6373,7 @@ function genererCatalogueClient() {
       </div>
     </div>
     <div class="doc-banner">CATALOGUE MATÉRIEL</div>
+    ${_ficheClientCible ? `<div style="text-align:center;font-size:13px;color:var(--gold-deep);font-weight:600;margin-bottom:8px;">Préparé pour : ${escapeHtml(_ficheClientCible.nom)}</div>` : ''}
     <div class="invmat-grid" style="margin-top:20px;">
       ${articles.map(c => `
         <div class="invmat-card">
@@ -9260,6 +9401,8 @@ function initEquipeIfConfigured() {
       equipeAuthReady = firebase.auth(equipeApp).signInAnonymously().catch(e => {
         console.warn('[Glidji] Auth anonyme Firebase échouée (' + e.code + ') — pour activer : console Firebase → Authentication → Sign-in providers → Anonyme → Activer. Les règles Firestore "request.auth != null" bloqueront toutes les opérations tant que cette étape n\'est pas faite.');
       });
+      // Enregistrer cet appareil après auth résolue (non bloquant)
+      equipeAuthReady.then(() => registerErpDevice()).catch(() => {});
     } else {
       equipeAuthReady = Promise.resolve();
     }
@@ -9280,6 +9423,408 @@ function initEquipeIfConfigured() {
 async function ensureEquipeReady() {
   if (!initEquipeIfConfigured()) throw new Error('Firebase non configuré ou désactivé dans Réglages → Fonctionnalité Équipe.');
   await equipeAuthReady;
+}
+
+/* ================================================================
+   DEVICE MANAGEMENT — Session 4
+================================================================ */
+function detectErpDeviceLabel() {
+  const ua = navigator.userAgent;
+  let os = 'Inconnu';
+  if (/iPhone|iPad/.test(ua)) os = /iPad/.test(ua) ? 'iPad' : 'iPhone';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Mac/.test(ua)) os = 'Mac';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  let browser = 'Navigateur';
+  if (/CriOS|Chrome/.test(ua) && !/Edg/.test(ua)) browser = 'Chrome';
+  else if (/Firefox/.test(ua)) browser = 'Firefox';
+  else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+  else if (/Edg/.test(ua)) browser = 'Edge';
+  return browser + ' / ' + os;
+}
+
+let _erpDeviceCheckInterval = null;
+
+async function registerErpDevice() {
+  try {
+    if (!equipeDb) return;
+    await equipeAuthReady;
+    const user = firebase.auth && equipeApp ? firebase.auth(equipeApp).currentUser : null;
+    if (!user) return;
+    const uid = user.uid;
+    await equipeDb.collection('appareilsConnectes').doc(uid).set({
+      uid,
+      appName: 'ERP',
+      deviceLabel: detectErpDeviceLabel(),
+      userAgent: navigator.userAgent.slice(0, 200),
+      entity: (typeof getCfg === 'function' ? (getCfg('entity') || 'GLIDJI') : 'ERP'),
+      lastSeen: new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    }, { merge: true });
+    checkErpIfBlocked(uid);
+    if (!_erpDeviceCheckInterval) {
+      _erpDeviceCheckInterval = setInterval(() => checkErpIfBlocked(uid), 5 * 60 * 1000);
+    }
+  } catch(e) {
+    console.warn('[ERP Device] registerErpDevice:', e.message);
+  }
+}
+
+async function checkErpIfBlocked(uid) {
+  try {
+    if (!equipeDb) return;
+    const doc = await equipeDb.collection('appareilsConnectes').doc(uid).get();
+    if (doc.exists && doc.data().blocked === true) {
+      const overlay = document.getElementById('erp-lockout-overlay');
+      if (overlay) { overlay.style.display = 'flex'; }
+    }
+    // lastSeen heartbeat
+    await equipeDb.collection('appareilsConnectes').doc(uid).set({ lastSeen: new Date().toISOString() }, { merge: true });
+  } catch(e) {
+    console.warn('[ERP Device] checkErpIfBlocked:', e.message);
+  }
+}
+
+async function loadAppareilsView() {
+  const container = document.getElementById('appareils-list');
+  if (!container) return;
+  container.innerHTML = '<p style="color:var(--muted);font-style:italic;">Chargement…</p>';
+  try {
+    await ensureEquipeReady();
+    const snap = await equipeDb.collection('appareilsConnectes').get();
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:var(--muted);font-style:italic;">Aucun appareil enregistré.</p>';
+      return;
+    }
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    // Trier : non-bloqués d'abord, puis par lastSeen décroissant
+    docs.sort((a, b) => {
+      if (a.blocked !== b.blocked) return a.blocked ? 1 : -1;
+      return (b.lastSeen || '').localeCompare(a.lastSeen || '');
+    });
+
+    const rows = docs.map(dev => {
+      const lastSeenFmt = dev.lastSeen
+        ? new Date(dev.lastSeen).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+        : '—';
+      const isBlocked = dev.blocked === true;
+      const statusBadge = isBlocked
+        ? '<span style="background:rgba(192,57,43,0.18);color:#C0392B;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">🔒 Bloqué</span>'
+        : '<span style="background:rgba(39,174,96,0.18);color:#27AE60;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">✅ Actif</span>';
+      const btnLabel = isBlocked ? '🔓 Débloquer' : '🔒 Bloquer';
+      const btnStyle = isBlocked
+        ? 'background:rgba(39,174,96,0.12);color:#27AE60;border:1px solid rgba(39,174,96,0.3);'
+        : 'background:rgba(192,57,43,0.12);color:#C0392B;border:1px solid rgba(192,57,43,0.3);';
+      return `
+        <div style="background:var(--beige-light);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div style="font-weight:700;margin-bottom:4px;">${escapeHtml(dev.deviceLabel || 'Appareil inconnu')}</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">App : <strong>${escapeHtml(dev.appName || '—')}</strong> &nbsp;|&nbsp; Entité : ${escapeHtml(dev.entity || '—')}</div>
+              <div style="font-size:11px;color:var(--muted);">Dernière activité : ${lastSeenFmt}</div>
+              <div style="font-size:11px;color:var(--muted);font-family:monospace;word-break:break-all;margin-top:2px;">UID : ${escapeHtml(dev.uid || '—')}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+              ${statusBadge}
+              <button style="border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;${btnStyle}"
+                onclick="toggleBlocageAppareil('${escapeHtml(dev.uid)}', ${isBlocked})">${btnLabel}</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+    container.innerHTML = rows;
+  } catch(e) {
+    container.innerHTML = `<p style="color:var(--red);">Erreur : ${escapeHtml(e.message)}<br><small>Vérifiez que la fonctionnalité Équipe est activée dans les Réglages et que la collection <code>appareilsConnectes</code> est autorisée dans vos règles Firestore.</small></p>`;
+  }
+}
+
+async function toggleBlocageAppareil(uid, currentlyBlocked) {
+  const newBlocked = !currentlyBlocked;
+  const action = newBlocked ? 'bloquer' : 'débloquer';
+  if (!confirm(`Confirmer : ${action} cet appareil ?`)) return;
+  try {
+    await ensureEquipeReady();
+    await equipeDb.collection('appareilsConnectes').doc(uid).set({ blocked: newBlocked }, { merge: true });
+    showToast(newBlocked ? '🔒 Appareil bloqué' : '🔓 Appareil débloqué');
+    await loadAppareilsView();
+  } catch(e) {
+    showToast('Erreur : ' + e.message, true);
+  }
+}
+
+/* ================================================================
+   SESSION 5 — ACCEPTATION DEVIS PAR LIEN UNIQUE
+================================================================ */
+let _clientDevisToken = null; // token actif en mode client
+
+function _genToken() {
+  // UUID v4 aléatoire (sans crypto.randomUUID pour compatibilité)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+async function genererLienDevis(op) {
+  if (!op) return;
+  // Vérifier si un token existe déjà pour cette opération
+  try {
+    await ensureEquipeReady();
+  } catch(e) {
+    // Sans Firebase, génère un lien avec données encodées en base64
+    _genererLienDevisLocal(op);
+    return;
+  }
+  try {
+    // Chercher token existant
+    const existing = await equipeDb.collection('devisTokens')
+      .where('operationId', '==', op.id).limit(1).get();
+    let token;
+    if (!existing.empty) {
+      token = existing.docs[0].id;
+    } else {
+      token = _genToken();
+      const snapshot = JSON.parse(JSON.stringify(op)); // deep clone
+      await equipeDb.collection('devisTokens').doc(token).set({
+        token,
+        operationId: op.id,
+        entity: getActiveEntity(),
+        statut: 'en_attente',
+        createdAt: new Date().toISOString(),
+        devisSnapshot: snapshot
+      });
+    }
+    const baseUrl = window.location.href.split('?')[0].split('#')[0];
+    const lien = baseUrl + '?devis_token=' + token;
+    _afficherLienDevis(lien, op, existing.empty ? null : existing.docs[0].data().statut);
+  } catch(e) {
+    toast('Erreur Firebase : ' + e.message);
+    _genererLienDevisLocal(op);
+  }
+}
+
+function _genererLienDevisLocal(op) {
+  // Fallback sans Firebase : encode les données essentielles en base64
+  try {
+    const minimal = {
+      id: op.id, numero: op.numero, clientNom: op.clientNom,
+      objet: op.objet, dateEmission: op.dateEmission,
+      montantFinal: op.montantFinal, items: op.items,
+      type: op.type
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(minimal))));
+    const baseUrl = window.location.href.split('?')[0].split('#')[0];
+    const lien = baseUrl + '?devis_data=' + encoded;
+    _afficherLienDevis(lien, op, null);
+  } catch(e) {
+    toast('Impossible de générer le lien.', true);
+  }
+}
+
+function _afficherLienDevis(lien, op, statut) {
+  const statutTxt = statut === 'accepte' ? ' ✅ (déjà accepté)' :
+                    statut === 'refuse'  ? ' ❌ (déjà refusé)' : '';
+  const html = `
+    <div style="padding:24px;">
+      <h3 style="margin-bottom:8px;">🔗 Lien client — Devis ${escapeHtml(op.numero||'')}${statutTxt}</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Partagez ce lien avec <strong>${escapeHtml(op.clientNom||'')}</strong> pour qu'il puisse consulter et accepter son devis en ligne.</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+        <input type="text" id="lien-devis-input" value="${escapeHtml(lien)}" readonly
+          style="flex:1;min-width:200px;padding:10px;background:var(--beige-light);border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace;">
+        <button class="btn btn-gold btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('lien-devis-input').value).then(()=>toast('Lien copié ✓'))">📋 Copier</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="https://wa.me/?text=${encodeURIComponent('Bonjour ' + (op.clientNom||'') + ', voici votre devis ' + (op.numero||'') + ' à consulter et accepter en ligne : ' + lien)}"
+           target="_blank" class="btn btn-ghost btn-sm">💬 Envoyer via WhatsApp</a>
+        <a href="mailto:?subject=${encodeURIComponent('Devis ' + (op.numero||''))}&body=${encodeURIComponent('Bonjour,\n\nVoici votre devis à consulter et accepter en ligne :\n' + lien + '\n\nCordialement.')}"
+           class="btn btn-ghost btn-sm">✉️ Envoyer par email</a>
+      </div>
+    </div>`;
+  // Afficher dans le panneau sr (saisie rapide) réutilisé comme modal générique
+  const srPanel = document.getElementById('srPanel');
+  const srOverlay = document.getElementById('srOverlay');
+  if (srPanel && srOverlay) {
+    // Sauvegarder le contenu original et le remplacer temporairement
+    const originalContent = srPanel.innerHTML;
+    srPanel.innerHTML = `<div style="padding:0;">
+      <div style="display:flex;justify-content:flex-end;padding:12px 16px 0;">
+        <button class="btn btn-ghost btn-sm" onclick="
+          document.getElementById('srPanel').innerHTML = this.closest('.sr-panel-inner')?this.closest('.sr-panel-inner').dataset.original||'':'';
+          document.getElementById('srOverlay').classList.remove('active');
+          document.getElementById('srPanel').classList.remove('active');
+        ">✕ Fermer</button>
+      </div>
+      ${html}
+    </div>`;
+    srOverlay.classList.add('active');
+    srPanel.classList.add('active');
+    // Bouton fermer simplifié
+    srPanel.querySelector('button').onclick = () => {
+      srOverlay.classList.remove('active');
+      srPanel.classList.remove('active');
+      srPanel.innerHTML = originalContent;
+      if (typeof initSaisieRapide === 'function') initSaisieRapide();
+    };
+  } else {
+    // Fallback : prompt natif
+    window.prompt('Copiez ce lien pour votre client :', lien);
+  }
+}
+
+// Détection du token dans l'URL au chargement
+async function checkDevisTokenUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('devis_token');
+  const dataB64 = params.get('devis_data');
+
+  if (!token && !dataB64) return;
+
+  const overlay = document.getElementById('client-devis-overlay');
+  if (!overlay) return;
+  overlay.style.display = 'block';
+
+  // Cacher tout le reste de l'app
+  document.querySelector('.app-wrapper') && (document.querySelector('.app-wrapper').style.display = 'none');
+  document.querySelector('body > div:not(#client-devis-overlay):not(#toast)') && null;
+
+  if (dataB64) {
+    // Mode local (pas de Firebase)
+    try {
+      const op = JSON.parse(decodeURIComponent(escape(atob(dataB64))));
+      _renderClientDevis(op, null, null);
+    } catch(e) {
+      document.getElementById('cdo-doc').innerHTML = '<p style="color:red;">Lien invalide ou expiré.</p>';
+    }
+    return;
+  }
+
+  // Mode Firebase
+  document.getElementById('cdo-doc').innerHTML = '<p style="text-align:center;color:#888;padding:32px;">Chargement du devis…</p>';
+  document.getElementById('cdo-actions').style.display = 'none';
+  _clientDevisToken = token;
+
+  try {
+    // Initialiser Firebase (lecture publique)
+    const cfg = getEquipeConfig();
+    if (cfg.enabled && cfg.configText && !equipeDb) {
+      initEquipeIfConfigured();
+      await equipeAuthReady;
+    }
+    if (!equipeDb) throw new Error('Firebase non configuré dans cet ERP.');
+    const doc = await equipeDb.collection('devisTokens').doc(token).get();
+    if (!doc.exists) {
+      document.getElementById('cdo-doc').innerHTML = '<p style="text-align:center;color:red;padding:32px;">Devis introuvable ou lien expiré.</p>';
+      return;
+    }
+    const data = doc.data();
+    _renderClientDevis(data.devisSnapshot, data.statut, data.entity);
+  } catch(e) {
+    document.getElementById('cdo-doc').innerHTML = `<p style="text-align:center;color:red;padding:32px;">Erreur : ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+function _renderClientDevis(op, statut, entity) {
+  const s = getSettings();
+  const societyName = s.nom || entity || 'Glidji';
+  document.getElementById('cdo-societe-nom').textContent = societyName;
+  document.getElementById('cdo-societe-sub').textContent = s.adresse || '';
+
+  const fmtMontant = v => (v || 0).toLocaleString('fr-FR') + ' F CFA';
+  const total = (op.items || []).reduce((sum, it) => sum + (it.qte || 0) * (it.prixUnitaire || 0), 0);
+
+  const itemsHtml = (op.items || []).map((it, i) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #eee;">${i+1}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(it.designation || '')}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${it.qte || 0}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">${fmtMontant(it.prixUnitaire)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;font-weight:600;">${fmtMontant((it.qte||0)*(it.prixUnitaire||0))}</td>
+    </tr>`).join('');
+
+  document.getElementById('cdo-doc').innerHTML = `
+    <div style="text-align:center;margin-bottom:20px;">
+      <h2 style="font-size:22px;font-weight:700;color:#1a1a1a;">DEVIS N° ${escapeHtml(op.numero||'—')}</h2>
+      <p style="color:#666;font-size:14px;">Date : ${op.dateEmission ? new Date(op.dateEmission+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}) : '—'}</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px;">
+      <div><strong>De :</strong><br>${escapeHtml(societyName)}</div>
+      <div style="text-align:right;"><strong>À :</strong><br>${escapeHtml(op.clientNom||'—')}</div>
+    </div>
+    <p style="margin-bottom:16px;"><strong>Objet :</strong> ${escapeHtml(op.objet||'—')}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
+      <thead><tr style="background:#f0ede6;">
+        <th style="padding:8px;text-align:left;">#</th>
+        <th style="padding:8px;text-align:left;">Désignation</th>
+        <th style="padding:8px;text-align:center;">Qté</th>
+        <th style="padding:8px;text-align:right;">P.U.</th>
+        <th style="padding:8px;text-align:right;">Total</th>
+      </tr></thead>
+      <tbody>${itemsHtml}</tbody>
+      <tfoot>
+        <tr style="background:#f0ede6;">
+          <td colspan="4" style="padding:10px;font-weight:700;text-align:right;">Total</td>
+          <td style="padding:10px;font-weight:700;text-align:right;font-size:16px;">${fmtMontant(op.montantFinal || total)}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <p style="font-size:12px;color:#999;text-align:center;">Ce devis est valable selon les conditions de ${escapeHtml(societyName)}.</p>`;
+
+  const actionsEl = document.getElementById('cdo-actions');
+  const statusEl = document.getElementById('cdo-status');
+
+  if (statut === 'accepte') {
+    actionsEl.style.display = 'none';
+    statusEl.style.display = 'block';
+    statusEl.className = 'cdo-status accepted';
+    statusEl.innerHTML = '✅ Devis accepté — merci !<br><small style="font-size:14px;font-weight:400;color:#555;">Notre équipe prendra contact avec vous prochainement.</small>';
+  } else if (statut === 'refuse') {
+    actionsEl.style.display = 'none';
+    statusEl.style.display = 'block';
+    statusEl.className = 'cdo-status declined';
+    statusEl.innerHTML = '❌ Devis refusé.<br><small style="font-size:14px;font-weight:400;color:#555;">N\'hésitez pas à nous contacter pour toute question.</small>';
+  } else {
+    actionsEl.style.display = 'flex';
+    statusEl.style.display = 'none';
+  }
+}
+
+async function repondreDevis(statut) {
+  const token = _clientDevisToken;
+  const actionsEl = document.getElementById('cdo-actions');
+  const statusEl = document.getElementById('cdo-status');
+  const msg = statut === 'accepte' ? 'Accepter ce devis ?' : 'Refuser ce devis ?';
+  if (!confirm(msg)) return;
+  actionsEl.style.display = 'none';
+  statusEl.style.display = 'block';
+  statusEl.className = 'cdo-status pending';
+  statusEl.textContent = 'Enregistrement…';
+
+  if (!token) {
+    // Mode local — juste un message
+    statusEl.className = 'cdo-status ' + (statut === 'accepte' ? 'accepted' : 'declined');
+    statusEl.innerHTML = statut === 'accepte'
+      ? '✅ Devis accepté — merci !<br><small>Votre réponse a bien été prise en compte.</small>'
+      : '❌ Devis refusé.<br><small>N\'hésitez pas à nous contacter.</small>';
+    return;
+  }
+
+  try {
+    if (!equipeDb) throw new Error('Firebase non disponible');
+    await equipeDb.collection('devisTokens').doc(token).set({
+      statut,
+      respondedAt: new Date().toISOString()
+    }, { merge: true });
+    statusEl.className = 'cdo-status ' + (statut === 'accepte' ? 'accepted' : 'declined');
+    statusEl.innerHTML = statut === 'accepte'
+      ? '✅ Devis accepté — merci !<br><small style="font-size:14px;font-weight:400;color:#555;">Notre équipe prendra contact avec vous prochainement.</small>'
+      : '❌ Devis refusé.<br><small style="font-size:14px;font-weight:400;color:#555;">N\'hésitez pas à nous contacter pour toute question.</small>';
+  } catch(e) {
+    statusEl.className = 'cdo-status';
+    statusEl.innerHTML = '<span style="color:red;">Erreur : ' + escapeHtml(e.message) + '</span><br><small>Votre réponse n\'a pas pu être enregistrée.</small>';
+    actionsEl.style.display = 'flex';
+  }
 }
 
 async function testEquipeConnection() {
@@ -11137,6 +11682,11 @@ function renderFicheClient() {
     </div>
     ${client.preferences ? `<div class="fe-notes-alert"><div class="fe-notes-label">⚠️ Allergies / préférences alimentaires</div><div class="fe-notes-body">${escapeHtml(client.preferences)}</div></div>` : ''}
     ${client.notes ? `<div style="background:var(--platinum-light); border-radius:var(--radius); padding:10px 14px; margin-bottom:16px; font-size:13px;"><strong>Notes :</strong> ${escapeHtml(client.notes)}</div>` : ''}
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
+      ${client.tel ? `<a href="tel:${escapeHtml(client.tel.replace(/\s+/g,''))}" class="btn btn-ghost btn-sm">📞 Appeler</a>` : ''}
+      ${client.tel ? `<a href="https://wa.me/${escapeHtml(client.tel.replace(/\D/g,''))}" target="_blank" class="btn btn-ghost btn-sm">💬 WhatsApp</a>` : ''}
+      <button class="btn btn-gold btn-sm" onclick="preparerCatalogueClientDepuisFiche('${client.id}', '${escapeHtml(client.nom).replace(/'/g,"\\'")}')">📦 Préparer un catalogue</button>
+    </div>
     <div class="stat-grid" style="margin-bottom:20px;">
       <div class="stat-card"><div class="num">${fmtFCFA(totalFacture)}</div><div class="lbl">Total facturé</div></div>
       <div class="stat-card"><div class="num">${fmtFCFA(totalAvances)}</div><div class="lbl">Avances perçues à la facturation</div></div>
@@ -12311,6 +12861,14 @@ function exportMargeCsv() {
 }
 
 function init() {
+  // Session 5 : vérifier si on est en mode "vue client devis" avant tout
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('devis_token') || urlParams.has('devis_data')) {
+    // Mode client : initialiser Firebase silencieusement puis afficher le devis
+    initEquipeIfConfigured();
+    checkDevisTokenUrl();
+    return; // Ne pas lancer l'app normale
+  }
   if (checkAppLock()) return; // initApp() sera appelee juste apres un deverrouillage reussi
   initApp();
 }
