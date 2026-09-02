@@ -539,8 +539,8 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="registre">Registre</button>
       <button data-view="paiements">Paiements</button>
       <button data-view="relances">Relances <span id="relancesBadge" style="display:none; background:var(--burgundy); color:#fff; font-size:10px; font-weight:700; border-radius:8px; padding:1px 5px; margin-left:4px; vertical-align:middle;"></span></button>
-      <button data-view="cantine" class="">Cantine</button>
-      <button data-view="achats">Achats</button>
+      <button data-view="cantine">Cantine</button>
+      <button data-view="achats" class="">Achats</button>
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
@@ -570,14 +570,14 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     <button data-cat="accueil" class="" onclick="showHubCat('accueil')">
       <span class="hn-ico">🏠</span>Accueil
     </button>
-    <button data-cat="commercial" onclick="showHubCat('commercial')" class="">
+    <button data-cat="commercial" onclick="showHubCat('commercial')">
       <span class="hn-ico">💼</span>Commercial
       <span class="hn-badge" id="hubBadgeCommercial" style="display:none;"></span>
     </button>
     <button data-cat="catalogue" onclick="showHubCat('catalogue')">
       <span class="hn-ico">🍽️</span>Catalogue
     </button>
-    <button data-cat="stock" onclick="showHubCat('stock')">
+    <button data-cat="stock" onclick="showHubCat('stock')" class="">
       <span class="hn-ico">📦</span>Stock
     </button>
     <button data-cat="equipe" onclick="showHubCat('equipe')">
@@ -854,18 +854,9 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         </div>
         <table style="margin-top:10px;">
           <thead><tr><th style="width:140px;">Date</th><th>Repas</th><th style="width:140px;">Montant (FCFA)</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="cantRepasBody">
-    <tr>
-      <td><input type="date" data-cant="0" data-field="date"></td>
-      <td><input type="text" data-cant="0" data-field="designation" list="cant_designations" placeholder="Ex : Salade d'avocat et assiette de fruits"></td>
-      <td><input type="number" class="num" data-cant="0" data-field="montant" min="0"></td>
-      <td><button class="row-remove" data-cant-remove="0" title="Retirer">✕</button></td>
-    </tr></tbody>
+          <tbody id="cantRepasBody"></tbody>
         </table>
-        <datalist id="cant_designations"><option value="1 gravlax"></option><option value="Blanc de poulet 
-Filet de boeuf grillé 
-Salade de laitue"></option><option value="Blanc de poulet salade"></option><option value="Deux pattes Au thon"></option><option value="Filet de boeuf/Poêlé de légumes, Amanda"></option><option value="Filet de bœuf salade de laitue"></option><option value="Omelette aux légumes/salade de laitue"></option><option value="Riz sauce provençale avec filet de poisson"></option><option value="Salade de chou et de carotte"></option><option value="Sauce gombo, pâte de maïs 
-Portion de légumes"></option></datalist>
+        <datalist id="cant_designations"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddCantRow" style="margin-top:10px;">+ Ajouter une ligne</button>
         <div style="margin-top:14px;">
           <button class="btn btn-gold" id="btnSaveCantRepas">Enregistrer ces repas →</button>
@@ -876,106 +867,14 @@ Portion de légumes"></option></datalist>
         <h2>Repas en attente de facturation</h2>
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
           <button class="btn btn-ghost btn-sm" id="btnPullCommandes">🔄 Récupérer les commandes de l'équipe</button>
-          <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);">Aucune nouvelle commande — 9 commande(s) de l'équipe déjà en attente ci-dessous (à facturer).</span>
+          <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);"></span>
         </div>
-        <div id="cantPendingWrap"><div class="cant-client-group" data-client="mt45u9kn9wnncj">
-      <h3>M D'Almeida</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt703o6ayja5ay" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>21/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Filet de bœuf salade de laitue</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt703o6ayja5ay" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt703o6ayja5ay" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt703o6a4u2222" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>21/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Blanc de poulet salade</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt703o6a4u2222" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt703o6a4u2222" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyv5wpwt" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>24/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Riz sauce provençale avec filet de poisson</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyv5wpwt" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyv5wpwt" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyxym26x" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>24/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Salade de chou et de carotte</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyxym26x" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyxym26x" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt8tq6x5mun1ae" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>25/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Sauce gombo, pâte de maïs 
-Portion de légumes</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt8tq6x5mun1ae" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt8tq6x5mun1ae" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtbf3bl34crw5h" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>26/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Filet de boeuf/Poêlé de légumes, Amanda</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtbf3bl34crw5h" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtbf3bl34crw5h" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtbf3bl4yv25l4" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>26/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Omelette aux légumes/salade de laitue</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtbf3bl4yv25l4" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtbf3bl4yv25l4" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="mt45u9kn9wnncj">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="mt45u9kn9wnncj" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div><div class="cant-client-group" data-client="5t5cim9qtzra">
-      <h3>(À préciser)</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mt701gvyqevo6k" data-client="5t5cim9qtzra" checked=""></td>
-          <td>19/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Deux pattes Au thon</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mt701gvyqevo6k" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mt701gvyqevo6k" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="5t5cim9qtzra">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="5t5cim9qtzra" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div><div class="cant-client-group" data-client="mt70b29w602uqw">
-      <h3>M Gile</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtelp8fwktbfda" data-client="mt70b29w602uqw" checked=""></td>
-          <td>29/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>1 gravlax</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtelp8fwktbfda" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtelp8fwktbfda" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="mt70b29w602uqw">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="mt70b29w602uqw" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div></div>
+        <div id="cantPendingWrap"></div>
       </div>
 
       <div class="card">
         <h2>Historique des factures cantine</h2>
-        <div id="cantHistoryWrap"><table><thead><tr>
-    <th>Date</th><th>N°</th><th>Client</th><th>Période</th><th style="text-align:right">Montant</th><th style="text-align:right">Statut</th><th></th>
-  </tr></thead><tbody><tr>
-      <td>24/08/2026</td>
-      <td>039/GC/08/2026</td>
-      <td>Mme Dossou D'Almeida</td>
-      <td>Repas cantine du 21/08/2026 au 21/08/2026</td>
-      <td style="text-align:right; font-weight:600;">1 FCFA</td>
-      <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-      <td><button class="btn btn-ghost btn-sm" data-view-op="mt7058foz0z6iz">Ouvrir</button></td>
-    </tr></tbody></table></div>
+        <div id="cantHistoryWrap"></div>
       </div>
     </section>
 
@@ -1024,7 +923,7 @@ Portion de légumes</td>
         </div>
         <button class="btn btn-gold btn-sm" id="btnAddProduit">+ Ajouter au catalogue</button>
         <button class="btn btn-ghost btn-sm" id="btnAnnulerEditProduit" style="display:none; margin-left:8px;">✖ Annuler la modification</button>
-        <div id="produitsListWrap" style="margin-top:14px;"></div>
+        <div id="produitsListWrap" style="margin-top:14px;"><div class="empty" style="padding:16px;"><div class="icon">📦</div>Aucun article dans le catalogue pour l'instant — ajoutez-en un ci-dessus.</div></div>
       </div>
 
       <div class="card">
@@ -1055,7 +954,14 @@ Portion de légumes</td>
         </div>
         <table>
           <thead><tr><th>Article</th><th style="width:100px;">Quantité</th><th style="width:130px;">Prix unitaire</th><th style="width:120px;">Sous-total</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="achLignesBody"></tbody>
+          <tbody id="achLignesBody">
+    <tr>
+      <td><input type="text" data-ach="0" data-field="produitNom" list="ach_produits_datalist" placeholder="Nom de l'article"></td>
+      <td><input type="number" data-ach="0" data-field="quantite" min="0" step="any"></td>
+      <td><input type="number" data-ach="0" data-field="prixUnitaire" min="0"></td>
+      <td class="num">0 FCFA</td>
+      <td><button class="row-remove" data-ach-remove="0" title="Retirer">✕</button></td>
+    </tr></tbody>
         </table>
         <datalist id="ach_produits_datalist"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddAchLigne" style="margin-top:10px;">+ Ajouter une ligne</button>
@@ -1074,7 +980,7 @@ Portion de légumes</td>
 
       <div class="card">
         <h2>Devis à comparer <small>Devis reçus de plusieurs fournisseurs, regroupés par article, pour choisir avant de confirmer.</small></h2>
-        <div id="devisComparaisonWrap"></div>
+        <div id="devisComparaisonWrap"><p class="hint">Aucun devis en attente de comparaison.</p></div>
       </div>
 
       <div class="card">
@@ -1083,7 +989,7 @@ Portion de légumes</td>
           <label>Article</label>
           <input type="text" id="comp_article" list="ach_produits_datalist" placeholder="Choisir ou taper un article">
         </div>
-        <div id="comparateurPrixWrap"></div>
+        <div id="comparateurPrixWrap"><p class="hint">Tapez un nom d'article ci-dessus pour voir son historique de prix par fournisseur.</p></div>
       </div>
 
       <div class="card">
@@ -1092,13 +998,24 @@ Portion de légumes</td>
         <div class="search-row">
           <input type="text" id="ach_search" placeholder="Rechercher un fournisseur, un article…">
           <select id="ach_filterCategorie"><option value="">Toutes catégories</option></select>
-          <select id="ach_filterYear"><option value="">Toutes les années</option></select>
+          <select id="ach_filterYear"><option value="">Toutes les années</option><option value="2026">2026</option></select>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 0;">
           <button class="btn btn-ghost btn-sm" id="btnExportAchatsCsv">⬇ Exporter en CSV</button>
-          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">0 FCFA</strong></div>
+          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">2 340 FCFA</strong></div>
         </div>
-        <div id="achatsTableWrap"></div>
+        <div id="achatsTableWrap"><table><thead><tr>
+      <th>Date</th><th>Fournisseur</th><th>Articles</th><th>Pour</th><th style="text-align:right">Total</th><th></th><th></th>
+    </tr></thead><tbody>
+      <tr>
+        <td>26/08/2026</td>
+        <td><a href="#" data-voir-fournisseur="champion" style="color:var(--gold-deep);">champion</a></td>
+        <td style="font-size:12px;">sacpoubelle (2)</td>
+        <td><span class="hint">Provision générale</span></td>
+        <td style="text-align:right; font-weight:600;">2 340 FCFA</td>
+        <td><button class="btn btn-ghost btn-sm" data-edit-achat="mtab92niqa5qkb">✏️ Modifier</button></td>
+        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtab92niqa5qkb">Supprimer</button></td>
+      </tr></tbody></table></div>
       </div>
 
       <div class="card">
@@ -1107,10 +1024,51 @@ Portion de légumes</td>
           <button class="btn btn-ghost btn-sm" id="btnSyncCaisseEquipe">🔄 Synchroniser avec l'équipe</button>
         </div>
         <div class="hint" id="caisseSyncStatus" style="margin-bottom:10px;"></div>
-        <div id="caisseCompteActifWrap"></div>
+        <div id="caisseCompteActifWrap">
+    <div class="totals" style="margin-bottom:14px;">
+      <div class="l sub"><span>Total des avances reçues</span><span>30 000 FCFA</span></div>
+      <div class="l sub"><span>Total dépensé</span><span>0 FCFA</span></div>
+      <div class="l grand"><span>Solde disponible</span><span style="color:#3a6b2a;">30 000 FCFA</span></div>
+    </div>
+
+    <div class="grid cols-3" style="margin-bottom:8px;">
+      <div class="field"><label>Ajouter une avance</label><input type="number" id="caisse_montantAvance" min="0" placeholder="Montant"></div>
+      <div class="field"><label>Par</label><input type="text" id="caisse_auteurAvance" placeholder="Votre nom"></div>
+      <button class="btn btn-gold btn-sm" id="btnAjouterAvanceCaisse" style="margin-bottom:14px;">+ Avance</button>
+    </div>
+    <div class="grid cols-3" style="margin-bottom:8px;">
+      <div class="field"><label>Ajouter une dépense</label><input type="text" id="caisse_nomDepense" placeholder="Ex : Carottes"></div>
+      <div class="field"><label>Montant</label><input type="number" id="caisse_montantDepense" min="0"></div>
+      <button class="btn btn-ghost btn-sm" id="btnAjouterDepenseCaisse" style="margin-bottom:14px;">+ Dépense</button>
+    </div>
+
+    <button class="btn btn-danger btn-sm" id="btnCloturerCompteCaisse">🔒 Clôturer ce compte</button>
+
+    <h3 style="font-size:14px; margin:20px 0 8px;">Mouvements (1)</h3>
+    <table><thead><tr>
+      <th>Date</th><th>Type</th><th>Détail</th><th style="text-align:right">Montant</th><th>Par</th><th></th>
+    </tr></thead><tbody>
+      <tr>
+        <td>01/09/2026</td>
+        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
+        <td>—</td>
+        <td style="text-align:right; font-weight:600;">30 000 FCFA</td>
+        <td>gile</td>
+        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtiweyvbt2lf17" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
+      </tr></tbody></table>
+  </div>
 
         <h3 style="font-size:14px; margin:24px 0 8px;">Comptes précédents (clôturés)</h3>
-        <div id="caisseHistoriqueWrap"></div>
+        <div id="caisseHistoriqueWrap"><table><thead><tr>
+    <th>Clôturé vers le</th><th style="text-align:right">Avances</th><th style="text-align:right">Dépenses</th><th style="text-align:right">Solde final</th><th>Mouvements</th>
+  </tr></thead><tbody>
+    <tr>
+      <td>01/09/2026</td>
+      <td style="text-align:right;">401 383 FCFA</td>
+      <td style="text-align:right;">415 316 FCFA</td>
+      <td style="text-align:right; font-weight:700; color:var(--burgundy);">-13 933 FCFA</td>
+      <td>87</td>
+    </tr></tbody></table></div>
       </div>
     </section>
 
@@ -1594,21 +1552,7 @@ Portion de légumes</td>
         <p class="hint">Ces achats proviennent de l'application Équipe via Firebase. Une connexion Firebase active est nécessaire.</p>
         <button class="btn btn-gold btn-sm" id="btnRefreshAchatsEquipe" onclick="renderAchatsEquipe()">🔄 Actualiser</button>
       </div>
-      <div id="achatsEquipeWrap"><div class="achat-card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div><strong>Clément</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
-          <div style="font-size:11px;color:var(--muted);">2026-08-26 18:09</div>
-        </div>
-        <div class="achat-ligne"><span>Sucre en poudre</span><span>750 FCFA</span></div><div class="achat-ligne"><span>Herbes de Provence</span><span>2 550 FCFA</span></div><div class="achat-ligne"><span>Miel naturel 1l</span><span>5 600 FCFA</span></div><div class="achat-ligne"><span>Vin domaine de la reine</span><span>1 400 FCFA</span></div><div class="achat-ligne"><span>Brocoli</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Grille a large bord</span><span>800 FCFA</span></div><div class="achat-ligne"><span>Four European noir</span><span>12 000 FCFA</span></div><div class="achat-ligne"><span>Pomme de terre</span><span>4 000 FCFA</span></div><div class="achat-ligne"><span>Ail</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Oignon</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Romarin frais</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Hibiscus</span><span>700 FCFA</span></div><div class="achat-ligne"><span>Fruit de la passion</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Betterave</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Beurre</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Crème fraîche</span><span>6 600 FCFA</span></div><div class="achat-ligne"><span>Foie gras</span><span>23 000 FCFA</span></div><div class="achat-ligne"><span>Parmesan</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Gambas 3,6k</span><span>36 000 FCFA</span></div><div class="achat-ligne"><span>Mandoline</span><span>6 000 FCFA</span></div><div class="achat-ligne"><span>Câble gaz ×2</span><span>10 900 FCFA</span></div><div class="achat-ligne"><span>Transport achats</span><span>1 500 FCFA</span></div>
-        <div class="achat-total"><span>Total</span><span>129 800 FCFA</span></div>
-      </div><div class="achat-card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div><strong>Gile</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
-          <div style="font-size:11px;color:var(--muted);">2026-08-26 16:01</div>
-        </div>
-        <div class="achat-ligne"><span>Sac poubelle</span><span>2 340 FCFA</span></div><div class="achat-ligne"><span>Raisin sec 1kg</span><span>4 800 FCFA</span></div>
-        <div class="achat-total"><span>Total</span><span>7 140 FCFA</span></div>
-      </div></div>
+      <div id="achatsEquipeWrap"><p class="hint">Cliquez sur Actualiser pour charger les achats.</p></div>
     </section>
 
     <section class="view" id="view-prestations">
@@ -1926,7 +1870,7 @@ Portion de légumes</td>
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
       <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
-      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-01).</p>
+      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-02).</p>
       
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
@@ -1949,7 +1893,7 @@ Portion de légumes</td>
     </div>
     
       <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
-      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-01).</p>
+      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-02).</p>
       
     
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
@@ -2027,7 +1971,7 @@ const firebaseConfig = {
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">✅ 15 fiches équipe envoyées vers le cloud.</div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
     </section>
@@ -2058,11 +2002,11 @@ const firebaseConfig = {
           <span class="hub-module-arrow">›</span>
         </div>
         <!-- ── SYNCHRONISATION TOUT EN UN ── -->
-        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background: linear-gradient(135deg, rgb(13, 26, 13), rgb(10, 18, 10)); border: 1px solid rgb(42, 90, 42);">
-          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">✅</div>
+        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background:linear-gradient(135deg,#0d1a0d,#0a120a);border:1px solid #2a5a2a;">
+          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">🔄</div>
           <div class="hub-module-body">
             <div class="hub-module-name" style="color:#7ecb9a;">Tout synchroniser</div>
-            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Dernière sync : 14:59</div>
+            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Cantine, achats, inventaire, factures mobiles</div>
           </div>
           <span class="hub-module-arrow" style="color:#7ecb9a;">›</span>
         </div>
@@ -2379,7 +2323,7 @@ const firebaseConfig = {
   <div style="font-size:14px;color:#888;line-height:1.6;">Cet appareil a été bloqué par l'administrateur.<br>Contactez votre responsable pour rétablir l'accès.</div>
 </div>
 
-<div class="toast" id="toast">✅ Dépôt vérifié !</div>
+<div class="toast show" id="toast">✅ Dépôt vérifié !</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -2477,8 +2421,73 @@ const DB = new Proxy({}, {
   },
 });
 
+/* =====================================================================
+   STOCKAGE LOCAL — IndexedDB + cache mémoire
+   IndexedDB remplace localStorage comme stockage principal :
+   même navigateur, même dossier physique (file://), hors ligne complet,
+   mais sans la limite 5-10 Mo de localStorage. Capacité illimitée.
+   load() reste synchrone grâce au cache mémoire (_store).
+   localStorage reste utilisé en best-effort (écriture parallèle) pour
+   la compatibilité avec les anciens backups et lectures directes.
+   ===================================================================== */
+const _IDB_NAME  = 'GlidjiERP_v1';
+const _IDB_STORE = 'keyval';
+let   _idbDb     = null;
+const _store     = {}; // Cache mémoire — chargé depuis IDB au démarrage, synchrone
+
+function _idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(_IDB_NAME, 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(_IDB_STORE);
+    req.onsuccess  = e  => { _idbDb = e.target.result; resolve(); };
+    req.onerror    = () => reject(req.error);
+  });
+}
+function _idbLoadAll() {
+  return new Promise(resolve => {
+    if (!_idbDb) { resolve(); return; }
+    const req = _idbDb.transaction(_IDB_STORE, 'readonly').objectStore(_IDB_STORE).openCursor();
+    req.onsuccess = e => {
+      const cur = e.target.result;
+      if (cur) { _store[cur.key] = cur.value; cur.continue(); } else resolve();
+    };
+    req.onerror = () => resolve();
+  });
+}
+function _idbPut(key, value) {
+  if (!_idbDb) return;
+  try {
+    _idbDb.transaction(_IDB_STORE, 'readwrite').objectStore(_IDB_STORE).put(value, key);
+  } catch(e) { console.warn('[IDB] write:', e.message); }
+}
+async function initStorage() {
+  try {
+    await _idbOpen();
+    await _idbLoadAll();
+    // Migration automatique depuis localStorage — une seule fois
+    const migKey = '_glidji_idb_migrated_v1';
+    if (!_store[migKey]) {
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || !k.startsWith('glidji_')) continue;
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) { const v = JSON.parse(raw); _store[k] = v; _idbPut(k, v); count++; }
+        } catch(_) {}
+      }
+      _store[migKey] = true; _idbPut(migKey, true);
+      if (count > 0) console.log('[IDB] Migration localStorage → IDB : ' + count + ' clés migrées.');
+    }
+  } catch(e) {
+    console.warn('[IDB] Init échoué, fallback localStorage :', e.message);
+  }
+}
+
 function load(key, fallback) {
   try {
+    if (key in _store) return _store[key];
+    // Fallback localStorage si IDB pas encore chargé (ne devrait pas arriver en prod)
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallback;
   } catch (e) { return fallback; }
@@ -2487,8 +2496,6 @@ let lastStorageErrorAt = 0;
 function save(key, value) {
   try {
     // Timestamp de modification — indispensable à la résolution de conflits Firestore
-    // (le plus récent gagne). On n'étampe que les items sans updatedAt pour ne pas
-    // écraser un timestamp plus récent posé par un autre appareil.
     if (Array.isArray(value)) {
       const now = new Date().toISOString();
       value.forEach(item => {
@@ -2497,21 +2504,21 @@ function save(key, value) {
         }
       });
     }
-    // Capture l'ancienne valeur AVANT d'écraser, pour détecter les suppressions côté Firestore
-    let oldArr = null;
-    try { const r = localStorage.getItem(key); if (r) oldArr = JSON.parse(r); } catch(_) {}
-    localStorage.setItem(key, JSON.stringify(value));
-    firestoreSyncKey(key, value, oldArr); // push cloud silencieux, best-effort
+    const oldArr = _store[key] ?? null;
+    // 1. Cache mémoire — instantané, synchrone
+    _store[key] = value;
+    // 2. IndexedDB — asynchrone, non-bloquant, illimité
+    _idbPut(key, value);
+    // 3. localStorage — best-effort, peut échouer si plein (non-bloquant)
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(_) {}
+    // 4. Sync Firebase — inchangé, best-effort cloud
+    firestoreSyncKey(key, value, oldArr);
   } catch (e) {
-    console.error('Échec d\'enregistrement local (' + key + '):', e);
-    // Evite le spam si plusieurs save() echouent en cascade pour une meme action
+    console.error('Échec save (' + key + '):', e);
     const now = Date.now();
     if (now - lastStorageErrorAt > 3000) {
       lastStorageErrorAt = now;
-      const msg = (e.name === 'QuotaExceededError')
-        ? '⛔ Stockage du navigateur plein — cette modification n\'a PAS été enregistrée. Faites une sauvegarde (Réglages) puis libérez de l\'espace ou changez de navigateur.'
-        : '⛔ Échec d\'enregistrement local : ' + e.message + ' — cette modification n\'a peut-être PAS été enregistrée.';
-      if (typeof toast === 'function') toast(msg, true);
+      if (typeof toast === 'function') toast('⛔ Erreur d\'enregistrement : ' + e.message, true);
     }
   }
 }
@@ -10124,13 +10131,20 @@ async function pullCommandesCantine(silent = false) {
   if (statusEl) statusEl.textContent = 'Récupération en cours…';
   const CHUNK_SIZE = 400;
   try {
-    const snap = await withTimeout(equipeDb.collection('commandesCantine').where('synced', '==', false).get(), 15000, 'récupération des commandes');
+    // On tire TOUTES les commandes (sans filtre synced ni date) :
+    // multi-ordinateurs = localStorage différent par machine, donc on ne peut pas
+    // se fier à "synced == false". La déduplication par remoteId gère les doublons.
+    // Limite 1000 largement suffisante pour une TPME.
+    const snap = await withTimeout(
+      equipeDb.collection('commandesCantine').limit(1000).get(),
+      15000, 'récupération des commandes'
+    );
     if (snap.empty) {
       const enAttenteLocaux = load(DB.cantineRepas, []).filter(r => !r.factureId && r.source === 'equipe');
       const nbLocal = enAttenteLocaux.length;
       const msg = nbLocal > 0
-        ? `Aucune nouvelle commande — ${nbLocal} commande(s) de l'équipe déjà en attente ci-dessous (à facturer).`
-        : 'Aucune nouvelle commande à récupérer.';
+        ? `Aucune commande équipe dans Firebase — ${nbLocal} commande(s) déjà en attente ci-dessous (à facturer).`
+        : 'Aucune commande équipe dans Firebase.';
       if (statusEl) statusEl.textContent = msg;
       toast(msg);
       return;
@@ -10192,8 +10206,10 @@ async function pullCommandesCantine(silent = false) {
       }
     }
 
-    if (statusEl) statusEl.textContent = count + ' commande(s) récupérée(s) le ' + new Date().toLocaleString('fr-FR');
-    const toastMsg = count + ' commande(s) de l\'équipe récupérée(s)' + (countSuggested ? ', ' + countSuggested + ' prix suggéré(s) automatiquement (à vérifier)' : '') + (countIgnores ? ' (' + countIgnores + ' déjà présentes, ignorées)' : '') + '.';
+    if (statusEl) statusEl.textContent = count + ' commande(s) récupérée(s) le ' + new Date().toLocaleString('fr-FR') + (countIgnores ? ' — ' + countIgnores + ' déjà présentes (ignorées)' : '');
+    const toastMsg = count > 0
+      ? count + ' commande(s) de l\'équipe récupérée(s)' + (countSuggested ? ', ' + countSuggested + ' prix suggéré(s) automatiquement (à vérifier)' : '') + (countIgnores ? ' (' + countIgnores + ' déjà présentes, ignorées)' : '') + '.'
+      : 'Toutes les commandes Firebase sont déjà présentes localement (' + countIgnores + ' au total).';
     if (!silent || count > 0) toast(toastMsg);
     if (count > 0) logAudit('commandes_cantine_recuperees', count + ' commande(s) — par ' + [...auteursImplique].join(', '));
     renderCantine();
@@ -12976,16 +12992,18 @@ function exportMargeCsv() {
 }
 
 function init() {
-  // Session 5 : vérifier si on est en mode "vue client devis" avant tout
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('devis_token') || urlParams.has('devis_data')) {
-    // Mode client : initialiser Firebase silencieusement puis afficher le devis
-    initEquipeIfConfigured();
-    checkDevisTokenUrl();
-    return; // Ne pas lancer l'app normale
-  }
-  if (checkAppLock()) return; // initApp() sera appelee juste apres un deverrouillage reussi
-  initApp();
+  // IndexedDB s'initialise avant tout le reste — instantané (~50ms)
+  // puis le reste du démarrage se fait normalement (devis, verrouillage, initApp)
+  initStorage().then(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('devis_token') || urlParams.has('devis_data')) {
+      initEquipeIfConfigured();
+      checkDevisTokenUrl();
+      return;
+    }
+    if (checkAppLock()) return;
+    initApp();
+  });
 }
 init();
 
