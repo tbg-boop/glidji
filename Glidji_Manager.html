@@ -281,6 +281,40 @@ body { overflow-x: hidden; }
 .entity-option .ename { font-size: 14px; font-weight: 700; }
 .entity-option .ecode { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
+/* ---- SAISIE RAPIDE (FAB + panneau) ---- */
+.sr-fab {
+  position: fixed; right: 18px; bottom: calc(var(--tab-h) + 18px + var(--safe-bottom));
+  width: 58px; height: 58px; border-radius: 50%; border: none;
+  background: var(--gold); color: var(--onyx); font-size: 26px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.45); cursor: pointer; z-index: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.sr-fab:active { transform: scale(.93); }
+.sr-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 9998;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.sr-panel {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 18px 18px 0 0; padding: 20px 18px calc(28px + var(--safe-bottom));
+  width: 100%; max-width: 500px; max-height: 88vh; overflow-y: auto;
+}
+.sr-panel h3 { font-size: 17px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
+.sr-panel .sr-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.sr-type-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.sr-type-btn {
+  flex: 1; padding: 11px 6px; border-radius: 10px; cursor: pointer;
+  background: var(--dark3); border: 2px solid var(--border); color: var(--text);
+  font-size: 13px; font-weight: 700;
+}
+.sr-type-btn.selected { border-color: var(--gold); color: var(--gold); }
+.sr-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: var(--dark3); border-radius: 10px; margin: 14px 0;
+}
+.sr-total span { font-size: 13px; color: var(--muted); }
+.sr-total strong { font-size: 19px; color: var(--gold); }
+
 /* ---- SHARE SHEET ---- */
 .share-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9999;
@@ -303,7 +337,7 @@ body { overflow-x: hidden; }
 .share-btn-copy   { background: var(--dark3); border: 1px solid var(--border); color: var(--text); }
 .share-btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); font-weight: 400; }
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb512114" type="text/javascript" charset="UTF-8" gapi_processed="true"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb579342" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <!-- ========================================================
@@ -404,13 +438,29 @@ projectId: &quot;...&quot;,
   <div class="content-area" id="content-area">
     <!-- FACTURES -->
     <div id="panel-factures" class="panel">
-      <div id="factures-list-view" style="display: block;">
+      <div id="factures-list-view">
         <div class="factures-list-header">
           <div class="panel-title" style="margin-bottom:0;">📑 Factures</div>
           <button class="btn btn-gold btn-sm" onclick="startNewFacture()">+ Nouvelle</button>
         </div>
         <p class="panel-sub" style="margin-top:6px;">Factures créées depuis ce téléphone</p>
         <div id="factures-list"><div class="card">
+      <div class="card-row">
+        <div class="fw7 text-gold">002m/GC/09/2026</div>
+        <span class="badge badge-orange">En attente</span>
+      </div>
+      <div class="card-row mt8">
+        <div><span class="fs13 fw7">R\L\ TRADITION ET UNIVERSALITES N°042</span> <span class="tag">PROFORMA</span></div>
+        <div class="fs12 text-muted">06/09/2026</div>
+      </div>
+      <div class="card-row mt8">
+        <div class="fs12 text-muted">Agape TSR</div>
+        <div class="fw7 text-gold">480 000 FCFA</div>
+      </div>
+      <div class="card-row mt8" style="border-top:1px solid var(--border);padding-top:10px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="partagerFactureById('mtpk2uvb3f4x14e')">📤 Partager</button>
+      </div>
+    </div><div class="card">
       <div class="card-row">
         <div class="fw7 text-gold">001m/GC/09/2026</div>
         <span class="badge badge-orange">En attente</span>
@@ -444,7 +494,7 @@ projectId: &quot;...&quot;,
       </div>
     </div></div>
       </div>
-      <div id="factures-form-view" style="display: none;">
+      <div id="factures-form-view" style="display:none;">
         <div class="row mb8">
           <button class="btn btn-ghost btn-sm" onclick="showFacturesList()">← Retour</button>
           <div class="panel-title flex1" style="margin:0 0 0 10px;">Nouvelle opération</div>
@@ -458,8 +508,8 @@ projectId: &quot;...&quot;,
           </select>
         </div>
         <div class="doc-type-row" id="f-type-row">
-          <div class="doc-type-btn" data-type="FACTURE" onclick="selectDocType(this)">Facture</div>
-          <div class="doc-type-btn selected" data-type="PROFORMA" onclick="selectDocType(this)">Proforma</div>
+          <div class="doc-type-btn selected" data-type="FACTURE" onclick="selectDocType(this)">Facture</div>
+          <div class="doc-type-btn" data-type="PROFORMA" onclick="selectDocType(this)">Proforma</div>
           <div class="doc-type-btn" data-type="DEVIS" onclick="selectDocType(this)">Devis</div>
         </div>
         <div class="facture-numero" id="f-numero-preview">001m/GC/09/2026</div>
@@ -491,32 +541,16 @@ projectId: &quot;...&quot;,
       <input type="number" placeholder="PU" min="0" onchange="ligneFld(0,'pu',+this.value||0)" oninput="ligneFld(0,'pu',+this.value||0)">
       <input type="text" placeholder="= Total" readonly="" id="ligne-total-0" style="color:var(--muted);background:var(--dark4);">
     </div>
-  </div><div class="ligne-form" id="ligne-1">
-    <button class="ligne-remove" onclick="removeLigne(1)">✕</button>
-    <div class="field" style="margin-bottom:0;">
-      <label>Désignation</label>
-      <input type="text" placeholder="Description de la prestation" onchange="ligneFld(1,'designation',this.value)" oninput="ligneFld(1,'designation',this.value)">
-    </div>
-    <div class="ligne-inputs">
-      <input type="number" placeholder="Qté" min="1" onchange="ligneFld(1,'qte',+this.value||1)" oninput="ligneFld(1,'qte',+this.value||1)">
-      <input type="number" placeholder="PU" min="0" onchange="ligneFld(1,'pu',+this.value||0)" oninput="ligneFld(1,'pu',+this.value||0)">
-      <input type="text" placeholder="= Total" readonly="" id="ligne-total-1" style="color:var(--muted);background:var(--dark4);">
-    </div>
   </div></div>
           <button class="btn btn-ghost mt8" onclick="addLigne()">+ Ajouter une ligne</button>
         </div>
-        <!-- TVA -->
-        <div class="field">
-          <label>TVA</label>
-          <select id="f-tva" onchange="computeTotal()">
-            <option value="0">Sans TVA</option>
-            <option value="0.18">TVA 18%</option>
-          </select>
-        </div>
         <!-- total -->
         <div class="total-bar">
-          <span class="label">Total TTC</span>
-          <span class="amount" id="f-total">60 000 FCFA</span>
+          <span class="label">Total</span>
+          <span class="amount" id="f-total">0 FCFA</span>
+        </div>
+        <div id="f-lignes-warn" style="display:none;background:#3a2a10;border-left:3px solid #e65100;border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#f0c987;"></div>
+        <div style="display:none;">
         </div>
         <!-- notes -->
         <div class="field">
@@ -613,6 +647,42 @@ projectId: &quot;...&quot;,
       <div id="notes-list"><p class="hint">Aucune note. Écrivez quelque chose ci-dessus.</p></div>
     </div>
 
+    <!-- CAISSE JOURNALIÈRE -->
+    <div id="panel-caisse" class="panel">
+      <div class="panel-title">🧾 Caisse journalière</div>
+      <p class="panel-sub">Encaissements du jour — visibles dans l'ERP, écran Paiements</p>
+
+      <div style="display:flex;gap:8px;align-items:center;margin:10px 0 14px;flex-wrap:wrap;">
+        <input type="date" id="cj-date" onchange="renderCaisseJour()" style="flex:1;min-width:150px;">
+        <span id="cj-statut"></span>
+      </div>
+
+      <div id="cj-totaux" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-bottom:14px;"></div>
+
+      <div id="cj-form">
+        <div class="field">
+          <label>Mode d'encaissement</label>
+          <select id="cj-mode">
+            <option value="especes">💵 Espèces</option>
+            <option value="cheque">🏦 Chèque</option>
+            <option value="virement">📲 Virement</option>
+            <option value="carte">💳 Carte</option>
+          </select>
+        </div>
+        <div class="field"><label>Montant (FCFA)</label><input type="number" id="cj-montant" min="0" inputmode="numeric" placeholder="0"></div>
+        <div class="field"><label>Client <span style="font-weight:400;text-transform:none;">(facultatif)</span></label><input type="text" id="cj-client" placeholder="Nom du client"></div>
+        <button class="btn btn-gold" id="cj-btn-ajouter" onclick="ajouterEncaissementCaisse()">+ Ajouter l'encaissement</button>
+      </div>
+
+      <div id="cj-liste" style="margin-top:16px;"></div>
+
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" onclick="synchroniserCaisseJour()">☁️ Renvoyer vers l'ERP</button>
+        <button class="btn btn-ghost btn-sm" id="cj-btn-cloture" onclick="basculerClotureCaisse()">🔒 Clôturer la journée</button>
+      </div>
+      <p class="panel-sub" style="margin-top:10px;">Une journée clôturée n'accepte plus d'encaissement. Vous pouvez la rouvrir si besoin.</p>
+    </div>
+
     <!-- CLIENTS CRM -->
     <div id="panel-clients" class="panel">
       <div class="panel-title">👥 Clients</div>
@@ -680,6 +750,9 @@ appId: &quot;1:...&quot;"></textarea>
   </div>
 
   <!-- TAB BAR -->
+  <!-- SAISIE RAPIDE — bouton flottant, visible seulement sur l'onglet Factures -->
+  <button class="sr-fab" id="srFab" style="display: none;" onclick="ouvrirSaisieRapide()" title="Saisie rapide" aria-label="Saisie rapide">⚡</button>
+
   <nav class="tab-bar" id="tab-bar">
     <button class="tab-btn" data-tab="factures" onclick="switchTab('factures')">
       <span class="tab-ico">📑</span><span>Factures</span>
@@ -695,6 +768,9 @@ appId: &quot;1:...&quot;"></textarea>
     </button>
     <button class="tab-btn" data-tab="menu" onclick="switchTab('menu')">
       <span class="tab-ico">🍴</span><span>Menu</span>
+    </button>
+    <button class="tab-btn" data-tab="caisse" onclick="switchTab('caisse')">
+      <span class="tab-ico">🧾</span><span>Caisse</span>
     </button>
     <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">
       <span class="tab-ico">📝</span><span>Notes</span>
@@ -715,7 +791,7 @@ appId: &quot;1:...&quot;"></textarea>
   <button class="menu-share-btn" onclick="copyMenuText()">📋 Copier le texte</button>
 </div>
 
-<div id="toast" class="">Synchronisation…</div>
+<div id="toast" class="show">✅ Dépôt vérifié !</div>
 
 <!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -901,10 +977,26 @@ function updateFirebaseConfig() {
   const cfg = getConfig() || {};
   cfg.configText = newText;
   saveConfig(cfg);
-  // Ré-initialiser Firebase avec la nouvelle config
+  // firebase.initializeApp() ne peut pas être rejoué : initFirebase réutilise
+  // l'instance déjà créée au démarrage, avec l'ANCIENNE configuration. Annoncer
+  // « mise à jour » était donc faux — les factures continuaient de partir dans
+  // l'ancien projet jusqu'au prochain rechargement complet de la page.
   fbApp = null; fbDb = null; fbAuthReady = Promise.resolve();
+  let recharge = false;
+  try {
+    if (firebase.apps && firebase.apps.length) {
+      // Supprimer l'app existante permet une vraie réinitialisation à chaud.
+      firebase.apps.slice().forEach(a => { try { a.delete(); } catch(_) { recharge = true; } });
+    }
+  } catch(_) { recharge = true; }
+
+  if (recharge) {
+    if (statusEl) statusEl.textContent = '✅ Config enregistrée — redémarrage de l\'application…';
+    setTimeout(() => location.reload(), 1200);
+    return;
+  }
   initFirebase(newText);
-  if (statusEl) statusEl.textContent = '✅ Config Firebase mise à jour !';
+  if (statusEl) statusEl.textContent = '✅ Config Firebase mise à jour et active.';
   setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
 }
 
@@ -949,6 +1041,46 @@ function getEntityCfg(entity) { return ENTITY_CONFIG[entity || getEntity()]; }
    Produces: 001m/GC/08/2026
    Stored separately from ERP counters — no conflict.
 ================================================================ */
+/* Identifiant court et STABLE de cet appareil, inséré dans chaque numéro.
+   Sans lui, deux téléphones — ou le même après un vidage du localStorage —
+   produisent les mêmes numéros. L'ERP prenait alors la facture neuve pour un
+   doublon, l'écartait, et la marquait pourtant « Importée ERP ». */
+const DEVICE_TAG_KEY = 'glidji_manager_device_tag_v1';
+function getDeviceTag() {
+  let tag = load(DEVICE_TAG_KEY, null);
+  if (typeof tag === 'string' && /^[A-Z0-9]{2}$/.test(tag)) return tag;
+  const alpha = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // sans I, O, 0, 1 (lisibilité)
+  tag = alpha[Math.floor(Math.random() * alpha.length)] + alpha[Math.floor(Math.random() * alpha.length)];
+  save(DEVICE_TAG_KEY, tag);
+  return tag;
+}
+
+/* Réamorce le compteur à partir des factures déjà présentes sur l'appareil.
+   Si le localStorage a été partiellement vidé (ou restauré depuis une
+   sauvegarde), le compteur repartait de 1 alors que des factures existaient. */
+function reamorcerCompteurs() {
+  const factures = load(FACTURES_KEY, []);
+  if (!factures.length) return;
+  const counters = load(COUNTERS_KEY, {});
+  let modifie = false;
+  for (const f of factures) {
+    if (!f || !f.numero || !f.entity || !f.type) continue;
+    const annee = (f.date || '').slice(0, 4) || (f.createdAt || '').slice(0, 4);
+    if (!/^\d{4}$/.test(annee)) continue;
+    const m = String(f.numero).match(/^(\d+)/);      // la séquence est en tête
+    if (!m) continue;
+    const seq = parseInt(m[1], 10);
+    if (!Number.isFinite(seq)) continue;
+    if (!counters[f.entity]) counters[f.entity] = {};
+    if (!counters[f.entity][f.type]) counters[f.entity][f.type] = {};
+    if ((counters[f.entity][f.type][annee] || 0) < seq) {
+      counters[f.entity][f.type][annee] = seq;
+      modifie = true;
+    }
+  }
+  if (modifie) save(COUNTERS_KEY, counters);
+}
+
 function nextManagerNumber(type, entity, dateIso) {
   const counters = load(COUNTERS_KEY, {});
   const ent = entity || getEntity();
@@ -962,8 +1094,9 @@ function nextManagerNumber(type, entity, dateIso) {
   counters[ent][type][year] = next;
   save(COUNTERS_KEY, counters);
   const code = getEntityCfg(ent).code;
-  const numero = String(next).padStart(3, '0') + 'm/' + code + '/' + month + '/' + year;
-  return { seq: next, numero, year, month };
+  // Format : 001m-AB/GC/09/2026 — le tag d'appareil rend la collision impossible
+  const numero = String(next).padStart(3, '0') + 'm-' + getDeviceTag() + '/' + code + '/' + month + '/' + year;
+  return { seq: next, numero, year, month, deviceTag: getDeviceTag() };
 }
 
 /* ================================================================
@@ -1008,26 +1141,69 @@ function enqueue(collection, payload, docId) {
   updateSyncDot();
 }
 
+/* Verrou de synchronisation. Sans lui, deux passes concurrentes (tap 📡 +
+   reprise automatique) relisaient la même file. Et surtout : l'ancienne
+   version écrivait `failed`, un instantané pris AVANT la boucle — une facture
+   saisie pendant les 10 s de timeout était effacée de la file sans être partie.
+   Elle restait affichée sur le téléphone, la pastille s'éteignait, et rien
+   n'indiquait qu'elle n'arriverait jamais. */
+let _flushEnCours = false;
+
 async function flushQueue() {
-  let q = load(QUEUE_KEY, []);
-  if (!q.length) { updateSyncDot(); return; }
-  try { await ensureReady(); } catch(_) { return; }
-  const failed = [];
-  for (const item of q) {
-    try {
-      if (item.docId) {
-        await withTimeout(fbDb.collection(item.collection).doc(item.docId).set(item.payload, { merge: true }), 10000, 'flush ' + item.collection);
-      } else {
-        await withTimeout(fbDb.collection(item.collection).add(item.payload), 10000, 'flush ' + item.collection);
+  if (_flushEnCours) return;
+  if (!load(QUEUE_KEY, []).length) { updateSyncDot(); return; }
+  _flushEnCours = true;
+  let envoyes = 0, reste = 0;
+  try {
+    try { await ensureReady(); } catch(_) { return; }
+    let garde = 0;
+    while (garde++ < 200) {
+      const file = load(QUEUE_KEY, []);
+      const item = file.find(it => it && !it._echec);
+      if (!item) break;
+
+      let ok = false;
+      try {
+        // Un élément mis en file avant ce correctif peut ne pas porter de
+        // docId : on lui en attribue un plutôt que de retomber sur .add().
+        const ref = item.docId || (item.payload && item.payload.id) || cleFirestoreManager();
+        if (!item.docId) item.docId = ref;
+        await withTimeout(fbDb.collection(item.collection).doc(ref).set(item.payload, { merge: true }), 10000, 'flush ' + item.collection);
+        ok = true; envoyes++;
+      } catch(e) { ok = false; }
+
+      // Relecture : la file a pu s'enrichir pendant l'appel réseau.
+      const apres = load(QUEUE_KEY, []);
+      const idx = apres.findIndex(it => it === item ||
+        (it && item.docId && it.docId === item.docId && it.collection === item.collection));
+      if (idx !== -1) {
+        if (ok) apres.splice(idx, 1); else apres[idx]._echec = true;
+        save(QUEUE_KEY, apres);
       }
-    } catch(e) {
-      failed.push(item);
+      if (!ok) break;   // réseau toujours coupé
     }
+    const finale = load(QUEUE_KEY, []);
+    reste = finale.length;
+    if (finale.some(it => it && it._echec)) {
+      finale.forEach(it => { if (it) delete it._echec; });
+      save(QUEUE_KEY, finale);
+    }
+  } finally {
+    _flushEnCours = false;
   }
-  save(QUEUE_KEY, failed);
   updateSyncDot();
-  if (failed.length === 0 && q.length > 0) toast('✅ Données synchronisées (' + q.length + ')');
+  if (envoyes > 0) {
+    toast(reste === 0
+      ? '✅ Données synchronisées (' + envoyes + ')'
+      : '✅ ' + envoyes + ' envoyé(s) — ' + reste + ' encore en attente');
+  }
 }
+
+/* Reprise automatique : la file ne repartait qu'au redémarrage de l'app ou sur
+   un tap manuel de la pastille. Une facture créée hors couverture pouvait y
+   rester des jours sans que rien ne la relance. */
+window.addEventListener('online', () => { flushQueue(); });
+setInterval(() => { if (load(QUEUE_KEY, []).length) flushQueue(); }, 60000);
 
 function updateSyncDot() {
   const q = load(QUEUE_KEY, []);
@@ -1040,17 +1216,23 @@ async function manualFlush() {
   await flushQueue();
 }
 
+/* Toute écriture Firestore doit porter une clé stable : `.add()` génère un
+   identifiant serveur à chaque appel, donc un renvoi après échec réseau crée
+   un doublon que rien ne rattrape. Les trois appelants passent déjà un docId,
+   mais la branche sans clé restait un piège pour un futur appel. */
+function cleFirestoreManager() {
+  try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch(_) {}
+  return 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
 async function sendToFirestore(collection, payload, docId) {
+  const ref = docId || payload.id || cleFirestoreManager();
   try {
     await ensureReady();
-    if (docId) {
-      await withTimeout(fbDb.collection(collection).doc(docId).set(payload, { merge: true }), 10000, 'envoi ' + collection);
-    } else {
-      await withTimeout(fbDb.collection(collection).add(payload), 10000, 'envoi ' + collection);
-    }
+    await withTimeout(fbDb.collection(collection).doc(ref).set(payload, { merge: true }), 10000, 'envoi ' + collection);
     return true;
   } catch(e) {
-    enqueue(collection, payload, docId);
+    enqueue(collection, payload, ref);   // la MÊME clé, pour que le renvoi écrase
     return false;
   }
 }
@@ -1072,8 +1254,13 @@ function setupStep1Next() {
   const config = document.getElementById('setup-config').value.trim();
   const parsed = parseFirebaseConfig(config);
   const errEl = document.getElementById('setup-step1-err');
-  if (!parsed.projectId || !parsed.apiKey) {
-    errEl.textContent = 'Configuration Firebase invalide. Vérifiez le texte collé.';
+  // parseFirebaseConfig renvoie null si la config est illisible : lire
+  // parsed.projectId levait alors un TypeError AVANT d'écrire le message.
+  // Le nouvel utilisateur voyait un bouton « Suivant » qui ne réagissait pas.
+  if (!parsed || !parsed.projectId || !parsed.apiKey) {
+    if (errEl) errEl.textContent = config
+      ? 'Configuration Firebase invalide. Vérifiez le texte collé (apiKey et projectId sont obligatoires).'
+      : 'Collez d\'abord la configuration Firebase.';
     return;
   }
   errEl.textContent = '';
@@ -1192,6 +1379,10 @@ function bootApp() {
   document.documentElement.style.setProperty('--gold', entCfg.accent === '#5C1A22' ? '#c27b7b' : '#B8935A');
 
   document.getElementById('app').style.display = 'flex';
+  if (typeof majVisibiliteFab === 'function') majVisibiliteFab();
+  // Aligne le compteur sur les factures réellement présentes : un localStorage
+  // partiellement vidé le faisait repartir de 1 et recréer des numéros existants.
+  if (typeof reamorcerCompteurs === 'function') reamorcerCompteurs();
   updateSyncDot();
 
   // Set default date fields to today
@@ -1221,10 +1412,12 @@ function switchTab(tab) {
   _currentTab = tab;
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  if (typeof majVisibiliteFab === 'function') majVisibiliteFab();
   // Auto-trigger refreshes
   if (tab === 'catalogue' && _catalogueItems.length === 0) pullCatalogue();
   if (tab === 'clients' && _allClients.length === 0) pullClients();
   if (tab === 'reglages') initReglagesPanel();
+  if (tab === 'caisse') initCaissePanel();
 }
 
 /* ================================================================
@@ -1239,7 +1432,7 @@ function startNewFacture() {
   document.getElementById('f-client').value = '';
   document.getElementById('f-objet').value = '';
   document.getElementById('f-notes').value = '';
-  document.getElementById('f-tva').value = '0';
+
   document.getElementById('f-date').value = todayIso();
   _factureLignes = [];
   document.getElementById('f-lignes').innerHTML = '';
@@ -1320,53 +1513,128 @@ function ligneFld(idx, field, val) {
   computeTotal();
 }
 
+/* Glidji et SIMAG ne facturent pas de TVA : le taux est nul partout et le
+   sélecteur a été retiré du formulaire. Les champs tva/tvaRate restent dans
+   l'objet enregistré (à zéro) pour que l'ERP, qui les lit à l'import, continue
+   de fonctionner sans modification. */
 function computeTotal() {
-  const tvaRate = parseFloat(document.getElementById('f-tva')?.value || '0');
-  const lignesActives = _factureLignes.filter(Boolean);
-  const ht = lignesActives.reduce((s, l) => s + (l.qte || 1) * (l.pu || 0), 0);
-  const ttc = ht * (1 + tvaRate);
+  // MÊME filtre que creerDocumentManager : une ligne sans désignation n'est PAS
+  // enregistrée. L'ancien calcul la comptait pourtant dans le total affiché —
+  // on lisait 700 000 à l'écran et la facture partait à 500 000, sans un mot.
+  const lignesActives = _factureLignes.filter(l => l && (l.designation || '').trim());
+  const lignesIgnorees = _factureLignes.filter(l =>
+    l && !(l.designation || '').trim() && ((Number(l.pu) || 0) > 0 || (Number(l.qte) || 0) > 0)).length;
+  const ht = Math.round(lignesActives.reduce((s, l) => s + (Number(l.qte) || 1) * (Number(l.pu) || 0), 0));
+  const ttc = ht;
+  // Avertissement visible : une ligne chiffrée mais sans libellé ne partira pas
+  const av = document.getElementById('f-lignes-warn');
+  if (av) {
+    av.style.display = lignesIgnorees ? 'block' : 'none';
+    av.textContent = lignesIgnorees
+      ? '⚠️ ' + lignesIgnorees + ' ligne(s) sans désignation ne seront PAS facturées. Ajoutez un libellé.'
+      : '';
+  }
   const el = document.getElementById('f-total');
   if (el) el.textContent = ttc.toLocaleString('fr-FR') + ' FCFA';
-  return { ht, tva: ht * tvaRate, ttc };
+  return { ht, tva: 0, ttc };
 }
 
-async function saveFacture() {
-  const type = (document.querySelector('.doc-type-btn.selected') || {}).dataset?.type || 'FACTURE';
-  const entity = document.getElementById('f-entity').value || getEntity();
-  const client = document.getElementById('f-client').value.trim();
-  const date = document.getElementById('f-date').value || todayIso();
-  const lignes = _factureLignes.filter(l => l && l.designation.trim());
+/**
+ * Cœur de la création d'un document, partagé par le formulaire complet et par
+ * la saisie rapide. Une seule implémentation : la numérotation, le calcul des
+ * totaux, l'écriture locale et la synchronisation Firestore ne peuvent pas
+ * diverger entre les deux chemins.
+ *
+ * @param {object} d {entity, type, client, date, objet, lignes[{designation,qte,pu}], tvaRate, notes}
+ * @returns {Promise<{ok:boolean, facture?:object, err?:string}>}
+ */
+async function creerDocumentManager(d) {
+  const entity = d.entity || getEntity();
+  const type   = d.type || 'FACTURE';
+  const client = (d.client || '').trim();
+  const date   = d.date || todayIso();
+  const lignes = (d.lignes || []).filter(l => l && (l.designation || '').trim());
 
-  if (!client) { toast('Veuillez saisir le nom du client.', true); return; }
-  if (lignes.length === 0) { toast('Ajoutez au moins une prestation.', true); return; }
+  if (!client) return { ok: false, err: 'Veuillez saisir le nom du client.' };
+  if (!lignes.length) return { ok: false, err: 'Ajoutez au moins une prestation.' };
+  // Un prix unitaire négatif passait sans contrôle (min="0" n'est qu'un attribut
+  // HTML, contournable) et réduisait le total sans que rien ne l'indique.
+  const ligneNeg = lignes.find(l => (Number(l.pu) || 0) < 0);
+  if (ligneNeg) return { ok: false, err: 'Prix négatif sur « ' + (ligneNeg.designation || '') + ' ». Corrigez-le.' };
 
-  const { ht, tva, ttc } = computeTotal();
+  // Pas de TVA chez Glidji ni SIMAG : le total est le cumul des lignes.
+  // Math.round : le FCFA n'a pas de subdivision, et un prix unitaire décimal
+  // produirait sinon des centimes propagés jusque dans l'ERP.
+  const tvaRate = 0;
+  const ht  = Math.round(lignes.reduce((s, l) => s + (Number(l.qte) || 1) * (Number(l.pu) || 0), 0));
+  const tva = 0;
+  const ttc = ht;
+  if (ttc <= 0) return { ok: false, err: 'Le montant doit être supérieur à 0.' };
+
   const { numero } = nextManagerNumber(type, entity, date);
 
   const facture = {
     id: uid(),
     entity, type, client, date,
-    objet: document.getElementById('f-objet').value.trim(),
-    lignes: lignes.map(l => ({ designation: l.designation, qte: l.qte, pu: l.pu, total: l.qte * l.pu })),
+    objet: (d.objet || '').trim(),
+    lignes: lignes.map(l => ({
+      designation: l.designation,
+      qte: Number(l.qte) || 1,
+      pu: Number(l.pu) || 0,
+      total: (Number(l.qte) || 1) * (Number(l.pu) || 0),
+    })),
     montantHT: ht,
-    tva: tva,
+    tva,
     montantTTC: ttc,
-    tvaRate: parseFloat(document.getElementById('f-tva').value || '0'),
-    notes: document.getElementById('f-notes').value.trim(),
+    tvaRate,
+    notes: (d.notes || '').trim(),
     numero,
     createdAt: new Date().toISOString(),
     importedInErp: false,
+    saisieRapide: !!d.saisieRapide,   // marqueur d'audit, comme dans l'ERP
   };
 
-  // Save locally
   const factures = load(FACTURES_KEY, []);
   factures.unshift(facture);
   save(FACTURES_KEY, factures);
 
-  // Push to Firestore
   toast('Enregistrement…');
   const ok = await sendToFirestore('facturesMobile', facture, facture.id);
   toast(ok ? `✅ ${facture.numero} enregistrée` : `✅ ${facture.numero} (sync en attente)`);
+  return { ok: true, facture, synced: ok };
+}
+
+let _saveFactureEnCours = false;
+
+async function saveFacture() {
+  // Sans ce garde, le bouton reste cliquable pendant les 10 s de timeout réseau :
+  // un second tap créait une DEUXIÈME facture, avec un numéro différent — donc
+  // invisible pour l'anti-doublon de l'ERP. Le client était facturé deux fois.
+  if (_saveFactureEnCours) return;
+  _saveFactureEnCours = true;
+  const btn = document.querySelector('button[onclick="saveFacture()"]');
+  const libelle = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Enregistrement…'; }
+  try {
+    return await _saveFactureInterne();
+  } finally {
+    _saveFactureEnCours = false;
+    if (btn) { btn.disabled = false; btn.textContent = libelle; }
+  }
+}
+
+async function _saveFactureInterne() {
+  const res = await creerDocumentManager({
+    type: (document.querySelector('.doc-type-btn.selected') || {}).dataset?.type || 'FACTURE',
+    entity: document.getElementById('f-entity').value || getEntity(),
+    client: document.getElementById('f-client').value,
+    date: document.getElementById('f-date').value,
+    objet: document.getElementById('f-objet').value,
+    lignes: _factureLignes.filter(l => l && (l.designation || '').trim()),
+    tvaRate: 0,
+    notes: document.getElementById('f-notes').value,
+  });
+  if (!res.ok) { toast(res.err, true); return; }
   showFacturesList();
 }
 
@@ -1431,6 +1699,117 @@ async function renderFacturesList() {
       </div>
     </div>`;
   }).join('');
+}
+
+/* ================================================================
+   MODULE: SAISIE RAPIDE
+   ----------------------------------------------------------------
+   Un document en 4 champs, pour la saisie debout, chez le client.
+   Le formulaire complet reste disponible pour les lignes détaillées,
+   et les notes — la saisie rapide crée une ligne unique.
+
+   Elle passe par creerDocumentManager(), la même fonction que le
+   formulaire complet : même numérotation, même écriture Firestore.
+================================================================ */
+let _srType = 'FACTURE';
+
+function ouvrirSaisieRapide() {
+  _srType = 'FACTURE';
+  const cfg = getEntityCfg();
+  const overlay = document.createElement('div');
+  overlay.className = 'sr-overlay';
+  overlay.id = 'srOverlay';
+  overlay.innerHTML = `<div class="sr-panel">
+    <h3>⚡ Saisie rapide</h3>
+    <div class="sr-sub">${escapeHtml(cfg ? cfg.label : 'Glidji')} — document en 4 champs</div>
+
+    <div class="sr-type-row">
+      <button class="sr-type-btn selected" data-srtype="FACTURE"  onclick="srChoisirType(this)">🧾 Facture</button>
+      <button class="sr-type-btn"          data-srtype="PROFORMA" onclick="srChoisirType(this)">📄 Proforma</button>
+      <button class="sr-type-btn"          data-srtype="DEVIS"    onclick="srChoisirType(this)">📋 Devis</button>
+    </div>
+
+    <div class="field"><label>Client *</label>
+      <input type="text" id="sr_client" placeholder="Nom du client" list="f-clients-list" autocomplete="off"></div>
+    <div class="field"><label>Désignation / objet *</label>
+      <input type="text" id="sr_objet" placeholder="Ex : Cocktail 60 convives" autocomplete="off"></div>
+    <div class="field"><label>Montant total (FCFA) *</label>
+      <input type="number" id="sr_montant" inputmode="numeric" min="1" step="1" placeholder="0" oninput="srMajTotal()"></div>
+    <div class="field"><label>Date</label>
+      <input type="date" id="sr_date"></div>
+
+    <div class="sr-total"><span>Total du document</span><strong id="srTotal">0 FCFA</strong></div>
+
+    <button class="btn btn-gold" id="srSubmit" onclick="validerSaisieRapide()">Générer le document →</button>
+    <button class="btn btn-ghost mt8" onclick="fermerSaisieRapide()">Annuler</button>
+    <p class="hint" style="margin-top:10px;font-size:11px;">
+      Une seule ligne est créée. Pour détailler les prestations ou ajouter une note,
+      utilisez « + Nouvelle » dans l'onglet Factures.</p>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) fermerSaisieRapide(); });
+  const d = document.getElementById('sr_date');
+  if (d) d.value = todayIso();
+  loadClientsDatalist();
+  setTimeout(() => document.getElementById('sr_client')?.focus(), 80);
+}
+
+function fermerSaisieRapide() {
+  document.getElementById('srOverlay')?.remove();
+}
+
+function srChoisirType(btn) {
+  document.querySelectorAll('#srOverlay .sr-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  _srType = btn.dataset.srtype;
+}
+
+function srMajTotal() {
+  const v = parseFloat(document.getElementById('sr_montant')?.value || '0') || 0;
+  const el = document.getElementById('srTotal');
+  if (el) el.textContent = v.toLocaleString('fr-FR') + ' FCFA';
+}
+
+async function validerSaisieRapide() {
+  const client  = document.getElementById('sr_client').value.trim();
+  const objet   = document.getElementById('sr_objet').value.trim();
+  const montant = parseFloat(document.getElementById('sr_montant').value || '0') || 0;
+  const date    = document.getElementById('sr_date').value || todayIso();
+
+  if (!client)      { toast('Nom du client obligatoire.', true); return; }
+  if (!objet)       { toast('Désignation obligatoire.', true); return; }
+  if (montant <= 0) { toast('Le montant doit être supérieur à 0.', true); return; }
+
+  const btn = document.getElementById('srSubmit');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Génération…'; }
+
+  const res = await creerDocumentManager({
+    type: _srType,
+    client, date, objet,
+    lignes: [{ designation: objet, qte: 1, pu: montant }],
+    tvaRate: 0,
+    notes: '',
+    saisieRapide: true,
+  });
+
+  if (!res.ok) {
+    toast(res.err, true);
+    if (btn) { btn.disabled = false; btn.textContent = 'Générer le document →'; }
+    return;
+  }
+  fermerSaisieRapide();
+  switchTab('factures');
+  showFacturesList();
+}
+
+/* Le bouton ⚡ n'a de sens que sur l'onglet Factures : on le masque ailleurs
+   plutôt que de le laisser flotter au-dessus du Catalogue ou des Réglages. */
+function majVisibiliteFab() {
+  const fab = document.getElementById('srFab');
+  if (!fab) return;
+  const surFactures = _currentTab === 'factures';
+  const appVisible = document.getElementById('app')?.style.display !== 'none';
+  fab.style.display = (surFactures && appVisible) ? 'flex' : 'none';
 }
 
 /* ================================================================
@@ -1555,11 +1934,13 @@ async function generateFacturePDF(f) {
     ty += 8;
   };
 
+  // Les anciens documents peuvent porter une TVA : on la montre alors, sinon
+  // le PDF n'afficherait pas la même chose que le document d'origine.
   if ((f.tvaRate || 0) > 0) {
     addRow('Sous-total HT :', fmt(f.montantHT));
-    addRow('TVA (' + f.tvaRate + '%) :', fmt(f.tva));
+    addRow('TVA (' + Math.round((f.tvaRate || 0) * 100) + '%) :', fmt(f.tva));
   }
-  addRow('TOTAL TTC', fmt(f.montantTTC), true);
+  addRow('TOTAL', fmt(f.montantTTC), true);
   if (f.avance) {
     addRow('Avance versée :', fmt(f.avance));
     addRow('RESTE À PAYER :', fmt((f.montantTTC || 0) - (f.avance || 0)), false, true);
@@ -1608,7 +1989,7 @@ function buildShareText(f) {
   ];
   if (f.objet) lines.push('Objet : ' + f.objet);
   lines.push('', lignesText, '');
-  if ((f.tvaRate || 0) > 0) lines.push('TVA (' + f.tvaRate + '%) : ' + fmt(f.tva));
+  if ((f.tvaRate || 0) > 0) lines.push('TVA (' + Math.round((f.tvaRate || 0) * 100) + '%) : ' + fmt(f.tva));
   lines.push('━━━━━━━━━━━━━━━━━━', 'TOTAL : ' + fmt(f.montantTTC));
   if (f.avance) {
     lines.push('Avance : ' + fmt(f.avance));
@@ -1964,6 +2345,13 @@ function previewMenu() {
   showMenuDisplay({ client, date, type, sections });
 }
 
+function showMenuById(id) {
+  const menus = load('glidji_manager_menus_v1', []);
+  const m = menus.find(x => x && x.id === id);
+  if (!m) { toast('Proposition introuvable.', true); return; }
+  showMenuDisplay(m);
+}
+
 function showMenuDisplay(menu) {
   const inner = document.getElementById('menu-display-inner');
   const entCfg = getEntityCfg();
@@ -2044,7 +2432,10 @@ function renderMenuList() {
     return;
   }
   container.innerHTML = menus.map(m => {
-    return `<div class="card" onclick="showMenuDisplay(${JSON.stringify(m).replace(/</g,'\\u003c')})">
+    // On passe l'ID, jamais l'objet : JSON.stringify insère des guillemets
+    // doubles qui terminaient l'attribut onclick — le handler était tronqué et
+    // le clic ne faisait rien, alors que la carte invitait à appuyer.
+    return `<div class="card" onclick="showMenuById('${escapeHtml(m.id || '')}')">
       <div class="card-row">
         <div class="fw7">${escapeHtml(m.client)}</div>
         <div class="fs12 text-muted">${fmtDate(m.date)}</div>
@@ -2118,6 +2509,213 @@ function renderClientsList(items) {
 }
 
 /* ================================================================
+   MODULE: CAISSE JOURNALIÈRE
+   ----------------------------------------------------------------
+   Alimente la collection `caisseJournaliere`, que l'ERP lisait déjà
+   (écran Paiements) sans que personne ne l'écrive : sa carte affichait
+   pour toujours « Ouvrez l'app Manager et ajoutez des encaissements »,
+   alors que ce module n'existait pas.
+
+   Contrat imposé par le lecteur de l'ERP, à ne pas changer sans le
+   modifier aussi :
+     document  : `AAAA-MM-JJ_ENTITE`
+     champs    : { statut: 'clos' | 'ouvert',
+                   encaissements: [ { at, mode, client, montant } ] }
+     modes     : especes | cheque | virement | carte
+
+   Les encaissements vivent d'abord EN LOCAL : sans réseau, rien n'est
+   perdu. La synchronisation FUSIONNE au lieu d'écraser — deux téléphones
+   qui encaissent le même jour ne doivent pas s'effacer mutuellement.
+================================================================ */
+const CAISSE_KEY = 'glidji_manager_caisse_v1';
+const CJ_MODES = { especes: '💵 Espèces', cheque: '🏦 Chèque', virement: '📲 Virement', carte: '💳 Carte' };
+
+function cjCleJour(date, entity) { return date + '_' + (entity || getEntity()); }
+function cjToutesLesCaisses() { return load(CAISSE_KEY, {}) || {}; }
+function cjLireJour(date) {
+  const t = cjToutesLesCaisses()[cjCleJour(date)];
+  return { statut: (t && t.statut) || 'ouvert', encaissements: (t && t.encaissements) || [] };
+}
+function cjEcrireJour(date, jour) {
+  const tout = cjToutesLesCaisses();
+  tout[cjCleJour(date)] = jour;
+  save(CAISSE_KEY, tout);
+}
+function cjDateSelectionnee() {
+  const el = document.getElementById('cj-date');
+  return (el && el.value) || new Date().toISOString().slice(0, 10);
+}
+
+function initCaissePanel() {
+  const el = document.getElementById('cj-date');
+  if (el && !el.value) el.value = new Date().toISOString().slice(0, 10);
+  renderCaisseJour();
+}
+
+function renderCaisseJour() {
+  const date = cjDateSelectionnee();
+  const jour = cjLireJour(date);
+  const clos = jour.statut === 'clos';
+
+  // Totaux par mode — mêmes clés que celles attendues par l'ERP
+  const totaux = { especes: 0, cheque: 0, virement: 0, carte: 0 };
+  jour.encaissements.forEach(e => {
+    const m = Number(e.montant) || 0;
+    if (totaux[e.mode] !== undefined) totaux[e.mode] += m;
+  });
+  const total = totaux.especes + totaux.cheque + totaux.virement + totaux.carte;
+  const fmt = v => (v || 0).toLocaleString('fr-FR');
+
+  const tot = document.getElementById('cj-totaux');
+  if (tot) {
+    tot.innerHTML = Object.entries(CJ_MODES).map(([k, label]) => `
+      <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);">${label}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--gold);">${fmt(totaux[k])}</div>
+      </div>`).join('') + `
+      <div style="background:var(--dark3);border:2px solid var(--gold);border-radius:8px;padding:8px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);">Total</div>
+        <div style="font-size:16px;font-weight:800;color:var(--gold);">${fmt(total)}</div>
+      </div>`;
+  }
+
+  const st = document.getElementById('cj-statut');
+  if (st) st.innerHTML = clos
+    ? '<span style="background:rgba(39,174,96,.15);color:#27AE60;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;">🔒 Clôturée</span>'
+    : '<span style="background:rgba(243,156,18,.15);color:#F39C12;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;">⏳ En cours</span>';
+
+  // Une journée clôturée n'accepte plus de saisie
+  const form = document.getElementById('cj-form');
+  if (form) form.style.display = clos ? 'none' : 'block';
+  const btnClot = document.getElementById('cj-btn-cloture');
+  if (btnClot) btnClot.textContent = clos ? '🔓 Rouvrir la journée' : '🔒 Clôturer la journée';
+
+  const liste = document.getElementById('cj-liste');
+  if (!liste) return;
+  if (!jour.encaissements.length) {
+    liste.innerHTML = '<p class="panel-sub">Aucun encaissement pour cette date.</p>';
+    return;
+  }
+  liste.innerHTML = jour.encaissements.slice().reverse().map(e => `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="min-width:0;">
+        <div style="font-size:14px;">${CJ_MODES[e.mode] || '💰'} ${escapeHtml(e.client || '—')}</div>
+        <div style="font-size:11px;color:var(--muted);">${cjHeure(e.at)}${e.envoye ? '' : ' · ⏳ pas encore envoyé'}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;white-space:nowrap;">
+        <strong style="color:var(--gold);">${fmt(e.montant)} F</strong>
+        ${clos ? '' : `<button class="btn btn-ghost btn-sm" style="width:auto;padding:6px 10px;" onclick="supprimerEncaissementCaisse('${e.id}')">✕</button>`}
+      </div>
+    </div>`).join('');
+}
+
+/* Une date sans heure valide ne doit pas afficher « Invalid Date ». */
+function cjHeure(iso) {
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? '—' : d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+async function ajouterEncaissementCaisse() {
+  const date = cjDateSelectionnee();
+  const jour = cjLireJour(date);
+  if (jour.statut === 'clos') { toast('Journée clôturée — rouvrez-la pour saisir.', true); return; }
+
+  const mode = document.getElementById('cj-mode').value;
+  const montant = Math.round(Number(document.getElementById('cj-montant').value) || 0);
+  const client = document.getElementById('cj-client').value.trim();
+  if (!CJ_MODES[mode]) { toast('Mode d\'encaissement invalide.', true); return; }
+  if (!(montant > 0)) { toast('Renseignez un montant supérieur à 0.', true); return; }
+
+  const btn = document.getElementById('cj-btn-ajouter');
+  if (btn) btn.disabled = true;                      // anti double-tap
+  jour.encaissements.push({
+    id: uid(), at: new Date().toISOString(),
+    mode, client, montant, envoye: false,
+  });
+  cjEcrireJour(date, jour);
+  document.getElementById('cj-montant').value = '';
+  document.getElementById('cj-client').value = '';
+  renderCaisseJour();
+  await synchroniserCaisseJour(true);
+  if (btn) btn.disabled = false;
+}
+
+function supprimerEncaissementCaisse(id) {
+  const date = cjDateSelectionnee();
+  const jour = cjLireJour(date);
+  const e = jour.encaissements.find(x => x.id === id);
+  if (!e) return;
+  if (!confirm('Retirer cet encaissement de ' + (e.montant || 0).toLocaleString('fr-FR') + ' F ?')) return;
+  jour.encaissements = jour.encaissements.filter(x => x.id !== id);
+  cjEcrireJour(date, jour);
+  renderCaisseJour();
+  synchroniserCaisseJour(true);
+}
+
+function basculerClotureCaisse() {
+  const date = cjDateSelectionnee();
+  const jour = cjLireJour(date);
+  const clos = jour.statut === 'clos';
+  if (!clos && !jour.encaissements.length && !confirm('Aucun encaissement ce jour. Clôturer quand même ?')) return;
+  jour.statut = clos ? 'ouvert' : 'clos';
+  cjEcrireJour(date, jour);
+  renderCaisseJour();
+  synchroniserCaisseJour(true);
+  toast(clos ? 'Journée rouverte.' : 'Journée clôturée ✅');
+}
+
+/**
+ * Envoi vers l'ERP. On RELIT d'abord le document distant et on fusionne par
+ * identifiant : un second téléphone encaissant le même jour ne doit pas
+ * effacer les lignes du premier. En cas d'échec réseau, tout reste en local
+ * et repartira au prochain envoi — rien n'est perdu.
+ */
+async function synchroniserCaisseJour(silencieux) {
+  const date = cjDateSelectionnee();
+  const entity = getEntity();
+  const jour = cjLireJour(date);
+  const docId = cjCleJour(date, entity);
+  try {
+    await ensureReady();
+    let distants = [];
+    try {
+      const snap = await withTimeout(fbDb.collection('caisseJournaliere').doc(docId).get(), 10000, 'lecture caisse');
+      if (snap && snap.exists) distants = (snap.data().encaissements || []).filter(Boolean);
+    } catch(_) { /* première écriture, ou lecture impossible : on part du local */ }
+
+    const parId = new Map();
+    for (const e of distants) if (e && e.id) parId.set(e.id, e);
+    // Les lignes locales font foi pour cet appareil (ajout ET suppression).
+    const idsLocaux = new Set(jour.encaissements.map(e => e.id));
+    for (const e of jour.encaissements) parId.set(e.id, { ...e, envoye: true });
+    // Une ligne distante d'un AUTRE appareil est conservée ; une ligne que cet
+    // appareil a créée puis supprimée doit disparaître.
+    for (const e of distants) {
+      if (e && e.id && !idsLocaux.has(e.id) && e.appareil === getDeviceTag()) parId.delete(e.id);
+    }
+
+    const fusion = [...parId.values()]
+      .map(e => ({ ...e, appareil: e.appareil || getDeviceTag() }))
+      .sort((a, b) => String(a.at || '').localeCompare(String(b.at || '')));
+
+    await withTimeout(fbDb.collection('caisseJournaliere').doc(docId).set({
+      date, entity, statut: jour.statut, encaissements: fusion,
+      majLe: new Date().toISOString(),
+    }), 10000, 'envoi caisse');
+
+    // Marquer localement comme envoyés
+    jour.encaissements = jour.encaissements.map(e => ({ ...e, envoye: true, appareil: e.appareil || getDeviceTag() }));
+    cjEcrireJour(date, jour);
+    renderCaisseJour();
+    if (!silencieux) toast('Caisse envoyée vers l\'ERP ✅');
+    return true;
+  } catch (e) {
+    if (!silencieux) toast('Envoi impossible — tout est gardé sur ce téléphone et repartira plus tard.', true);
+    return false;
+  }
+}
+
+/* ================================================================
    MODULE: BLOC-NOTES
 ================================================================ */
 function saveNote() {
@@ -2182,4 +2780,4 @@ window.addEventListener('load', function() {
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788552451218" name="I0_1788552451218" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788552451218&amp;_gfid=I0_1788552451218&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=16265883" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe></body></html>
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788852771240" name="I0_1788852771240" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788852771240&amp;_gfid=I0_1788852771240&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=34101452" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe></body></html>
