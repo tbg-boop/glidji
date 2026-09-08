@@ -111,15 +111,15 @@
 .hub-tile-full{grid-column:1/-1;}
 .btn-back-hub{display:none;background:transparent;border:1px solid var(--platinum);color:var(--onyx);border-radius:var(--radius);padding:7px 12px;font-size:13px;font-weight:600;}
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb184740" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb905566" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <div id="app">
     <div class="wrap">
       <div class="top-bar">
         <div style="display:flex;align-items:center;gap:10px;">
-          <button class="btn-back-hub" id="btnBackHub" style="display: none;">← Accueil</button>
-          <h1 id="appTitle">Glidji Équipe</h1>
+          <button class="btn-back-hub" id="btnBackHub" style="display: inline-block;">← Accueil</button>
+          <h1 id="appTitle">Inventaire matériel</h1>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="btn-ghost" onclick="showGithubModal()" style="padding:8px 12px;font-size:13px;" title="Publier sur GitHub Pages">🐙</button>
@@ -128,48 +128,43 @@
       </div>
       <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
       <div id="tabContent">
-    <div class="hub-welcome">
-      <div class="hub-welcome-name">Bonjour Clément 👋</div>
-      <div class="hub-welcome-sub" id="hubWelcomeSub">Que voulez-vous faire ? · Sync 07:56</div>
+    <div class="card">
+      <h2>Ajouter au catalogue <span class="hint">(photo une seule fois par article)</span></h2>
+      <div class="field">
+        <label>Photo</label>
+        <input type="file" id="cat_photo" accept="image/*">
+        <div id="cat_photo_preview" style="margin-top:8px;"></div>
+      </div>
+      <div class="field">
+        <label>Nom de l'article</label>
+        <input type="text" id="cat_nom" placeholder="Ex : Chaise pliante blanche">
+      </div>
+      <button class="btn-gold btn-block" id="btnAddCatalogueMateriel">+ Ajouter au catalogue</button>
     </div>
-    <div class="hub-grid">
-      <div class="hub-tile" onclick="showEquipeTab('commande')">
-        <div class="hub-tile-ico">🍽️</div>
-        <div class="hub-tile-name">Commande cantine</div>
-        <div class="hub-tile-desc">Saisir le repas du jour</div>
-        <div class="hub-tile-badge" id="cantineBadgeEquipe" style="display:none;"></div>
+    <div class="card">
+      <h2>Compter un article <span class="hint">(pas de nouvelle photo, juste la quantité de ce mois)</span></h2>
+      <div class="field">
+        <label>Rechercher dans le catalogue</label>
+        <input type="text" id="comptage_search" placeholder="Nom de l'article…">
       </div>
-      <div class="hub-tile" onclick="showEquipeTab('historique')">
-        <div class="hub-tile-ico">📋</div>
-        <div class="hub-tile-name">Historique</div>
-        <div class="hub-tile-desc">Toutes les commandes</div>
+      <div id="comptageSearchResults">
+      <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--platinum);">
+        <span style="flex:1; font-size:14px;">24 Assiette blanche fleurie</span>
+        <input type="number" min="0" placeholder="Qté" style="width:70px;" id="qte_2IBr5TtscFvcbRnmmb6K">
+        <button class="btn-gold btn-sm" data-saisir="2IBr5TtscFvcbRnmmb6K" data-nom="24 Assiette blanche fleurie">OK</button>
+      </div></div>
+    </div>
+    <div class="card">
+      <h2>Déclarer une perte <span class="hint">(casse, perte, vol, péremption…)</span></h2>
+      <div class="field">
+        <label>Rechercher l'article concerné</label>
+        <input type="text" id="perte_search" placeholder="Nom de l'article…">
       </div>
-      <div class="hub-tile" onclick="showEquipeTab('fiches')">
-        <div class="hub-tile-ico">📁</div>
-        <div class="hub-tile-name">Fiches équipe</div>
-        <div class="hub-tile-desc">Prestations à venir</div>
-      </div>
-      <div class="hub-tile" onclick="showEquipeTab('inventaire')">
-        <div class="hub-tile-ico">📦</div>
-        <div class="hub-tile-name">Inventaire</div>
-        <div class="hub-tile-desc">Compter le matériel</div>
-      </div>
-      <div class="hub-tile" onclick="showEquipeTab('avances')">
-        <div class="hub-tile-ico">💰</div>
-        <div class="hub-tile-name">Caisse d'équipe</div>
-        <div class="hub-tile-desc">Avances et dépenses</div>
-      </div>
-      <div class="hub-tile" onclick="showEquipeTab('messages')" style="position:relative;">
-        <div class="hub-tile-ico">💬</div>
-        <div class="hub-tile-name">Messages</div>
-        <div class="hub-tile-desc">Chat avec Hello</div>
-        <div class="hub-tile-badge" id="msgBadgeHub" style="display:none;"></div>
-      </div>
-      <div class="hub-tile hub-tile-full" onclick="showEquipeTab('achats')">
-        <div class="hub-tile-ico">🛒</div>
-        <div class="hub-tile-name">Achats</div>
-        <div class="hub-tile-desc">Saisir une liste d'achats</div>
-      </div>
+      <div id="perteSearchResults"></div>
+    </div>
+    <div class="card">
+      <h2>Comptage du mois en cours</h2>
+      <div id="comptageListWrap"><p class="hint">Aucun comptage ce mois-ci pour l'instant.</p></div>
     </div></div>
     </div></div>
 <div class="toast" id="toast"></div>
@@ -428,6 +423,11 @@ function renderHub() {
         <div class="hub-tile-desc">Chat avec Hello</div>
         <div class="hub-tile-badge" id="msgBadgeHub" style="display:${msgUnread > 0 ? 'flex' : 'none'};">${msgUnread || ''}</div>
       </div>
+      <div class="hub-tile" onclick="showEquipeTab('calendrier')">
+        <div class="hub-tile-ico">📅</div>
+        <div class="hub-tile-name">Calendrier</div>
+        <div class="hub-tile-desc">Prestations de la semaine</div>
+      </div>
       <div class="hub-tile hub-tile-full" onclick="showEquipeTab('achats')">
         <div class="hub-tile-ico">🛒</div>
         <div class="hub-tile-name">Achats</div>
@@ -455,7 +455,8 @@ function showEquipeTab(name) {
   const labels = {
     commande: 'Commande cantine', historique: 'Historique cantine',
     fiches: 'Fiches équipe', inventaire: 'Inventaire matériel',
-    avances: "Caisse d'équipe", messages: 'Messages', achats: 'Achats'
+    avances: "Caisse d'équipe", messages: 'Messages', achats: 'Achats',
+    calendrier: 'Calendrier des prestations'
   };
   _equipeTabActif = name;
   const backBtn = document.getElementById('btnBackHub');
@@ -469,6 +470,7 @@ function showEquipeTab(name) {
   if (name === 'avances')    renderTabAvances();
   if (name === 'messages')   renderTabMessages();
   if (name === 'achats')     renderTabAchats();
+  if (name === 'calendrier') renderTabCalendrier();
 }
 
 async function renderTabCommande() {
@@ -577,17 +579,35 @@ function saveOfflineQueue(list) { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.s
 // commandesCantine beneficiait de cette file d'attente ; les depenses/avances
 // de la Caisse d'equipe echouaient silencieusement sans connexion, avec
 // risque reel de perte d'une depense jamais redeclaree.
-async function envoyerAvecRepliHorsLigne(collection, payload) {
+/* Clé stable générée A LA SAISIE, pas a l'envoi.
+   Elle sert d'identifiant du document Firestore : reemettre deux fois le meme
+   element ecrase le meme document au lieu d'en creer un second. C'est ce qui
+   rend tout le circuit idempotent, y compris apres un rechargement de page. */
+function nouvelleCleClient() {
+  try {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  } catch(_) {}
+  return 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+async function envoyerAvecRepliHorsLigne(collection, payload, cleClient) {
+  const ref = cleClient || payload.clientRef || nouvelleCleClient();
+  payload.clientRef = ref;
   try { await authReady; } catch(_) {}
   try {
-    await db.collection(collection).add(payload);
-    return { envoye: true, viaFile: false };
+    // .doc(ref).set() et non .add() : un renvoi du meme element ecrase le
+    // document existant au lieu de creer un doublon.
+    await db.collection(collection).doc(ref).set(payload);
+    return { envoye: true, viaFile: false, clientRef: ref };
   } catch (e) {
     const queue = getOfflineQueue();
-    queue.push({ collection, payload });
-    saveOfflineQueue(queue);
+    // Deja en file (double clic, renvoi) : on ne l'ajoute pas une seconde fois.
+    if (!queue.some(it => it && it.payload && it.payload.clientRef === ref)) {
+      queue.push({ collection, payload, clientRef: ref });
+      saveOfflineQueue(queue);
+    }
     updateOfflineBadge();
-    return { envoye: true, viaFile: true };
+    return { envoye: true, viaFile: true, clientRef: ref };
   }
 }
 
@@ -622,26 +642,67 @@ async function sendCommande() {
   btn.disabled = false; btn.textContent = 'Envoyer →';
 }
 
+/* Verrou : trois declencheurs peuvent appeler flushOfflineQueue en meme temps
+   (evenement 'online', timer 30s, appel direct au demarrage). Sans verrou, deux
+   passes simultanees relisaient la MEME file et renvoyaient tout en double. */
+let _flushEnCours = false;
+
 async function flushOfflineQueue() {
-  const queue = getOfflineQueue();
-  if (!queue.length) return;
+  if (_flushEnCours) return;                 // une passe suffit
+  if (!getOfflineQueue().length) return;
+  _flushEnCours = true;
   try { await authReady; } catch(_) {}
-  const remaining = [];
   let nbEnvoyes = 0;
-  for (const item of queue) {
-    // Retro-compatibilite : un element mis en file AVANT cette mise a jour
-    // n'a pas de champ "collection" (seule commandesCantine existait alors) -
-    // on le traite comme tel pour ne jamais perdre une commande deja en attente.
-    const collection = item.collection || 'commandesCantine';
-    const payload = item.collection ? item.payload : item;
-    try {
-      await db.collection(collection).add(payload);
-      nbEnvoyes++;
-    } catch (e) {
-      remaining.push(item.collection ? item : { collection: 'commandesCantine', payload: item });
+  try {
+    // On relit la file A CHAQUE tour et on retire l'element des qu'il est parti.
+    // L'ancienne version construisait un tableau "remaining" a partir d'un
+    // instantane pris au debut : une depense saisie pendant l'envoi etait
+    // ecrasee par saveOfflineQueue(remaining) et perdue definitivement.
+    let garde = 0;
+    while (garde++ < 200) {
+      const file = getOfflineQueue();
+      const item = file.find(it => !it || !it._echec);
+      if (!item) break;
+
+      // Retro-compatibilite : un element mis en file AVANT cette mise a jour
+      // n'a pas de champ "collection" (seule commandesCantine existait alors) -
+      // on le traite comme tel pour ne jamais perdre une commande deja en attente.
+      const collection = item.collection || 'commandesCantine';
+      const payload = item.collection ? item.payload : item;
+      const ref = (item.clientRef) || (payload && payload.clientRef) || nouvelleCleClient();
+      if (payload && !payload.clientRef) payload.clientRef = ref;
+
+      let envoye = false;
+      try {
+        await db.collection(collection).doc(ref).set(payload);
+        envoye = true;
+        nbEnvoyes++;
+      } catch (e) {
+        envoye = false;
+      }
+
+      // Relecture : la file a pu changer pendant l'appel reseau.
+      const fileApres = getOfflineQueue();
+      const idx = fileApres.findIndex(it => {
+        const r = it && (it.clientRef || (it.payload && it.payload.clientRef));
+        return r === ref;
+      });
+      if (idx !== -1) {
+        if (envoye) fileApres.splice(idx, 1);      // parti : on le retire
+        else fileApres[idx]._echec = true;          // echoue : on le laisse, marque
+        saveOfflineQueue(fileApres);
+      }
+      if (!envoye) break;   // reseau toujours coupe : inutile d'insister
     }
+    // On leve les marques d'echec pour la prochaine tentative
+    const finale = getOfflineQueue();
+    if (finale.some(it => it && it._echec)) {
+      finale.forEach(it => { if (it) delete it._echec; });
+      saveOfflineQueue(finale);
+    }
+  } finally {
+    _flushEnCours = false;
   }
-  saveOfflineQueue(remaining);
   updateOfflineBadge();
   if (nbEnvoyes > 0) {
     toast(nbEnvoyes + ' élément(s) en attente envoyé(s) automatiquement.');
@@ -694,20 +755,30 @@ async function renderTabHistorique() {
    qu'un nombre, jamais de photo, pour rester leger a grande echelle.
    ===================================================================== */
 function moisActuelInventaire() { return todayIso().slice(0, 7); }
-function compressImageFile(file) {
+/* Un document Firestore est plafonné à 1 Mio. Le base64 gonfle un fichier
+   d'environ un tiers : au-delà d'~700 000 caractères de charge utile, l'envoi
+   est refusé par le serveur ET le message est perdu sans que personne ne le
+   sache. On plafonne donc EN AMONT, avec un message clair. */
+const TAILLE_MAX_PIECE_JOINTE = 700000;
+
+function tailleLisible(n) {
+  return n > 1048576 ? (n / 1048576).toFixed(1) + ' Mo' : Math.round(n / 1024) + ' Ko';
+}
+
+function compressImageFile(file, maxLargeur, qualite) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        const maxW = 300;
+        const maxW = maxLargeur || 300;
         const scale = Math.min(1, maxW / img.width);
         const canvas = document.createElement('canvas');
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', 0.6));
+        resolve(canvas.toDataURL('image/jpeg', qualite || 0.6));
       };
       img.onerror = reject;
       img.src = e.target.result;
@@ -720,6 +791,9 @@ let catPhotoData = null;
 let catPhotoEnCoursDeTraitement = false;
 
 async function renderTabInventaire() {
+  // Meme raison que pour la photo de recu : sans remise a zero, un article
+  // ajoute apres un aller-retour d'onglet heritait de la photo du precedent.
+  catPhotoData = null;
   const wrap = document.getElementById('tabContent');
   try { await authReady; } catch(_) {}
   wrap.innerHTML = `
@@ -790,7 +864,8 @@ async function renderTabInventaire() {
     } catch (e) { /* si la verification echoue, on n'empeche pas l'ajout */ }
     btn.disabled = true;
     try {
-      await db.collection('catalogueMateriel').add({ nom, photoB64: catPhotoData || null, auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString() });
+      const _refCat = nouvelleCleClient();
+      await db.collection('catalogueMateriel').doc(_refCat).set({ nom, photoB64: catPhotoData || null, clientRef: _refCat, auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString() });
       document.getElementById('cat_nom').value = '';
       document.getElementById('cat_photo').value = '';
       document.getElementById('cat_photo_preview').innerHTML = '';
@@ -833,8 +908,9 @@ async function rechercherPourPerte() {
         const quantite = Number(document.getElementById('pqte_' + catalogueId).value) || 1;
         const motif = document.getElementById('pmotif_' + catalogueId).value;
         try {
-          await db.collection('pertes').add({
-            catalogueId, nom, quantite, motif, date: todayIso(),
+          const _refPerte = nouvelleCleClient();
+          await db.collection('pertes').doc(_refPerte).set({
+            catalogueId, nom, quantite, motif, date: todayIso(), clientRef: _refPerte,
             auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
           });
           document.getElementById('perte_search').value = '';
@@ -874,8 +950,9 @@ async function rechercherPourComptage() {
         const quantite = Number(document.getElementById('qte_' + catalogueId).value);
         if (!(quantite >= 0)) { toast('Quantité invalide.', true); return; }
         try {
-          await db.collection('inventaireMateriel').add({
-            catalogueId, nom, mois: moisActuelInventaire(), quantite,
+          const _refInv = nouvelleCleClient();
+          await db.collection('inventaireMateriel').doc(_refInv).set({
+            catalogueId, nom, mois: moisActuelInventaire(), quantite, clientRef: _refInv,
             auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
           });
           document.getElementById('comptage_search').value = '';
@@ -926,9 +1003,20 @@ async function renderTabFiches() {
       // Seules les prestations a venir restent visibles a l'equipe - une
       // prestation passee n'a plus d'utilite operationnelle une fois l'evenement
       // termine, et encombrerait la liste inutilement au fil des mois.
-      if ((f.datePrestation || '') >= aujourdhui) fiches.push(f);
+      // Une fiche SANS date reste visible : '' >= '2026-09-06' est faux, donc
+      // l'ancienne condition la faisait disparaitre sans le moindre message.
+      // L'equipe n'avait aucun moyen de savoir qu'une prestation existait.
+      const dp = f.datePrestation || '';
+      if (!dp || dp >= aujourdhui) fiches.push(f);
     });
-    fiches.sort((a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || ''));
+    // Les fiches sans date passent en tete : ce sont celles qui demandent une
+    // action (faire preciser la date), pas celles qu'on peut planifier.
+    fiches.sort((a, b) => {
+      const da = a.datePrestation || '', dbb = b.datePrestation || '';
+      if (!da && dbb) return -1;
+      if (da && !dbb) return 1;
+      return da.localeCompare(dbb);
+    });
 
     if (!fiches.length) {
       wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.</div></div>`;
@@ -1063,6 +1151,10 @@ let avPhotoRecuData = null;
 let avPhotoEnCoursDeTraitement = false;
 
 async function renderTabAvances() {
+  // La photo n'appartient qu'a la saisie en cours. Sans cette remise a zero,
+  // photographier un recu puis quitter l'onglet sans envoyer laissait la photo
+  // en memoire : la depense SUIVANTE partait avec le justificatif du precedent.
+  avPhotoRecuData = null;
   const wrap = document.getElementById('tabContent');
   wrap.innerHTML = `<div class="card"><p class="hint">Chargement…</p></div>`;
   try { await authReady; } catch(_) {}
@@ -1096,9 +1188,21 @@ async function renderTabAvances() {
   }
   mouvements.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-  const totalAvances = mouvements.filter(m => m.type === 'avance').reduce((s, m) => s + (m.montant || 0), 0);
-  const totalDepenses = mouvements.filter(m => m.type === 'depense').reduce((s, m) => s + (m.montant || 0), 0);
+  // Les mouvements encore en file d'attente ne sont PAS dans Firestore mais
+  // l'argent est bel et bien sorti de la caisse. Les ignorer affichait un solde
+  // trop eleve, sur la foi duquel l'equipe continuait a depenser.
+  const enAttente = getOfflineQueue()
+    .map(it => (it && it.collection === 'caisseMouvements') ? it.payload : null)
+    .filter(pl => pl && pl.compteId === compteActifId);
+  const attAvances  = enAttente.filter(m => m.type === 'avance').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+  const attDepenses = enAttente.filter(m => m.type === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+
+  // Number() explicite : un montant arrive en chaine (reprise manuelle Firestore,
+  // ecriture externe) transformerait l'addition en concatenation.
+  const totalAvances  = mouvements.filter(m => m.type === 'avance').reduce((s, m) => s + (Number(m.montant) || 0), 0) + attAvances;
+  const totalDepenses = mouvements.filter(m => m.type === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0) + attDepenses;
   const solde = totalAvances - totalDepenses;
+  const nbAttente = enAttente.length;
 
   wrap.innerHTML = `
     <div class="card">
@@ -1108,6 +1212,10 @@ async function renderTabAvances() {
         <div><div class="hint">Dépensé</div><strong>${totalDepenses.toLocaleString('fr-FR')} FCFA</strong></div>
         <div><div class="hint">Solde</div><strong style="color:${solde < 0 ? '#B3261E' : '#3a6b2a'};">${solde.toLocaleString('fr-FR')} FCFA</strong></div>
       </div>
+      ${nbAttente ? `<div style="background:#fff8e1;border-left:3px solid #e65100;border-radius:6px;padding:8px 10px;font-size:12px;color:#5d4037;">
+        ⏳ <strong>${nbAttente} mouvement(s) en attente d'envoi</strong> — déjà déduit(s) du solde ci-dessus.
+        Ils partiront automatiquement dès le retour du réseau.
+      </div>` : ''}
     </div>
 
     <div class="card">
@@ -1196,13 +1304,14 @@ async function renderTabAvances() {
     };
     const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
     avPhotoRecuData = null;
-    if (resultat.viaFile) {
-      toast('Pas de connexion : dépense enregistrée sur cet appareil, elle sera envoyée automatiquement dès que possible.', true);
-      btn.disabled = false;
-    } else {
-      toast('Dépense envoyée.');
-      renderTabAvances();
-    }
+    btn.disabled = false;
+    // Les champs sont vides dans LES DEUX cas. Avant, le chemin hors ligne les
+    // laissait remplis avec un toast rouge : l'equipe croyait a un echec et
+    // ressaisissait la depense, creant un doublon.
+    toast(resultat.viaFile
+      ? '✅ Dépense enregistrée sur cet appareil — elle partira dès le retour du réseau.'
+      : 'Dépense envoyée.', false);
+    renderTabAvances();
   });
 
   document.getElementById('btnAjouterAvanceEquipe').addEventListener('click', async () => {
@@ -1222,13 +1331,11 @@ async function renderTabAvances() {
       photoB64: null, createdAt: new Date().toISOString(),
     };
     const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
-    if (resultat.viaFile) {
-      toast('Pas de connexion : avance enregistrée sur cet appareil, elle sera envoyée automatiquement dès que possible.', true);
-      btn.disabled = false;
-    } else {
-      toast('Avance envoyée.');
-      renderTabAvances();
-    }
+    btn.disabled = false;
+    toast(resultat.viaFile
+      ? '✅ Avance enregistrée sur cet appareil — elle partira dès le retour du réseau.'
+      : 'Avance envoyée.', false);
+    renderTabAvances();
   });
 }
 
@@ -1329,7 +1436,18 @@ async function sendMessage() {
       if (window._msgAttachData.type === 'file')  payload.fileData  = window._msgAttachData.data;
       payload.fileName = window._msgAttachData.name;
     }
-    await db.collection('messages').add(payload);
+    // Ultime garde-fou : quelle que soit la provenance de la pièce jointe,
+    // rien ne part si le document dépasse la limite Firestore — sinon le
+    // message est perdu et personne ne s'en aperçoit.
+    const poids = JSON.stringify(payload).length;
+    if (poids > 1000000) {
+      toast('Message trop lourd pour être envoyé (' + tailleLisible(poids) + '). Retirez la pièce jointe.', true);
+      btn.disabled = false;
+      return;
+    }
+    const _refMsg = nouvelleCleClient();
+    payload.clientRef = _refMsg;
+    await db.collection('messages').doc(_refMsg).set(payload);
     input.value = '';
     window._msgAttachData = null;
     const attachPrev = document.getElementById('attach-preview');
@@ -1395,20 +1513,36 @@ async function envoyerAchats() {
     var date   = todayIso();
 
     // 1. Enregistrer la liste globale dans achatsEquipe
-    await db.collection('achatsEquipe').add({
+    // Cle stable : si l'envoi est relance (double clic, rechargement), le meme
+    // document est ecrase au lieu d'en creer un second.
+    var refAchat = nouvelleCleClient();
+    await db.collection('achatsEquipe').doc(refAchat).set({
       lignes: _achatLignes,
       total: total,
       auteur: auteur,
       date: date,
+      clientRef: refAchat,
       createdAt: new Date().toISOString()
     });
 
-    // 2. Lire le compte de caisse actif
+    // 2. Lire le compte de caisse actif — OBLIGATOIRE.
+    // Sans compteId, les mouvements etaient ecrits mais invisibles : l'onglet
+    // Caisse et l'ERP filtrent tous deux sur compteId. L'argent sortait, le
+    // solde ne bougeait pas, et le message affirmait pourtant l'inverse.
     var compteActifId = null;
+    var erreurMeta = null;
     try {
       var metaSnap = await db.collection('caisseMeta').doc('actif').get();
-      if (metaSnap && metaSnap.exists) compteActifId = metaSnap.data().compteActifId;
-    } catch(e2) { /* pas de caisse active, on continue sans */ }
+      if (metaSnap && metaSnap.exists) compteActifId = metaSnap.data().compteActifId || null;
+    } catch(e2) { erreurMeta = e2; }
+
+    if (!compteActifId) {
+      btn.disabled = false;
+      toast(erreurMeta
+        ? 'Impossible de joindre la caisse. Vérifiez la connexion et réessayez — rien n\'a été envoyé.'
+        : 'Aucun compte de caisse actif. Demandez l\'ouverture d\'une caisse avant d\'envoyer des achats.', true);
+      return;
+    }
 
     // 3. Créer un mouvement de caisse séparé par ligne d'achat
     for (var i = 0; i < _achatLignes.length; i++) {
@@ -1422,7 +1556,7 @@ async function envoyerAchats() {
         createdAt: new Date().toISOString(),
         sourceAchats: true
       };
-      if (compteActifId) payload.compteId = compteActifId;
+      payload.compteId = compteActifId;   // garanti non nul (verifie plus haut)
       await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
     }
 
@@ -1436,95 +1570,256 @@ async function envoyerAchats() {
 }
 
 
-/* ----- CALENDRIER ----- */
-function renderTabCalendrier() {
-  var content = document.getElementById('tabContent');
-  var now = new Date();
-  var year = now.getFullYear(), month = now.getMonth();
-  var firstDay = new Date(year, month, 1).getDay();
-  var daysInMonth = new Date(year, month+1, 0).getDate();
-  var monthNames = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var dayNames = ['Di','Lu','Ma','Me','Je','Ve','Sa'];
-  var eventDates = {};
-  (histoCache||[]).forEach(function(op) {
-    if (!op.date) return;
-    var parts = op.date.split('-');
-    var y=parseInt(parts[0],10), m=parseInt(parts[1],10)-1, d=parseInt(parts[2],10);
-    if (y===year && m===month) { if (!eventDates[d]) eventDates[d]=[]; eventDates[d].push(op); }
-  });
-  var grid = '<div class="cal-grid">';
-  dayNames.forEach(function(d){ grid+='<div class="cal-head">'+d+'</div>'; });
-  var offset = (firstDay===0)?6:firstDay-1;
-  for(var i=0;i<offset;i++) grid+='<div class="cal-cell"></div>';
-  for(var d=1;d<=daysInMonth;d++){
-    var cls='cal-cell'+(d===now.getDate()?' today':'')+(eventDates[d]?' has-event':'');
-    var oc=eventDates[d]?' onclick="showCalPopup('+d+')"':'';
-    grid+='<div class="'+cls+'"'+oc+'>'+d+(eventDates[d]?'<div class="cal-dot"></div>':'')+'</div>';
-  }
-  grid+='</div>';
-  window._calEventDates = eventDates;
-  var upcoming=(histoCache||[]).filter(function(op){
-    if(!op.date)return false;
-    var diff=(new Date(op.date)-now)/86400000;
-    return diff>=0&&diff<=30;
-  }).sort(function(a,b){return a.date.localeCompare(b.date);});
-  var upHtml='<h4 style="margin:12px 0 8px;">Prochaines prestations (30j)</h4>';
-  if(!upcoming.length) upHtml+='<p style="color:#888;font-size:13px;">Aucune dans les 30 prochains jours.</p>';
-  else upcoming.forEach(function(op){
-    upHtml+='<div class="cal-prochain-card" onclick="showFichePopup(this)" data-op="'+encodeURIComponent(JSON.stringify(op))+'">'+
-      '<div><b>'+(op.nomEvenement||op.client||'Prestation')+'</b></div>'+
-      '<div style="font-size:12px;color:#666;">'+(op.date||'')+' &mdash; '+(op.lieu||'')+'</div></div>';
-  });
-  content.innerHTML='<div class="card"><h2>'+monthNames[month]+' '+year+'</h2>'+grid+upHtml+'</div>';
+/* =====================================================================
+   CALENDRIER DES PRESTATIONS
+   ---------------------------------------------------------------------
+   Réécrit le 06/09/2026 sur `fichesEquipe`, la collection réellement
+   alimentée par l'ERP. L'ancien bloc lisait une variable `histoCache` jamais
+   déclarée et des champs (`nomEvenement`, `client`) qui n'existent pas dans
+   le modèle : il ne pouvait pas s'exécuter, et aucune tuile n'y menait.
+
+   Deux vues, la semaine par défaut — c'est celle qu'on regarde le matin.
+   Aucune information financière n'apparaît : l'équipe voit ce qui est
+   programmé, jamais les montants.
+   ===================================================================== */
+let _fichesCache = [];
+let _calVue = 'semaine';
+let _calLundi = null;
+let _calYear = new Date().getFullYear();
+let _calMonth = new Date().getMonth();
+
+function lundiDeLaSemaineEquipe(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  const jour = d.getDay();
+  d.setDate(d.getDate() + (jour === 0 ? -6 : 1 - jour));
+  return d.toISOString().slice(0, 10);
 }
-function showCalPopup(day){
-  var events=(window._calEventDates||{})[day]||[];
-  var div=document.createElement('div'); div.className='cal-popup';
-  div.innerHTML='<div class="cal-popup-inner"><h4 style="margin-bottom:12px;">Prestations du '+day+'</h4>'+
-    events.map(function(op){return '<div class="cal-prochain-card" style="cursor:default;"><b>'+(op.nomEvenement||op.client||'Prestation')+'</b><br><span style="font-size:12px;color:#666;">'+(op.lieu||'')+' '+(op.heure||'')+'</span></div>';}).join('')+
-    '<button class="btn" style="margin-top:12px;width:100%;" onclick="this.closest(\'.cal-popup\').remove()">Fermer</button></div>';
+function calLundiCourant() { return _calLundi || lundiDeLaSemaineEquipe(todayIso()); }
+
+async function renderTabCalendrier() {
+  const wrap = document.getElementById('tabContent');
+  wrap.innerHTML = `<div class="card"><p class="hint">Chargement du calendrier…</p></div>`;
+  try { await authReady; } catch(_) {}
+  try {
+    const snap = await db.collection('fichesEquipe').get();
+    _fichesCache = [];
+    snap.forEach(d => _fichesCache.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger le calendrier : ${escapeHtml(e.message)}</p></div>`;
+    return;
+  }
+  dessinerCalendrier();
+}
+
+function dessinerCalendrier() {
+  const wrap = document.getElementById('tabContent');
+  if (!wrap) return;
+  const onglet = (cle, libelle) =>
+    `<button class="${_calVue === cle ? 'btn-gold' : 'btn-ghost'} btn-sm" onclick="calSetVue('${cle}')">${libelle}</button>`;
+  const barre = `<div class="card" style="display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:12px;">
+      ${onglet('semaine', '📆 Semaine')}${onglet('mois', '🗓️ Mois')}
+      <span style="flex:1;"></span>
+      <button class="btn-ghost btn-sm" onclick="calAujourdhui()">Aujourd'hui</button>
+    </div>`;
+  wrap.innerHTML = barre + (_calVue === 'semaine' ? vueCalendrierSemaine() : vueCalendrierMois());
+}
+
+function calSetVue(v) {
+  _calVue = (v === 'mois') ? 'mois' : 'semaine';
+  if (_calVue === 'semaine' && !_calLundi) _calLundi = lundiDeLaSemaineEquipe(todayIso());
+  dessinerCalendrier();
+}
+function calAujourdhui() {
+  const t = new Date();
+  _calYear = t.getFullYear(); _calMonth = t.getMonth();
+  _calLundi = lundiDeLaSemaineEquipe(todayIso());
+  dessinerCalendrier();
+}
+function calNav(dir) {
+  if (_calVue === 'semaine') {
+    const d = new Date(calLundiCourant() + 'T00:00:00');
+    d.setDate(d.getDate() + dir * 7);
+    _calLundi = d.toISOString().slice(0, 10);
+    _calYear = d.getFullYear(); _calMonth = d.getMonth();
+  } else {
+    _calMonth += dir;
+    if (_calMonth > 11) { _calMonth = 0; _calYear++; }
+    if (_calMonth < 0)  { _calMonth = 11; _calYear--; }
+  }
+  dessinerCalendrier();
+}
+
+/* Carte d'une prestation — sans aucune information financière. */
+function carteCalendrier(f) {
+  return `<div class="cal-prochain-card" style="cursor:default;">
+    <div><b>${escapeHtml(f.objet || f.clientNom || 'Prestation')}</b></div>
+    <div style="font-size:12px;color:#666;">
+      ${f.heure ? escapeHtml(f.heure) + ' · ' : ''}${escapeHtml(f.clientNom || '')}${f.lieu ? ' — ' + escapeHtml(f.lieu) : ''}
+    </div>
+    ${f.convives ? `<div style="font-size:12px;color:#666;">${escapeHtml(String(f.convives))} couverts</div>` : ''}
+    ${f.notes ? `<div class="fe-notes-alert" style="margin:6px 0 0;"><div class="fe-notes-label">⚠️ Consignes</div><div class="fe-notes-body">${escapeHtml(f.notes)}</div></div>` : ''}
+  </div>`;
+}
+
+function vueCalendrierSemaine() {
+  const lundi = calLundiCourant();
+  const jours = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(lundi + 'T00:00:00');
+    d.setDate(d.getDate() + i);
+    jours.push(d.toISOString().slice(0, 10));
+  }
+  const debut = jours[0], fin = jours[6];
+  const parJour = {};
+  _fichesCache.forEach(f => {
+    const dp = f.datePrestation || '';
+    if (!dp || dp < debut || dp > fin) return;
+    (parJour[dp] = parJour[dp] || []).push(f);
+  });
+  Object.values(parJour).forEach(l => l.sort((a, b) => (a.heure || '').localeCompare(b.heure || '')));
+
+  const noms = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+  const auj = todayIso();
+  const nb = Object.values(parJour).reduce((s, l) => s + l.length, 0);
+
+  let html = `<div class="card" style="display:flex;align-items:center;gap:8px;padding:12px;margin-bottom:12px;">
+    <button class="btn-ghost btn-sm" onclick="calNav(-1)">◀</button>
+    <div style="flex:1;text-align:center;">
+      <strong style="font-size:14px;">${fmtDate(debut)} — ${fmtDate(fin)}</strong>
+      <div style="font-size:12px;color:var(--muted);">${nb === 0 ? 'aucune prestation' : nb + ' prestation' + (nb > 1 ? 's' : '')}</div>
+    </div>
+    <button class="btn-ghost btn-sm" onclick="calNav(1)">▶</button>
+  </div><div class="card">`;
+
+  jours.forEach((iso, i) => {
+    const liste = parJour[iso] || [];
+    const estAuj = iso === auj;
+    html += `<div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);${estAuj ? 'background:#FBF6EA;border-radius:8px;padding-left:10px;padding-right:10px;' : ''}">
+      <div style="font-size:12px;font-weight:700;color:${estAuj ? 'var(--gold-deep)' : 'var(--muted)'};text-transform:uppercase;margin-bottom:6px;">
+        ${noms[i]} ${fmtDate(iso)}${estAuj ? " · aujourd'hui" : ''}
+      </div>
+      ${liste.length ? liste.map(carteCalendrier).join('') : '<div style="font-size:13px;color:var(--muted);">—</div>'}
+    </div>`;
+  });
+  return html + '</div>';
+}
+
+function vueCalendrierMois() {
+  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const dayNames = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+  const firstDay = new Date(_calYear, _calMonth, 1).getDay();
+  const daysInMonth = new Date(_calYear, _calMonth + 1, 0).getDate();
+  const today = new Date();
+  const estMoisCourant = today.getFullYear() === _calYear && today.getMonth() === _calMonth;
+
+  const parJour = {};
+  _fichesCache.forEach(f => {
+    const dp = f.datePrestation || '';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dp)) return;
+    const parts = dp.split('-');
+    if (parseInt(parts[0], 10) !== _calYear || parseInt(parts[1], 10) - 1 !== _calMonth) return;
+    const d = parseInt(parts[2], 10);
+    (parJour[d] = parJour[d] || []).push(f);
+  });
+  window._calParJour = parJour;
+
+  let html = `<div class="card" style="display:flex;align-items:center;gap:8px;padding:12px;margin-bottom:12px;">
+    <button class="btn-ghost btn-sm" onclick="calNav(-1)">◀</button>
+    <strong style="flex:1;text-align:center;font-size:15px;">${monthNames[_calMonth]} ${_calYear}</strong>
+    <button class="btn-ghost btn-sm" onclick="calNav(1)">▶</button>
+  </div><div class="card"><div class="cal-grid">`;
+  dayNames.forEach(d => html += `<div class="cal-head">${d}</div>`);
+  const offset = (firstDay === 0) ? 6 : firstDay - 1;
+  for (let i = 0; i < offset; i++) html += '<div class="cal-cell"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const estAuj = estMoisCourant && d === today.getDate();
+    const aEvt = !!parJour[d];
+    html += `<div class="cal-cell${estAuj ? ' today' : ''}${aEvt ? ' has-event' : ''}"${aEvt ? ` onclick="ouvrirJourCalendrier(${d})"` : ''}>${d}${aEvt ? '<div class="cal-dot"></div>' : ''}</div>`;
+  }
+  html += '</div>';
+
+  // Les 30 prochains jours, pour ne rien manquer au-delà du mois affiché
+  const auj = todayIso();
+  const dans30 = new Date(); dans30.setDate(dans30.getDate() + 30);
+  const limite = dans30.toISOString().slice(0, 10);
+  const prochaines = _fichesCache
+    .filter(f => f.datePrestation && f.datePrestation >= auj && f.datePrestation <= limite)
+    .sort((a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || ''));
+  html += `<h4 style="margin:16px 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;">Prochaines prestations (30 jours)</h4>`;
+  html += prochaines.length
+    ? prochaines.map(f => `<div style="margin-bottom:8px;"><div style="font-size:11px;color:var(--gold-deep);font-weight:700;">${fmtDate(f.datePrestation)}</div>${carteCalendrier(f)}</div>`).join('')
+    : `<p class="hint">Aucune prestation dans les 30 prochains jours.</p>`;
+  return html + '</div>';
+}
+
+function ouvrirJourCalendrier(jour) {
+  const liste = (window._calParJour || {})[jour] || [];
+  const div = document.createElement('div');
+  div.className = 'cal-popup';
+  const iso = _calYear + '-' + String(_calMonth + 1).padStart(2, '0') + '-' + String(jour).padStart(2, '0');
+  div.innerHTML = `<div class="cal-popup-inner">
+    <h4 style="margin-bottom:12px;">Prestations du ${fmtDate(iso)}</h4>
+    ${liste.map(carteCalendrier).join('') || '<p class="hint">Aucune.</p>'}
+    <button class="btn-ghost btn-block" style="margin-top:12px;" onclick="this.closest('.cal-popup').remove()">Fermer</button>
+  </div>`;
+  div.addEventListener('click', e => { if (e.target === div) div.remove(); });
   document.body.appendChild(div);
 }
-function showFichePopup(el){
-  var op=JSON.parse(decodeURIComponent(el.getAttribute('data-op')));
-  var div=document.createElement('div'); div.className='cal-popup';
-  div.innerHTML='<div class="cal-popup-inner"><h4 style="margin-bottom:12px;">Fiche prestation</h4>'+
-    '<table style="width:100%;font-size:13px;">'+
-    '<tr><td style="color:#888;width:80px;">Evenement</td><td><b>'+(op.nomEvenement||op.client||'-')+'</b></td></tr>'+
-    '<tr><td style="color:#888;">Date</td><td>'+(op.date||'-')+'</td></tr>'+
-    '<tr><td style="color:#888;">Lieu</td><td>'+(op.lieu||'-')+'</td></tr>'+
-    '<tr><td style="color:#888;">Type</td><td>'+(op.type||'-')+'</td></tr>'+
-    '<tr><td style="color:#888;">Heure</td><td>'+(op.heure||'-')+'</td></tr>'+
-    '</table><button class="btn" style="margin-top:12px;width:100%;" onclick="this.closest(\'.cal-popup\').remove()">Fermer</button></div>';
-  document.body.appendChild(div);
-}
-function checkAndSendReminders(){
-  if(!('Notification' in window))return;
-  var now=new Date(), in48h=new Date(now.getTime()+48*3600*1000);
-  var upcoming=(histoCache||[]).filter(function(op){
-    if(!op.date)return false; var d=new Date(op.date); return d>=now&&d<=in48h;
-  });
-  if(!upcoming.length)return;
-  if(Notification.permission==='granted'){
-    upcoming.forEach(function(op){
-      new Notification('Rappel prestation 48h',{body:(op.nomEvenement||op.client||'Prestation')+' - '+(op.date||''),icon:'/favicon.ico'});
-    });
-  } else if(Notification.permission!=='denied'){
-    Notification.requestPermission().then(function(p){ if(p==='granted') checkAndSendReminders(); });
-  }
-}
+
 /* ----- MESSAGES ENRICHIS — helpers uniquement (renderTabMessages et sendMessage non modifiés) ----- */
 var _mediaRecorder=null, _audioChunks=[];
-function handleMsgFile(inp){
-  var file=inp.files[0]; if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var isImage=file.type.startsWith('image/'), isAudio=file.type.startsWith('audio/');
-    window._msgAttachData={type:isImage?'image':isAudio?'audio':'file',data:e.target.result,name:file.name};
-    var prev=document.getElementById('attach-preview');
-    if(prev) prev.textContent='Joint : '+file.name;
-  };
-  reader.readAsDataURL(file);
+/* Pièce jointe d'un message.
+   Avant : n'importe quel fichier était lu en base64 sans compression ni
+   plafond. Une photo de téléphone de 3 Mo produisait ~4 Mo de base64, que
+   Firestore refusait — le message partait dans le vide, sans erreur visible.
+   Désormais : les images sont recompressées (1000 px de large, qualité 0,7),
+   et tout ce qui dépasse le plafond est refusé AVANT l'envoi, avec la taille
+   affichée pour que la personne comprenne. */
+async function handleMsgFile(inp){
+  const file = inp.files[0];
+  if (!file) return;
+  const prev = document.getElementById('attach-preview');
+  const estImage = (file.type || '').startsWith('image/');
+  const estAudio = (file.type || '').startsWith('audio/');
+  if (prev) prev.textContent = 'Préparation de ' + file.name + '…';
+  try {
+    let donnees;
+    if (estImage) {
+      donnees = await compressImageFile(file, 1000, 0.7);
+    } else {
+      if (file.size > TAILLE_MAX_PIECE_JOINTE) {
+        inp.value = '';
+        if (prev) prev.textContent = '';
+        toast('Fichier trop lourd (' + tailleLisible(file.size) + '). Maximum ' + tailleLisible(TAILLE_MAX_PIECE_JOINTE) + ' — envoyez-le par un autre moyen.', true);
+        return;
+      }
+      donnees = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = e => res(e.target.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+    }
+    if (!pieceJointeAcceptable(donnees, prev, inp)) return;
+    window._msgAttachData = { type: estImage ? 'image' : estAudio ? 'audio' : 'file', data: donnees, name: file.name };
+    if (prev) prev.textContent = 'Joint : ' + file.name + ' (' + tailleLisible(donnees.length) + ')';
+  } catch (e) {
+    inp.value = '';
+    if (prev) prev.textContent = '';
+    toast('Impossible de préparer ce fichier.', true);
+  }
+}
+
+/* Garde commune aux fichiers et aux vocaux. */
+function pieceJointeAcceptable(donnees, prev, inp) {
+  if (donnees && donnees.length > TAILLE_MAX_PIECE_JOINTE) {
+    window._msgAttachData = null;
+    if (inp) inp.value = '';
+    if (prev) prev.textContent = '';
+    toast('Pièce jointe trop lourde après compression (' + tailleLisible(donnees.length) + '). Maximum ' + tailleLisible(TAILLE_MAX_PIECE_JOINTE) + '.', true);
+    return false;
+  }
+  return true;
 }
 function toggleRecord(){
   var btn=document.getElementById('btnRecord');
@@ -1537,8 +1832,11 @@ function toggleRecord(){
       var blob=new Blob(_audioChunks,{type:'audio/webm'});
       var r=new FileReader();
       r.onload=function(e){
+        var prev=document.getElementById('attach-preview');
+        // Un vocal long dépasse vite le plafond Firestore : même garde que les fichiers.
+        if (!pieceJointeAcceptable(e.target.result, prev, null)) return;
         window._msgAttachData={type:'audio',data:e.target.result,name:'vocal.webm'};
-        var prev=document.getElementById('attach-preview'); if(prev) prev.textContent='Vocal enregistre';
+        if(prev) prev.textContent='Vocal enregistré (' + tailleLisible(e.target.result.length) + ')';
       };
       r.readAsDataURL(blob);
       stream.getTracks().forEach(function(t){t.stop();});
@@ -1648,7 +1946,7 @@ init();
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788249380965" name="I0_1788249380965" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788249380965&amp;_gfid=I0_1788249380965&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=17222853" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788852837742" name="I0_1788852837742" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788852837742&amp;_gfid=I0_1788852837742&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=48660749" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
     <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
       <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
       <div style="margin-bottom:12px;">
@@ -1659,7 +1957,7 @@ init();
         <label style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;display:block;margin-bottom:4px;">Nom du dépôt</label>
         <input type="text" id="gh_eq_repo" placeholder="glidji" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
       </div>
-      
+      <p style="font-size:12px;color:#888;margin-bottom:12px;">🔗 https://tbg-boop.github.io/glidji/Glidji_Equipe_v2.html</p>
       <div id="gh_eq_status" style="font-size:13px;color:#888;min-height:18px;margin-bottom:12px;">Encodage et envoi (patientez ~30s)…</div>
       <div style="display:flex;gap:10px;">
         <button onclick="eqGhPublish()" style="flex:1;background:#B8935A;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;" disabled="">🚀 Publier l'app Équipe</button>
