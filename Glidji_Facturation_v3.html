@@ -578,11 +578,11 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     <button id="btnMenuMobile" class="menu-mobile-toggle" aria-label="Menu">☰</button>
     <nav class="tabs">
       <button data-view="dashboard" class="">Accueil</button><button data-view="operation">Nouvelle opération</button>
-      <button data-view="registre" class="">Registre</button>
+      <button data-view="registre">Registre</button>
       <button data-view="paiements">Paiements</button>
       <button data-view="relances">Relances <span id="relancesBadge" style="display:none; background:var(--burgundy); color:#fff; font-size:10px; font-weight:700; border-radius:8px; padding:1px 5px; margin-left:4px; vertical-align:middle;"></span></button>
       <button data-view="cantine">Cantine</button>
-      <button data-view="achats" class="">Achats</button>
+      <button data-view="achats">Achats</button>
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
@@ -591,7 +591,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="bilan">Bilan</button>
       <button data-view="paie">Employés &amp; Paie</button>
       <button data-view="agenda">📅 Agenda</button>
-      <button data-view="achats-equipe" class="">🛒 Achats équipe</button>
+      <button data-view="achats-equipe">🛒 Achats équipe</button>
       <button data-view="prestations">Prestations</button>
       <button data-view="recettes">Recettes &amp; Coûts</button>
       <button data-view="coffrets">Coffrets</button>
@@ -603,7 +603,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
       <button data-view="appareils">🔒 Appareils</button>
       <button data-view="reglages" class="active">Réglages</button>
     </nav>
-    <span class="sync-badge ok" id="syncStatus" title="Dernière synchronisation à 19:41">✅ Synch. 19:41</span>
+    <span class="sync-badge ok" id="syncStatus" title="Glidji_Donnees.json">🔗 Lié : Glidji_Donnees.json</span>
   </header>
   <div class="menu-mobile-overlay" id="menuMobileOverlay"></div>
 
@@ -612,7 +612,7 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
     <button data-cat="accueil" class="" onclick="showHubCat('accueil')">
       <span class="hn-ico">🏠</span>Accueil
     </button>
-    <button data-cat="commercial" onclick="showHubCat('commercial')" class="">
+    <button data-cat="commercial" onclick="showHubCat('commercial')">
       <span class="hn-ico">💼</span>Commercial
       <span class="hn-badge" id="hubBadgeCommercial" style="display:none;"></span>
     </button>
@@ -808,57 +808,13 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         <div class="search-row">
           <input type="text" id="reg_search" placeholder="Rechercher un client, un objet…">
           <select id="reg_filterType"><option value="">Tous les types</option><option value="FACTURE">Facture</option><option value="PROFORMA">Proforma</option></select>
-          <select id="reg_filterYear"><option value="">Toutes les années</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option></select>
+          <select id="reg_filterYear"><option value="">Toutes les années</option></select>
           <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--burgundy);">
-            <input type="checkbox" id="reg_filterIncomplete" style="width:auto;"> ⚠️ Fiches incomplètes uniquement (<span id="incompleteCount">25</span>)
+            <input type="checkbox" id="reg_filterIncomplete" style="width:auto;"> ⚠️ Fiches incomplètes uniquement (<span id="incompleteCount">0</span>)
           </label>
           <button class="btn btn-ghost btn-sm" id="btnExportCsv">Exporter en CSV</button>
         </div>
-        <div id="registreTableWrap"><table><thead><tr>
-      <th>Date</th><th>Type</th><th>N°</th><th>Client</th><th>Objet</th><th style="text-align:right">Montant</th><th style="text-align:right">Reste à payer</th><th colspan="5"></th>
-    </tr></thead><tbody>
-      <tr>
-        <td>26/08/2026</td>
-        <td><span class="badge badge-proforma">PROFORMA</span></td>
-        <td>038/GC/08/2026</td>
-        <td>Mme Marie Jo DE SOUZA</td>
-        <td>REPAS POUR 3 VIP</td>
-        <td style="text-align:right; font-weight:600;">35 000 FCFA</td>
-        <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-        <td><button class="btn btn-ghost btn-sm" data-view-op="mtbhe8u49offtt">Ouvrir</button></td>
-        <td><button class="btn btn-gold btn-sm" data-edit-op="mtbhe8u49offtt">Modifier</button></td>
-        <td></td>
-        <td><button class="btn btn-gold btn-sm" data-convertir-reg="mtbhe8u49offtt">→ Facture</button></td>
-        <td><button class="btn btn-ghost btn-sm" data-suppr-op="mtbhe8u49offtt" title="Mettre à la corbeille (code requis)" style="color:var(--danger,#8C2E2E);">🗑️</button></td>
-      </tr>
-      <tr>
-        <td>22/08/2026</td>
-        <td><span class="badge badge-proforma">PROFORMA</span></td>
-        <td>036/GC/08/2026</td>
-        <td>Mme Marie Jo DE SOUZA</td>
-        <td>DINER VIP</td>
-        <td style="text-align:right; font-weight:600;">50 000 FCFA</td>
-        <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-        <td><button class="btn btn-ghost btn-sm" data-view-op="mt43m39dd9r6kq">Ouvrir</button></td>
-        <td><button class="btn btn-gold btn-sm" data-edit-op="mt43m39dd9r6kq">Modifier</button></td>
-        <td></td>
-        <td><button class="btn btn-gold btn-sm" data-convertir-reg="mt43m39dd9r6kq">→ Facture</button></td>
-        <td><button class="btn btn-ghost btn-sm" data-suppr-op="mt43m39dd9r6kq" title="Mettre à la corbeille (code requis)" style="color:var(--danger,#8C2E2E);">🗑️</button></td>
-      </tr>
-      <tr>
-        <td>14/08/2026</td>
-        <td><span class="badge badge-proforma">PROFORMA</span></td>
-        <td>033/GC/08/2026</td>
-        <td>Mme Marie Jo DE SOUZA</td>
-        <td>REPAS POUR VIP</td>
-        <td style="text-align:right; font-weight:600;">50 000 FCFA</td>
-        <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-        <td><button class="btn btn-ghost btn-sm" data-view-op="mst7juw3l40lu4">Ouvrir</button></td>
-        <td><button class="btn btn-gold btn-sm" data-edit-op="mst7juw3l40lu4">Modifier</button></td>
-        <td></td>
-        <td><button class="btn btn-gold btn-sm" data-convertir-reg="mst7juw3l40lu4">→ Facture</button></td>
-        <td><button class="btn btn-ghost btn-sm" data-suppr-op="mst7juw3l40lu4" title="Mettre à la corbeille (code requis)" style="color:var(--danger,#8C2E2E);">🗑️</button></td>
-      </tr></tbody></table></div>
+        <div id="registreTableWrap"></div>
       </div>
     </section>
 
@@ -942,12 +898,12 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
           <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('tous')" id="fmFiltTous" style="border:2px solid var(--primary);">Tous</button>
           <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('FACTURE')" id="fmFiltFACTURE">Factures</button>
-          <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('PROFORMA')" id="fmFiltPROFORMA" style="border: 2px solid var(--primary);">Proformas</button>
+          <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('PROFORMA')" id="fmFiltPROFORMA">Proformas</button>
           <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('DEVIS')" id="fmFiltDEVIS">Devis</button>
           <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('pending')" id="fmFiltPending">En attente</button>
           <button class="btn btn-ghost btn-sm" onclick="filtrerFacturesMobile('imported')" id="fmFiltImported">Déjà importés</button>
         </div>
-        <div id="factures-mobile-list"><p class="hint" style="color:var(--muted);text-align:center;padding:24px;">⏳ Chargement depuis Firebase…</p></div>
+        <div id="factures-mobile-list"><p class="hint" style="color:var(--muted);text-align:center;padding:24px;">Chargement…</p></div>
       </div>
     </section>
 
@@ -967,18 +923,9 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
         </div>
         <table style="margin-top:10px;">
           <thead><tr><th style="width:140px;">Date</th><th>Repas</th><th style="width:140px;">Montant (FCFA)</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="cantRepasBody">
-    <tr>
-      <td><input type="date" data-cant="0" data-field="date"></td>
-      <td><input type="text" data-cant="0" data-field="designation" list="cant_designations" placeholder="Ex : Salade d'avocat et assiette de fruits"></td>
-      <td><input type="number" class="num" data-cant="0" data-field="montant" min="0"></td>
-      <td><button class="row-remove" data-cant-remove="0" title="Retirer">✕</button></td>
-    </tr></tbody>
+          <tbody id="cantRepasBody"></tbody>
         </table>
-        <datalist id="cant_designations"><option value="1"></option><option value="1 gravlax"></option><option value="Banane plantain bouilli/légumes sautés"></option><option value="Blanc de poulet 
-Filet de boeuf grillé 
-Salade de laitue"></option><option value="Blanc de poulet salade"></option><option value="Blanc de poulet/légumes"></option><option value="Blanc de poulet/légumes sauté couscous/Amanda vapeur"></option><option value="Blanc de poulet/salade de laitue"></option><option value="Brochettes de poisson/riz sauce ratatouille"></option><option value="Deux pattes Au thon"></option><option value="Filet de boeuf/Poêlé de légumes, Amanda"></option><option value="Filet de bœuf salade de laitue"></option><option value="Filet de poisson légumes/couscous"></option><option value="Filet de poisson/riz"></option><option value="Filet de poisson/riz sauce ratatouille"></option><option value="Légume sauté plantain bouillie avec filet de bœuf"></option><option value="Omelette au légumes et salade verte"></option><option value="Omelette aux légumes/salade de laitue"></option><option value="Poisson entier grillé/légumes sautés"></option><option value="Portion de légumes"></option><option value="Riz sauce provençale avec filet de poisson"></option><option value="Salad de Crudités"></option><option value="Salad de laitue,blanc de poulet, sauce provençale"></option><option value="Salade d'avocat"></option><option value="Salade de chou et de carotte"></option><option value="Sauce gombo, pâte de maïs 
-Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datalist>
+        <datalist id="cant_designations"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddCantRow" style="margin-top:10px;">+ Ajouter une ligne</button>
         <div style="margin-top:14px;">
           <button class="btn btn-gold" id="btnSaveCantRepas">Enregistrer ces repas →</button>
@@ -990,46 +937,13 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
           <button class="btn btn-ghost btn-sm" id="btnPullCommandes">🔄 Récupérer les commandes de l'équipe</button>
           <span id="cantSyncStatus" style="font-size:12px; color:var(--muted);"></span>
-          <span id="cantLastSyncBadge" style="font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; display: inline-block; background: rgb(229, 240, 224); color: rgb(58, 107, 42);">✅ Synchronisé à l'instant</span>
+          <span id="cantLastSyncBadge" style="font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600; display:none;"></span>
         </div>
-        <div id="cantPendingWrap"><div class="cant-client-group" data-client="3jrvu4hmxpce">
-      <h3>2TB&amp;CO CONSULTING</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr style="background:#fdf3ec;">
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtiu835fl86gyo" data-client="3jrvu4hmxpce" checked=""></td>
-          <td>30/08/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>1</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtiu835fl86gyo" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtiu835fl86gyo" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="3jrvu4hmxpce">0 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="3jrvu4hmxpce" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div><div class="cant-client-group" data-client="mt45u9kn9wnncj">
-      <h3>M D'Almeida</h3>
-      <table><thead><tr><th style="width:30px;"></th><th style="width:110px;">Date</th><th>Repas</th><th style="text-align:right; width:130px;">Montant (FCFA)</th><th></th></tr></thead>
-      <tbody>
-        <tr>
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtsxyl9np0yiqk" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>07/09/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Filet de poisson/riz</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtsxyl9np0yiqk" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtsxyl9np0yiqk" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="alloc-check cant-pending-check" data-repas="mtsxyl9o3qhdk9" data-client="mt45u9kn9wnncj" checked=""></td>
-          <td>07/09/2026 <span title="Ajouté par l'équipe" style="font-size:11px;">📱</span></td>
-          <td>Salad de Crudités</td>
-          <td><input type="number" class="cant-montant-input" data-repas-montant="mtsxyl9o3qhdk9" min="0" placeholder="À saisir" style="width:100%; text-align:right;"></td>
-          <td><button class="btn btn-ghost btn-sm" data-edit-repas="mtsxyl9o3qhdk9" title="Modifier ce repas (le recharge dans le formulaire)">✏️</button></td>
-        </tr></tbody></table>
-      <div class="cant-client-total">Total sélectionné : <span data-total-for="mt45u9kn9wnncj">5 500 FCFA</span></div>
-      <button class="btn btn-gold btn-sm" data-facturer="mt45u9kn9wnncj" style="margin-top:8px;">Générer la facture pour ce client →</button>
-    </div></div>
+        <div id="cantPendingWrap"></div>
       </div>
 
       <!-- STATS CANTINE -->
-      <div class="card" id="cantStatsCard" style="">
+      <div class="card" id="cantStatsCard" style="display:none;">
         <h2>📊 Statistiques cantine
           <small>Consommations par client sur la période sélectionnée — lecture seule, aucune donnée modifiée.</small>
         </h2>
@@ -1044,37 +958,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           </div>
           <button class="btn btn-ghost btn-sm" id="btnCantStatsRefresh">🔍 Calculer</button>
         </div>
-        <div id="cantStatsWrap"><table>
-    <thead><tr>
-      <th>Client</th>
-      <th style="text-align:center;">Repas</th>
-      <th style="text-align:right;">Total</th>
-      <th style="text-align:right;">Facturé</th>
-      <th style="text-align:right;">En attente</th>
-      <th>Avancement</th>
-    </tr></thead>
-    <tbody><tr>
-      <td style="font-weight:600;">M D'Almeida</td>
-      <td style="text-align:center;">10</td>
-      <td style="text-align:right;">28 500 FCFA</td>
-      <td style="text-align:right; color:var(--ok);">23 000 FCFA</td>
-      <td style="text-align:right; color:var(--burgundy);">5 500 FCFA</td>
-      <td style="min-width:100px;">
-        <div style="background:var(--platinum-light); border-radius:4px; height:10px; overflow:hidden;" title="81% facturé">
-          <div style="width:81%; background:var(--ok); height:100%;"></div>
-        </div>
-        <div style="font-size:10px; color:var(--muted); margin-top:2px;">81% facturé</div>
-      </td>
-    </tr></tbody>
-    <tfoot><tr style="background:var(--onyx); color:var(--gold-light); font-weight:700;">
-      <td>TOTAL</td>
-      <td style="text-align:center;">10</td>
-      <td style="text-align:right;">28 500 FCFA</td>
-      <td style="text-align:right;">23 000 FCFA</td>
-      <td style="text-align:right;">5 500 FCFA</td>
-      <td></td>
-    </tr></tfoot>
-  </table></div>
+        <div id="cantStatsWrap"></div>
       </div>
 
       <div class="card">
@@ -1090,25 +974,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           </div>
           <button class="btn btn-ghost btn-sm" id="btnExportCantineExcel">⬇ Exporter en Excel</button>
         </div>
-        <div id="cantHistoryWrap"><table><thead><tr>
-    <th>Date</th><th>N°</th><th>Client</th><th>Période</th><th style="text-align:right">Montant</th><th style="text-align:right">Statut</th><th></th>
-  </tr></thead><tbody><tr>
-      <td>06/09/2026</td>
-      <td>F046/GC/09/2026</td>
-      <td>M D'Almeida</td>
-      <td>Repas cantine du 21/08/2026 au 04/09/2026</td>
-      <td style="text-align:right; font-weight:600;">82 000 FCFA</td>
-      <td style="text-align:right;"><span class="badge badge-impaye">Impayé</span></td>
-      <td><button class="btn btn-ghost btn-sm" data-view-op="mtpq61rk0xf1ju">Ouvrir</button></td>
-    </tr><tr>
-      <td>24/08/2026</td>
-      <td>039/GC/08/2026</td>
-      <td>Mme Dossou D'Almeida</td>
-      <td>Repas cantine du 21/08/2026 au 21/08/2026</td>
-      <td style="text-align:right; font-weight:600;">1 FCFA</td>
-      <td style="text-align:right;"><span class="badge badge-paye">Payé</span></td>
-      <td><button class="btn btn-ghost btn-sm" data-view-op="mt7058foz0z6iz">Ouvrir</button></td>
-    </tr></tbody></table></div>
+        <div id="cantHistoryWrap"></div>
       </div>
     </section>
 
@@ -1157,7 +1023,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         </div>
         <button class="btn btn-gold btn-sm" id="btnAddProduit">+ Ajouter au catalogue</button>
         <button class="btn btn-ghost btn-sm" id="btnAnnulerEditProduit" style="display:none; margin-left:8px;">✖ Annuler la modification</button>
-        <div id="produitsListWrap" style="margin-top:14px;"><div class="empty" style="padding:16px;"><div class="icon">📦</div>Aucun article dans le catalogue pour l'instant — ajoutez-en un ci-dessus.</div></div>
+        <div id="produitsListWrap" style="margin-top:14px;"></div>
       </div>
 
       <div class="card">
@@ -1198,14 +1064,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         </div>
         <table>
           <thead><tr><th>Article</th><th style="width:100px;">Quantité</th><th style="width:130px;">Prix unitaire</th><th style="width:120px;">Sous-total</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="achLignesBody">
-    <tr>
-      <td><input type="text" data-ach="0" data-field="produitNom" list="ach_produits_datalist" placeholder="Nom de l'article"></td>
-      <td><input type="number" data-ach="0" data-field="quantite" min="0" step="any"></td>
-      <td><input type="number" data-ach="0" data-field="prixUnitaire" min="0"></td>
-      <td class="num">0 FCFA</td>
-      <td><button class="row-remove" data-ach-remove="0" title="Retirer">✕</button></td>
-    </tr></tbody>
+          <tbody id="achLignesBody"></tbody>
         </table>
         <datalist id="ach_produits_datalist"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddAchLigne" style="margin-top:10px;">+ Ajouter une ligne</button>
@@ -1224,7 +1083,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
 
       <div class="card">
         <h2>Devis à comparer <small>Devis reçus de plusieurs fournisseurs, regroupés par article, pour choisir avant de confirmer.</small></h2>
-        <div id="devisComparaisonWrap"><p class="hint">Aucun devis en attente de comparaison.</p></div>
+        <div id="devisComparaisonWrap"></div>
       </div>
 
       <div class="card">
@@ -1233,7 +1092,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           <label>Article</label>
           <input type="text" id="comp_article" list="ach_produits_datalist" placeholder="Choisir ou taper un article">
         </div>
-        <div id="comparateurPrixWrap"><p class="hint">Tapez un nom d'article ci-dessus pour voir son historique de prix par fournisseur.</p></div>
+        <div id="comparateurPrixWrap"></div>
       </div>
 
       <div class="card">
@@ -1242,63 +1101,13 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <div class="search-row">
           <input type="text" id="ach_search" placeholder="Rechercher un fournisseur, un article…">
           <select id="ach_filterCategorie"><option value="">Toutes catégories</option></select>
-          <select id="ach_filterYear"><option value="">Toutes les années</option><option value="2026">2026</option></select>
+          <select id="ach_filterYear"><option value="">Toutes les années</option></select>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 0;">
           <button class="btn btn-ghost btn-sm" id="btnExportAchatsCsv">⬇ Exporter en CSV</button>
-          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">427 340 FCFA</strong></div>
+          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">0 FCFA</strong></div>
         </div>
-        <div id="achatsTableWrap"><table><thead><tr>
-      <th>Date</th><th>Fournisseur</th><th>Articles</th><th>Pour</th><th style="text-align:right">Total</th><th></th><th></th>
-    </tr></thead><tbody>
-      <tr>
-        <td>06/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="fabrice" style="color:var(--gold-deep);">fabrice</a></td>
-        <td style="font-size:12px;">location tables et chaises (1), PRESTATION JOEL TRAITEUR (1), ACHAT DE VIANDE HACHEE (10), ACHAT DE LEGUMES (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">275 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtp4b03w6qucxv">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtp4b03w6qucxv" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtp4b03w6qucxv">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>01/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="SIMAG" style="color:var(--gold-deep);">SIMAG</a></td>
-        <td style="font-size:12px;">Prosseco Aldini (12)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">72 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtrfw91b9tqtok">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtrfw91b9tqtok" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtrfw91b9tqtok">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>01/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="SIMAG SARL U" style="color:var(--gold-deep);">SIMAG SARL U</a></td>
-        <td style="font-size:12px;">Champagne (3), vin pinot gris (3)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">78 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtrfv4wq64oyom">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtrfv4wq64oyom" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtrfv4wq64oyom">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>26/08/2026</td>
-        <td><a href="#" data-voir-fournisseur="champion" style="color:var(--gold-deep);">champion</a></td>
-        <td style="font-size:12px;">sacpoubelle (2)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">2 340 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtab92niqa5qkb">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtab92niqa5qkb" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtab92niqa5qkb">Supprimer</button></td>
-      </tr></tbody></table></div>
+        <div id="achatsTableWrap"></div>
       </div>
 
       <div class="card">
@@ -1307,715 +1116,10 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           <button class="btn btn-ghost btn-sm" id="btnSyncCaisseEquipe">🔄 Synchroniser avec l'équipe</button>
         </div>
         <div class="hint" id="caisseSyncStatus" style="margin-bottom:10px;"></div>
-        <div id="caisseCompteActifWrap">
-    <div class="totals" style="margin-bottom:14px;">
-      <div class="l sub"><span>Total des avances reçues</span><span>304 977 FCFA</span></div>
-      <div class="l sub"><span>Total dépensé</span><span>304 977 FCFA</span></div>
-      <div class="l grand"><span>Solde disponible</span><span style="color:#3a6b2a;">0 FCFA</span></div>
-    </div>
-
-    <div class="grid cols-3" style="margin-bottom:8px;">
-      <div class="field"><label>Ajouter une avance</label><input type="number" id="caisse_montantAvance" min="0" placeholder="Montant"></div>
-      <div class="field"><label>Par</label><input type="text" id="caisse_auteurAvance" placeholder="Votre nom"></div>
-      <button class="btn btn-gold btn-sm" id="btnAjouterAvanceCaisse" style="margin-bottom:14px;">+ Avance</button>
-    </div>
-    <div class="grid cols-3" style="margin-bottom:8px;">
-      <div class="field"><label>Ajouter une dépense</label><input type="text" id="caisse_nomDepense" placeholder="Ex : Carottes"></div>
-      <div class="field"><label>Montant</label><input type="number" id="caisse_montantDepense" min="0"></div>
-      <button class="btn btn-ghost btn-sm" id="btnAjouterDepenseCaisse" style="margin-bottom:14px;">+ Dépense</button>
-    </div>
-
-    <button class="btn btn-danger btn-sm" id="btnCloturerCompteCaisse">🔒 Clôturer ce compte</button>
-
-    <h3 style="font-size:14px; margin:20px 0 8px;">Mouvements (84)</h3>
-    <table><thead><tr>
-      <th>Date</th><th>Type</th><th>Détail</th><th style="text-align:right">Montant</th><th>Par</th><th></th>
-    </tr></thead><tbody>
-      <tr>
-        <td>08/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">113 630 FCFA</td>
-        <td>GILE</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtsyyyg41p0vwq" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Avocat</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="e423208e-f7a9-44e0-b6dd-05d54855dacf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Huile</td>
-        <td style="text-align:right; font-weight:600;">8 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="f288860c-3295-4535-9716-6d2a670025e1" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Amanda</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ede64f16-d07d-40cb-b94d-d00720f38515" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson fumé</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3e3e7038-ccc0-44e9-951b-bc535be71b5f" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gombo</td>
-        <td style="text-align:right; font-weight:600;">700 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="a411d49b-f23c-4022-92ba-41d5cfc74f50" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gaz</td>
-        <td style="text-align:right; font-weight:600;">10 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="c7c0f2f2-b77a-4b7d-8920-ea3c50046782" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>pressing</td>
-        <td style="text-align:right; font-weight:600;">6 800 FCFA</td>
-        <td>Vous</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtp42bftww9vn8" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport matériel retour</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="0dTD9Afx3CO1bJO0GBFc" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Extra</td>
-        <td style="text-align:right; font-weight:600;">7 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9YV74oW4ejn3hKI7L1pf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ablo rajout</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="OEYjnjSS01XKYuzZ4rkl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MI9N0uBl0bunmv4H4Bsw" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Glaçon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="fDXNfaLqVWCVh9Tj7aFx" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Œuf</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4Rt0WMHgAfl95Wk9sWR3" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport nourriture</td>
-        <td style="text-align:right; font-weight:600;">5 450 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ZkwfgiGYTorxTT4VSVvO" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport Alexandre</td>
-        <td style="text-align:right; font-weight:600;">1 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="jzRNBLsZLjAgpLxXnPoU" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Bouquet de fleurs</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="c64gXl3AAfiFqCndsFQ0" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gâteau d'anniversaire</td>
-        <td style="text-align:right; font-weight:600;">13 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="dzXd1ogXLtDq67fFCyt4" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Cube</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="HSKT3eL0eUm0KCqUKIlk" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport achats</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="z6Nuyx5e7ahnbDO2nBVS" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>3 casiers de boissons</td>
-        <td style="text-align:right; font-weight:600;">19 980 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="EhECcMI85V0YrbTtXFbs" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Akpan</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="GVJUXxRIlmv2vfOHEcZB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Savon liquide</td>
-        <td style="text-align:right; font-weight:600;">600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xbhSLLnj8jDmegBmpqKB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport prestation suprême conseil</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="zG90599YjCF1IU1z5ar2" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Nouyouinyin</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="fHe7ZC8Cl2w61rFA03KL" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates fraîches</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hxPcrHNh7DVbe2OHzZIq" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gingembre</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="EVZBrpIMJtln0tt76VKP" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Goussi</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="W5F3UIsvqJe4rvzrpVHK" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oignon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="8QuTQNMLGKmyFNp1R2ua" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson fumé</td>
-        <td style="text-align:right; font-weight:600;">5 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mfae6hTYOeqWVWwz1GyG" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Viande de boeuf</td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="vJNRIinjaJ388bP9cK5e" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport matériel</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="kHDJ4mpFEmuASpC5Mdqx" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Riz 25kg</td>
-        <td style="text-align:right; font-weight:600;">33 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="SBvQjizXK7J0FpqjYVEp" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Brûleur</td>
-        <td style="text-align:right; font-weight:600;">8 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MJpZGHxHX4Op8AHtsn44" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="lRuCwQCxdHNzTxHupiAc" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Wangash</td>
-        <td style="text-align:right; font-weight:600;">3 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="DffWVdDgkAEFw18DTG11" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Halloumi</td>
-        <td style="text-align:right; font-weight:600;">4 700 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="Hpk7odzLLE6Y2xrqSVFf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Blanc de poulet</td>
-        <td style="text-align:right; font-weight:600;">27 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4w7XmPxmh6Qgmjja7LZe" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="WxhVzggZ4sylvF1n1vJ7" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Raisin</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9pRImb5znsOLCAigFH8K" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pomme</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="eHt1SuPcozrp4bVtZs5r" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ananas</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3n2A9LCIT095kWWcVeMw" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pastèque</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="NMtpE8LNDnaA8JIQRtzQ" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Mangue</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="yIAWmgn9f44NYCkY4gNn" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poivrons</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ZyEPcdiuOlzzTA93ycFb" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Aubergine</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="cS87pH4uDMAXkZp14p8z" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Courgettes</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4npk0GB29O5Ash5Agi4R" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Curcuma</td>
-        <td style="text-align:right; font-weight:600;">1 150 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xdfGPHosVtPflSoi9R01" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gingembre</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="KjUqnVjUeHs78XlEsLY6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Crème liquide</td>
-        <td style="text-align:right; font-weight:600;">3 300 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="gpIM5bohvDqZtqrVozmd" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson corvina</td>
-        <td style="text-align:right; font-weight:600;">19 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="WP4amAlGlr9rJ43Z2D09" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oignon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="qbG3TKGsfpTNnuLySV9T" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Citron vert</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="agErtISwHbYx5xrpQYkn" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ablo</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="7GQWaWYndF9HKH93ihbl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Patates douces</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="iadD98DDA83JF88yZCYp" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport prestation</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="k9LJvb6Y0m5Kt0hvxfwh" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="rl5M5wT36ZmRb1rpa4Gl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Farine</td>
-        <td style="text-align:right; font-weight:600;">750 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="nmRaQ1Yy20EFxUTX4nJl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Piment</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="j53ncKtoukk5vdOAxeoG" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates fraîches</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="gNhYTrecFcn0KeJtnpKj" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates concentré</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="FYlrPPm18Yttp59pgAVV" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Concombre</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hWbV2PGPAdb3yWzd5Fer" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chou</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ygvpyw9RIC0EBVDJR48w" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Carottes</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="qGAgUvNhfSorcDvZIjFV" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Laitue</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hauotLoObHart2cUCeOX" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">155 000 FCFA</td>
-        <td>GILE</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtlo6rsjxatcqe" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">11 347 FCFA</td>
-        <td>REMBOURSEMENT</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtlmy53ib26akm" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xV69ncLAT1OVcQhYg7LM" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">25 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="eZA4rmmJPWGvhs0vEYbl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport achat</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3rbA8cHh60twIFjQnKlQ" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Vat 18%</td>
-        <td style="text-align:right; font-weight:600;">1 922 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="2aP4vtf3T6TVgDyh83cF" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Grand’s</td>
-        <td style="text-align:right; font-weight:600;">5 508 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="AP0VLkirBWjvO8tSjiyz" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">762 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="YQWAGFsys5As4KBLo9ZI" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Coca</td>
-        <td style="text-align:right; font-weight:600;">2 372 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4ReCZ8b2eDQuffdT9KxB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Bière</td>
-        <td style="text-align:right; font-weight:600;">2 033 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3RFKYWC3NFpfpKuxHUO2" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Farine</td>
-        <td style="text-align:right; font-weight:600;">850 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="NhUFPoRdvGhGNeghyFi6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tige brochette</td>
-        <td style="text-align:right; font-weight:600;">400 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="PPeS6upoiXEvjqPI3bJH" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Sprite</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="QTiociv6Bd90C3LqrukU" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Sachet</td>
-        <td style="text-align:right; font-weight:600;">200 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9vZQcBScyZENsM9NZHiS" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="x6JqKtn11Ge6oGXwB8Lz" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Crème</td>
-        <td style="text-align:right; font-weight:600;">3 300 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mBBGDsHuT2waGC9fX3MO" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oeuf</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="36rAvpd1doNvdC8aZUCj" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Saucisse</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="6ypWVKWvhXvWIBo8yHxH" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Blanc de poulet</td>
-        <td style="text-align:right; font-weight:600;">6 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MkQcf7uTqzO2rEfc7Gc5" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr></tbody></table>
-  </div>
+        <div id="caisseCompteActifWrap"></div>
 
         <h3 style="font-size:14px; margin:24px 0 8px;">Comptes précédents (clôturés)</h3>
-        <div id="caisseHistoriqueWrap"><table><thead><tr>
-    <th>Clôturé vers le</th><th style="text-align:right">Avances</th><th style="text-align:right">Dépenses</th><th style="text-align:right">Solde final</th><th>Mouvements</th>
-  </tr></thead><tbody>
-    <tr>
-      <td>01/09/2026</td>
-      <td style="text-align:right;">401 383 FCFA</td>
-      <td style="text-align:right;">415 316 FCFA</td>
-      <td style="text-align:right; font-weight:700; color:var(--burgundy);">-13 933 FCFA</td>
-      <td>87</td>
-    </tr></tbody></table></div>
+        <div id="caisseHistoriqueWrap"></div>
       </div>
     </section>
 
@@ -2408,7 +1512,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <label style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-bottom:12px;">
           <input type="checkbox" id="mmVoirImportes" onchange="renderMenusMobileView()" style="width:auto;"> Afficher aussi les menus déjà importés
         </label>
-        <div id="menusMobileWrap"><p class="hint" style="text-align:center;padding:24px;">⚠️ Lecture impossible : Missing or insufficient permissions.</p></div>
+        <div id="menusMobileWrap"></div>
       </div>
     </section>
 
@@ -2529,28 +1633,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <p class="hint">Ces achats proviennent de l'application Équipe via Firebase. Une connexion Firebase active est nécessaire.</p>
         <button class="btn btn-gold btn-sm" id="btnRefreshAchatsEquipe" onclick="renderAchatsEquipe()">🔄 Actualiser</button>
       </div>
-      <div id="achatsEquipeWrap"><div class="achat-card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div><strong>Samuel</strong> — <span style="font-size:12px;color:var(--muted);">03/09/2026</span></div>
-          <div style="font-size:11px;color:var(--muted);">2026-09-03 09:54</div>
-        </div>
-        <div class="achat-ligne"><span>Blanc de poulet</span><span>6 000 FCFA</span></div><div class="achat-ligne"><span>Saucisse</span><span>4 000 FCFA</span></div><div class="achat-ligne"><span>Oeuf</span><span>3 000 FCFA</span></div><div class="achat-ligne"><span>Crème</span><span>3 300 FCFA</span></div><div class="achat-ligne"><span>Pain</span><span>500 FCFA</span></div><div class="achat-ligne"><span>Sachet</span><span>200 FCFA</span></div><div class="achat-ligne"><span>Sprite</span><span>2 500 FCFA</span></div><div class="achat-ligne"><span>Tige brochette</span><span>400 FCFA</span></div><div class="achat-ligne"><span>Farine</span><span>850 FCFA</span></div><div class="achat-ligne"><span>Bière</span><span>2 033 FCFA</span></div><div class="achat-ligne"><span>Coca</span><span>2 372 FCFA</span></div><div class="achat-ligne"><span>Beurre</span><span>762 FCFA</span></div><div class="achat-ligne"><span>Grand’s</span><span>5 508 FCFA</span></div><div class="achat-ligne"><span>Vat 18%</span><span>1 922 FCFA</span></div><div class="achat-ligne"><span>Transport achat</span><span>1 000 FCFA</span></div>
-        <div class="achat-total"><span>Total</span><span>34 347 FCFA</span></div>
-      </div><div class="achat-card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div><strong>Clément</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
-          <div style="font-size:11px;color:var(--muted);">2026-08-26 18:09</div>
-        </div>
-        <div class="achat-ligne"><span>Sucre en poudre</span><span>750 FCFA</span></div><div class="achat-ligne"><span>Herbes de Provence</span><span>2 550 FCFA</span></div><div class="achat-ligne"><span>Miel naturel 1l</span><span>5 600 FCFA</span></div><div class="achat-ligne"><span>Vin domaine de la reine</span><span>1 400 FCFA</span></div><div class="achat-ligne"><span>Brocoli</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Grille a large bord</span><span>800 FCFA</span></div><div class="achat-ligne"><span>Four European noir</span><span>12 000 FCFA</span></div><div class="achat-ligne"><span>Pomme de terre</span><span>4 000 FCFA</span></div><div class="achat-ligne"><span>Ail</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Oignon</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Romarin frais</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Hibiscus</span><span>700 FCFA</span></div><div class="achat-ligne"><span>Fruit de la passion</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Betterave</span><span>1 000 FCFA</span></div><div class="achat-ligne"><span>Beurre</span><span>2 000 FCFA</span></div><div class="achat-ligne"><span>Crème fraîche</span><span>6 600 FCFA</span></div><div class="achat-ligne"><span>Foie gras</span><span>23 000 FCFA</span></div><div class="achat-ligne"><span>Parmesan</span><span>5 000 FCFA</span></div><div class="achat-ligne"><span>Gambas 3,6k</span><span>36 000 FCFA</span></div><div class="achat-ligne"><span>Mandoline</span><span>6 000 FCFA</span></div><div class="achat-ligne"><span>Câble gaz ×2</span><span>10 900 FCFA</span></div><div class="achat-ligne"><span>Transport achats</span><span>1 500 FCFA</span></div>
-        <div class="achat-total"><span>Total</span><span>129 800 FCFA</span></div>
-      </div><div class="achat-card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div><strong>Gile</strong> — <span style="font-size:12px;color:var(--muted);">26/08/2026</span></div>
-          <div style="font-size:11px;color:var(--muted);">2026-08-26 16:01</div>
-        </div>
-        <div class="achat-ligne"><span>Sac poubelle</span><span>2 340 FCFA</span></div><div class="achat-ligne"><span>Raisin sec 1kg</span><span>4 800 FCFA</span></div>
-        <div class="achat-total"><span>Total</span><span>7 140 FCFA</span></div>
-      </div></div>
+      <div id="achatsEquipeWrap"><p class="hint">Cliquez sur Actualiser pour charger les achats.</p></div>
     </section>
 
     <section class="view" id="view-prestations">
@@ -2767,6 +1850,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
             <button class="btn-secondary" onclick="showView('tresorerie-encaissements')">📥 Encaissements</button>
             <button class="btn-secondary" onclick="showView('treso-caisse-manager')">🧾 Caisse Manager</button>
             <button class="btn-secondary" onclick="migrerCaisseEquipeUI()" title="À lancer UNE FOIS après la mise à jour : convertit les avances déjà importées en transferts vers la poche Caisse d'équipe">👥 Reprise caisse d'équipe</button>
+            <button class="btn-secondary" onclick="reprendreHeritageTresoUI()" title="Neutralise les écritures d'une version antérieure (mouvements d'équipe posés en recette sur la caisse) et retire les recalages notés « Test ». Simulation avant écriture, annulable.">🧹 Reprise écritures héritées</button>
             <button class="btn-secondary" onclick="showView('tresorerie-rapprochement')">🔍 Rapprochement</button>
             <button class="btn-secondary" onclick="showView('tresorerie-recalage')">⚖️ Recalage</button>
             <button class="btn-secondary" onclick="showView('tresorerie-recurrences')">🔄 Récurrences</button>
@@ -2784,87 +1868,8 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         </div>
       </div>
       <div id="tresoDashboard" style="padding:0 4px;">
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;">
-    <div class="card" style="text-align:center;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">💵</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">929 870 F</div>
-      <div style="color:#666;font-size:12px;">Caisse espèces</div>
-      <div style="font-size:10px;color:#e65100;">⚠️ non rapproché</div>
-    </div><div class="card" style="text-align:center;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">🏦</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
-      <div style="color:#666;font-size:12px;">Ecobank</div>
-      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 09/09/2026</div>
-    </div><div class="card" style="text-align:center;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">🏦</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
-      <div style="color:#666;font-size:12px;">Orabank</div>
-      <div style="font-size:10px;color:#e65100;">⚠️ non rapproché</div>
-    </div><div class="card" style="text-align:center;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">📱</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
-      <div style="color:#666;font-size:12px;">Mixx</div>
-      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 09/09/2026</div>
-    </div><div class="card" style="text-align:center;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">📱</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
-      <div style="color:#666;font-size:12px;">Flooz</div>
-      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 08/09/2026</div>
-    </div><div class="card" style="text-align:center;border-left:3px solid #c62828;cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
-      <div style="font-size:24px;">👥</div>
-      <div style="font-size:20px;font-weight:700;color:#c62828;">-189 347 F</div>
-      <div style="color:#666;font-size:12px;">Caisse d'équipe</div>
-      <div style="font-size:10px;color:#e65100;">⚠️ non rapproché</div>
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
-    <div class="card" style="text-align:center;">
-      <div style="font-size:24px;">💰</div>
-      <div style="font-size:22px;font-weight:700;color:#0d47a1;">740 523 F</div>
-      <div style="color:#666;font-size:13px;">Total disponible</div>
-    </div>
-    <div class="card" style="text-align:center;">
-      <div style="font-size:24px;">📅</div>
-      <div style="font-size:22px;font-weight:700;color:#e65100;">0 F</div>
-      <div style="color:#666;font-size:13px;">Engagé (30j)</div>
-    </div>
-    <div class="card" style="text-align:center;background:#d4edda;">
-      <div style="font-size:24px;">✅</div>
-      <div style="font-size:22px;font-weight:700;color:#155724;">740 523 F</div>
-      <div style="color:#155724;font-size:13px;">Libre (30j)</div>
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;">
-    <div class="card">
-      <h3 style="margin:0 0 8px;font-size:15px;">📥 À Recevoir (factures en cours)</h3>
-      <div style="font-size:20px;font-weight:700;color:#1565c0;">451 500 F</div>
-      <div style="color:#c62828;font-size:13px;margin-top:4px;">⚠️ Échu : 369 500 F</div>
-      <div style="color:#e65100;font-size:13px;">⏰ À échéance : 82 000 F</div>
-      
-      
-    </div>
-    <div class="card">
-      <h3 style="margin:0 0 8px;font-size:15px;">🔄 Flux du mois en cours</h3>
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:3px;">
-        <span style="color:#2e7d32;">↗ Encaissé</span>
-        <strong style="color:#2e7d32;">1 625 641 F</strong>
+        <p style="color:#888;text-align:center;padding:32px;">Chargement…</p>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;">
-        <span style="color:#c62828;">↘ Décaissé</span>
-        <strong style="color:#c62828;">912 527 F</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:15px;border-top:1px solid #e0e0e0;padding-top:6px;">
-        <span>Solde du mois</span>
-        <strong style="color:#2e7d32;">713 114 F</strong>
-      </div>
-      <div style="color:#888;font-size:11px;margin-top:6px;">« À recevoir » n'est pas de la trésorerie : c'est une créance, jamais additionnée au disponible.</div>
-    </div>
-  </div><div class="card" style="color:#888;text-align:center;padding:16px;">
-      Aucune prévision pour les 30 prochains jours.
-      <button onclick="genererPrevisionsMois(); renderTresorerie();" style="display:block;margin:8px auto 0;padding:6px 16px;cursor:pointer;border:1px solid #1565c0;border-radius:6px;background:#e3f2fd;color:#1565c0;">🔄 Générer prévisions ce mois</button>
-    </div></div>
     </section>
 
     <!-- ===================== VUE : TRESORERIE RECURRENCES ===================== -->
@@ -2885,7 +1890,10 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           <div class="field"><label>Libellé *</label><input type="text" id="trec_libelle" placeholder="Ex: Salaire Manager"></div>
           <div class="field"><label>Montant (FCFA) *</label><input type="number" id="trec_montant" min="0"></div>
           <div class="field"><label>Poche de paiement</label>
-            <select id="trec_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="trec_poche">
+              <option value="ecobank">🏦 Ecobank</option>
+              <option value="caisse">💵 Caisse espèces</option>
+            </select>
           </div>
           <div class="field"><label>Jour du mois (1-31)</label><input type="number" id="trec_jour" min="1" max="31" placeholder="Ex: 30"></div>
           <div class="field"><label>Catégorie</label>
@@ -2948,7 +1956,10 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           <div class="field"><label>Montant estimé (FCFA) *</label><input type="number" id="tprev_montant" min="0"></div>
           <div class="field"><label>Date prévue *</label><input type="date" id="tprev_date"></div>
           <div class="field"><label>Poche</label>
-            <select id="tprev_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="tprev_poche">
+              <option value="ecobank">🏦 Ecobank</option>
+              <option value="caisse">💵 Caisse espèces</option>
+            </select>
           </div>
           <div class="field"><label>Type</label>
             <select id="tprev_type">
@@ -2976,7 +1987,10 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <h3>Nouveau recalage</h3>
         <div class="grid cols-1" style="gap:12px;">
           <div class="field"><label>Poche à recaler</label>
-            <select id="trecal_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="trecal_poche">
+              <option value="caisse">💵 Caisse espèces</option>
+              <option value="ecobank">🏦 Ecobank</option>
+            </select>
           </div>
           <div class="field"><label>Date du recalage</label><input type="date" id="trecal_date"></div>
           <div class="field"><label>Solde réel constaté (FCFA)</label><input type="number" id="trecal_solde" min="0" placeholder="Ex: 125000"></div>
@@ -3017,9 +2031,9 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         </p>
       </div>
 
-      <div id="echAlerte"><div class="card" style="background:#d4edda;border-left:4px solid #2e7d32;"><div style="font-size:14px;font-weight:700;color:#155724;">✅ Aucune semaine sous le seuil de 100 000 F sur les 13 prochaines semaines.</div><div style="font-size:12px;color:#155724;margin-top:4px;">Solde projeté à 13 semaines : <strong>543 070 F</strong>.</div></div></div>
-      <div id="echRetard"><div class="card" style="background:#fff8e1;border-left:4px solid #e65100;"><h3 style="margin:0 0 8px;font-size:15px;color:#5d4037;">⏰ Échu — à traiter avant tout</h3><div style="font-size:13px;color:#5d4037;margin-bottom:6px;"><strong>156 créance(s) dépassée(s) : 79 153 675 F</strong></div><div style="font-size:12px;color:#5d4037;">• Client à identifier — 584 000 F (échue le 16/02)<br>• Client à identifier — 235 000 F (échue le 16/02)<br>• MALOU (TRF Malou) — 150 000 F (échue le 05/04)<br>• RL de Perfection Ptah — 140 000 F (échue le 12/04)<br>• RL TU — 150 000 F (échue le 12/04)<br>• RL Fleur des Temps — 180 000 F (échue le 12/04)<br>… et 150 autre(s)</div><div style="font-size:11px;color:#8a6d3b;margin-top:8px;">Ces montants ne sont PAS dans le solde projeté ci-dessous : leur date est déjà passée, on ne peut pas savoir quand ils tomberont.</div></div></div>
-      <div class="card"><div id="echTable"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><h3 style="margin:0;font-size:15px;">Semaine par semaine</h3><div style="font-size:12px;color:#666;">Départ : <strong>836 070 F</strong> · 07/09 → 06/12</div></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:520px;"><thead><tr style="border-bottom:2px solid #e0e0e0;"><th style="text-align:left;padding:8px;">Semaine</th><th style="text-align:right;">Encaissements</th><th style="text-align:right;">Décaissements</th><th style="text-align:right;">Net</th><th style="text-align:right;padding:8px;">Solde projeté</th><th style="width:30px;"></th></tr></thead><tbody><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(1)"><td style="padding:8px;"><strong>S1</strong> <span style="color:#888;font-size:12px;">07/09→13/09</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">836 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(2)"><td style="padding:8px;"><strong>S2</strong> <span style="color:#888;font-size:12px;">14/09→20/09</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">836 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(3)"><td style="padding:8px;"><strong>S3</strong> <span style="color:#888;font-size:12px;">21/09→27/09</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">836 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(4)"><td style="padding:8px;"><strong>S4</strong> <span style="color:#888;font-size:12px;">28/09→04/10</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#c62828;">−55 000 F</td><td style="text-align:right;color:#c62828;">-55 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">781 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(5)"><td style="padding:8px;"><strong>S5</strong> <span style="color:#888;font-size:12px;">05/10→11/10</span></td><td style="text-align:right;color:#2e7d32;">+82 000 F</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+82 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">863 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(6)"><td style="padding:8px;"><strong>S6</strong> <span style="color:#888;font-size:12px;">12/10→18/10</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">863 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(7)"><td style="padding:8px;"><strong>S7</strong> <span style="color:#888;font-size:12px;">19/10→25/10</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#c62828;">−50 000 F</td><td style="text-align:right;color:#c62828;">-50 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">813 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(8)"><td style="padding:8px;"><strong>S8</strong> <span style="color:#888;font-size:12px;">26/10→01/11</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#c62828;">−110 000 F</td><td style="text-align:right;color:#c62828;">-110 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">703 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(9)"><td style="padding:8px;"><strong>S9</strong> <span style="color:#888;font-size:12px;">02/11→08/11</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">703 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(10)"><td style="padding:8px;"><strong>S10</strong> <span style="color:#888;font-size:12px;">09/11→15/11</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">703 070 F</td><td style="text-align:center;color:#999;"></td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(11)"><td style="padding:8px;"><strong>S11</strong> <span style="color:#888;font-size:12px;">16/11→22/11</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#c62828;">−50 000 F</td><td style="text-align:right;color:#c62828;">-50 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">653 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="echToggleSemaine(12)"><td style="padding:8px;"><strong>S12</strong> <span style="color:#888;font-size:12px;">23/11→29/11</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#c62828;">−110 000 F</td><td style="text-align:right;color:#c62828;">-110 000 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">543 070 F</td><td style="text-align:center;color:#999;">▸</td></tr><tr style="border-bottom:1px solid #f0f0f0;cursor:pointer;background:#fafafa;" onclick="echToggleSemaine(13)"><td style="padding:8px;"><strong>S13</strong> <span style="color:#888;font-size:12px;">30/11→06/12</span></td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#bbb;">—</td><td style="text-align:right;color:#2e7d32;">+0 F</td><td style="text-align:right;padding:8px;font-weight:700;color:#1a1a1a;">543 070 F</td><td style="text-align:center;color:#999;"></td></tr></tbody><tfoot><tr style="border-top:2px solid #e0e0e0;font-weight:700;"><td style="padding:8px;">TOTAL 13 semaines</td><td style="text-align:right;color:#2e7d32;">+82 000 F</td><td style="text-align:right;color:#c62828;">−375 000 F</td><td style="text-align:right;">-293 000 F</td><td style="text-align:right;padding:8px;color:#0d47a1;">543 070 F</td><td></td></tr></tfoot></table></div><div style="font-size:11px;color:#888;margin-top:10px;line-height:1.5;">Échéance retenue : date de prestation, sinon 30 jours après émission. Les devis ne sont jamais comptés comme des créances. Les charges récurrentes des mois non encore générés sont projetées et signalées comme telles. Cliquez une semaine pour en voir le détail.</div></div></div>
+      <div id="echAlerte"></div>
+      <div id="echRetard"></div>
+      <div class="card"><div id="echTable"><p style="color:#888;">Chargement…</p></div></div>
       <div id="echDetail"></div>
     </section>
 
@@ -3030,31 +2044,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <p class="hint" style="margin-bottom:12px;">Chaque ligne importée devient une recette réalisée : elle augmente le solde de sa poche, le Disponible et le Libre, et apparaît au journal des encaissements. Réimporter ne crée jamais de doublon.</p>
 
         <h3 style="font-size:13px;margin:16px 0 8px;">Où va chaque mode d'encaissement ?</h3>
-        <div class="grid cols-4" id="cmPocheMap">
-    <div class="field" style="margin-bottom:8px;">
-      <label>💵 Espèces</label>
-      <select id="cm_poche_especes">
-        <option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option>
-      </select>
-    </div>
-    <div class="field" style="margin-bottom:8px;">
-      <label>🏦 Chèque</label>
-      <select id="cm_poche_cheque">
-        <option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option>
-      </select>
-    </div>
-    <div class="field" style="margin-bottom:8px;">
-      <label>📲 Virement</label>
-      <select id="cm_poche_virement">
-        <option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option>
-      </select>
-    </div>
-    <div class="field" style="margin-bottom:8px;">
-      <label>💳 Carte</label>
-      <select id="cm_poche_carte">
-        <option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option>
-      </select>
-    </div></div>
+        <div class="grid cols-4" id="cmPocheMap"></div>
         <button class="btn btn-ghost btn-sm" onclick="enregistrerPocheParModeCaisse()">💾 Mémoriser ces destinations</button>
 
         <h3 style="font-size:13px;margin:20px 0 8px;">Période à examiner</h3>
@@ -3064,33 +2054,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
           <button class="btn btn-gold btn-sm" onclick="chargerApercuCaisseManager()">🔍 Examiner</button>
         </div>
 
-        <div id="cmApercu" style="margin-top:16px;"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-    <button class="btn btn-gold btn-sm" onclick="lancerImportCaisseManager()">⬇️ Importer la sélection</button>
-    <button class="btn btn-ghost btn-sm" onclick="retirerImportCaisseManagerUI()">↩️ Retirer tout ce qui vient de la caisse Manager</button>
-  </div>
-  <p class="hint" style="margin-bottom:10px;">
-    0 ligne(s) prête(s) — <strong>0 FCFA</strong>.
-     · ⚠️ 2 doublon(s) probable(s), décoché(s)
-    
-    
-  </p>
-  <table><thead><tr><th></th><th>Date</th><th>Mode</th><th>Client</th><th style="text-align:right">Montant</th><th>Poche</th><th>État</th></tr></thead><tbody><tr style="background:#fdf3ec;">
-      <td><input type="checkbox" data-cm="caissemgr_2026-09-03_GLIDJI_enc_1788426169369"></td>
-      <td>03/09/2026</td>
-      <td>📲 Virement</td>
-      <td>Versement de M Pius</td>
-      <td style="text-align:right;font-weight:600;">60 000 FCFA</td>
-      <td>🏦 Orabank</td>
-      <td><span class="badge badge-impaye" title="Un paiement du même montant existe déjà à cette date">⚠️ doublon probable — MM HOUNTONDJI,PIUS,HOR,HOUNOU,TETE-BENISSAN</span></td>
-    </tr><tr style="background:#fdf3ec;">
-      <td><input type="checkbox" data-cm="caissemgr_2026-09-03_GLIDJI_enc_1788426237312"></td>
-      <td>03/09/2026</td>
-      <td>📲 Virement</td>
-      <td>Paiement M Maurice pour M Dovi</td>
-      <td style="text-align:right;font-weight:600;">225 000 FCFA</td>
-      <td>🏦 Orabank</td>
-      <td><span class="badge badge-impaye" title="Un paiement du même montant existe déjà à cette date">⚠️ doublon probable — Léo DOVI</span></td>
-    </tr></tbody></table></div>
+        <div id="cmApercu" style="margin-top:16px;"></div>
       </div>
     </section>
 
@@ -3135,7 +2099,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
       <div class="card">
         <div class="grid cols-2">
           <div class="field"><label>Poche à rapprocher</label>
-            <select id="rap_poche" onchange="chargerRapprochement()"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="rap_poche" onchange="chargerRapprochement()"></select>
           </div>
           <div class="field"><label>N° du relevé</label>
             <input type="text" id="rap_numero" placeholder="Ex: REL-2026-09">
@@ -3153,7 +2117,9 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
       </div>
 
       <!-- Bandeau de contrôle : c'est ici que se lit l'écart -->
-      <div class="card" id="rapSynthese" style="position:sticky;top:0;z-index:5;"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;"><div style="text-align:center;padding:8px;"><div style="font-size:11px;color:#666;text-transform:uppercase;">Solde de départ</div><div style="font-size:17px;font-weight:700;">100 000 F</div><div style="font-size:10px;color:#999;">recalage du 03/09/2026</div></div><div style="text-align:center;padding:8px;"><div style="font-size:11px;color:#666;text-transform:uppercase;">Pointé (0)</div><div style="font-size:17px;font-weight:700;color:#2e7d32;">+0 F</div></div><div style="text-align:center;padding:8px;background:#e3f2fd;border-radius:8px;"><div style="font-size:11px;color:#1565c0;text-transform:uppercase;">Solde pointé</div><div style="font-size:17px;font-weight:700;color:#0d47a1;">100 000 F</div></div><div style="text-align:center;padding:8px;"><div style="font-size:11px;color:#666;text-transform:uppercase;">Solde relevé</div><div style="font-size:17px;font-weight:700;">0 F</div></div><div style="text-align:center;padding:8px;background:#f8d7da;border-radius:8px;"><div style="font-size:11px;color:#721c24;text-transform:uppercase;font-weight:700;">Écart</div><div style="font-size:19px;font-weight:800;color:#721c24;">-100 000 F</div><div style="font-size:10px;color:#721c24;">doit tomber à 0</div></div></div><div style="margin-top:10px;padding:8px 10px;background:#fff8e1;border-left:3px solid #e65100;border-radius:4px;font-size:12px;color:#5d4037;">⏳ <strong>79 mouvement(s) en circulation</strong> (801 099 F) — non pointés sur ce relevé : chèque non débité, dépôt en transit. Ils resteront disponibles pour le prochain rapprochement.</div><button disabled="" onclick="validerReleveUI()" style="margin-top:12px;width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:700;background:#e0e0e0;color:#999;cursor:not-allowed;">⛔ Écart de -100 000 F — validation bloquée</button></div>
+      <div class="card" id="rapSynthese" style="position:sticky;top:0;z-index:5;">
+        <p style="color:#888;text-align:center;padding:12px;">Choisissez une poche et une date de fin.</p>
+      </div>
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
@@ -3163,12 +2129,12 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
             <button class="btn-secondary" style="font-size:12px;padding:5px 10px;" onclick="rapCocherTout(false)">Tout décocher</button>
           </div>
         </div>
-        <div id="rapMouvements"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="border-bottom:2px solid #e0e0e0;"><th style="width:36px;padding:8px;"></th><th style="text-align:left;padding:8px;">Date</th><th style="text-align:left;">Libellé</th><th style="text-align:right;padding:8px;">Montant</th></tr></thead><tbody><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128631_olhee"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128631_olhee" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+150 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_17zyt"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_17zyt" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_awy39"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_awy39" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_c8108"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_c8108" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 200 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_fa1hn"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_fa1hn" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+689 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_flm31"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_flm31" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_g0r2q"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_g0r2q" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+61 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_hi8ty"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_hi8ty" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_p30hc"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_p30hc" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_r4c2y"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_r4c2y" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+4 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_xquih"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_xquih" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_zcizb"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_zcizb" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+13 954 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_zrh8y"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_zrh8y" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_8urfx"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_8urfx" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+200 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_9iwa4"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_9iwa4" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_bp6yo"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_bp6yo" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_g41ye"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_g41ye" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 350 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_lhogn"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_lhogn" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+750 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_nf8vx"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_nf8vx" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+43 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_q4kuc"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_q4kuc" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_rcmhk"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_rcmhk" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_va3ap"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_va3ap" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">25/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_05ikd"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_05ikd" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+90 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_go8qn"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_go8qn" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 600 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128632_qvmw9"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128632_qvmw9" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+7 140 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_1x623"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_1x623" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_2ztcz"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_2ztcz" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+23 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_5nrjw"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_5nrjw" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 950 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_7j5nu"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_7j5nu" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+4 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_al17e"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_al17e" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_bzeeo"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_bzeeo" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+50 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_dsnlq"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_dsnlq" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+750 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_e2j2q"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_e2j2q" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+10 900 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_hg616"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_hg616" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+4 800 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_hzff1"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_hzff1" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_mazrf"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_mazrf" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128633_u5rp3"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128633_u5rp3" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 340 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_05g4l"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_05g4l" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_1cbie"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_1cbie" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+6 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_6aal8"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_6aal8" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_6zu6t"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_6zu6t" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_846ga"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_846ga" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+12 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_g04ft"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_g04ft" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_k26jw"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_k26jw" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_nci23"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_nci23" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+36 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_njlvb"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_njlvb" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 400 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_p3m1k"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_p3m1k" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+700 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_rt7yp"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_rt7yp" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+6 600 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_tltwr"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_tltwr" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_ui1cw"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_ui1cw" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_upztc"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_upztc" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 600 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_xhfax"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_xhfax" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">26/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+800 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_6h1g6"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_6h1g6" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 650 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_7m2lb"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_7m2lb" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+200 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_ajxb2"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_ajxb2" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+31 350 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_g6vta"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_g6vta" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+200 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_lu9jj"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_lu9jj" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_n02ev"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_n02ev" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_ogrwj"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_ogrwj" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">27/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_0x9rx"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_0x9rx" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 600 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_565iw"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_565iw" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_5j7yj"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_5j7yj" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_a8eby"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_a8eby" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_iqjjh"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_iqjjh" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_x0mrq"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_x0mrq" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">28/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+5 500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_b9o60"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_b9o60" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">29/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+31 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_w1247"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_w1247" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">29/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+42 243 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_y8sau"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_y8sau" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">29/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+2 300 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_71dhs"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_71dhs" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">29/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+30 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_36rmx"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_36rmx" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+22 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128634_4qxke"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128634_4qxke" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 008 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_0s7ne"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_0s7ne" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 800 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_aem2w"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_aem2w" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+30 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_bjmcn"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_bjmcn" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+500 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_h5qaj"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_h5qaj" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+300 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_qvynf"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_qvynf" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+1 000 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_vv0sq"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_vv0sq" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+200 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_wotw8"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_wotw8" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+950 F</td></tr><tr style="border-bottom: 1px solid rgb(240, 240, 240);" id="rap-row-prev:tr_1788453128635_xytld"><td style="text-align:center;padding:8px;"><input type="checkbox" data-rap-cle="prev:tr_1788453128635_xytld" onchange="rapTogglePointage(this)" style="width:18px;height:18px;cursor:pointer;"></td><td style="padding:8px;white-space:nowrap;">31/08/2026</td><td style="padding:8px;">Mouvement caisse équipe</td><td style="text-align:right;padding:8px;font-weight:600;color:#2e7d32;">+3 575 F</td></tr></tbody></table></div>
+        <div id="rapMouvements"><p style="color:#888;">—</p></div>
       </div>
 
       <div class="card" style="margin-top:12px;">
         <h3>Relevés validés</h3>
-        <div id="rapHistorique"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="border-bottom:2px solid #e0e0e0;"><th style="text-align:left;padding:8px;">Relevé</th><th>Poche</th><th>Au</th><th style="text-align:right;">Solde prouvé</th><th>Lignes</th><th>Statut</th><th></th></tr></thead><tbody><tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;font-weight:600;">REL-2026-09</td><td style="text-align:center;">🏦 Ecobank</td><td style="text-align:center;">09/09/2026</td><td style="text-align:right;padding:8px;font-weight:600;">0 F</td><td style="text-align:center;">1</td><td style="text-align:center;"><span style="color:#2e7d32;font-size:11px;">✅ Validé</span></td><td style="padding:6px;"><button onclick="annulerReleveUI('tr_1788891361235_jgcrw')" style="padding:2px 8px;font-size:11px;cursor:pointer;border:1px solid #999;border-radius:4px;background:#fff;color:#666;">Annuler</button></td></tr><tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;font-weight:600;">REL-2026-09</td><td style="text-align:center;">📱 Mixx</td><td style="text-align:center;">09/09/2026</td><td style="text-align:right;padding:8px;font-weight:600;">0 F</td><td style="text-align:center;">3</td><td style="text-align:center;"><span style="color:#2e7d32;font-size:11px;">✅ Validé</span></td><td style="padding:6px;"><button onclick="annulerReleveUI('tr_1788891387269_a6o2f')" style="padding:2px 8px;font-size:11px;cursor:pointer;border:1px solid #999;border-radius:4px;background:#fff;color:#666;">Annuler</button></td></tr><tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;font-weight:600;">REL-2026-09</td><td style="text-align:center;">📱 Flooz</td><td style="text-align:center;">08/09/2026</td><td style="text-align:right;padding:8px;font-weight:600;">0 F</td><td style="text-align:center;">3</td><td style="text-align:center;"><span style="color:#2e7d32;font-size:11px;">✅ Validé</span></td><td style="padding:6px;"><button onclick="annulerReleveUI('tr_1788891428752_i8sni')" style="padding:2px 8px;font-size:11px;cursor:pointer;border:1px solid #999;border-radius:4px;background:#fff;color:#666;">Annuler</button></td></tr></tbody></table></div>
+        <div id="rapHistorique"><p style="color:#888;">—</p></div>
       </div>
     </section>
 
@@ -3182,10 +2148,16 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <h3>Nouveau transfert</h3>
         <div class="grid cols-2">
           <div class="field"><label>De (source)</label>
-            <select id="trtf_source"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="trtf_source">
+              <option value="caisse">💵 Caisse espèces</option>
+              <option value="ecobank">🏦 Ecobank</option>
+            </select>
           </div>
           <div class="field"><label>Vers (destination)</label>
-            <select id="trtf_dest"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
+            <select id="trtf_dest">
+              <option value="ecobank">🏦 Ecobank</option>
+              <option value="caisse">💵 Caisse espèces</option>
+            </select>
           </div>
           <div class="field"><label>Montant (FCFA)</label><input type="number" id="trtf_montant" min="1" placeholder="Ex: 50000"></div>
           <div class="field"><label>Date</label><input type="date" id="trtf_date"></div>
@@ -3397,7 +2369,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
     </div>
     
       <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
-      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-09).</p>
+      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-10).</p>
       
     
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
@@ -3410,7 +2382,7 @@ Portion de légumes"></option><option value="Sauce gombo/pâte"></option></datal
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
       <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
-      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-09).</p>
+      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-10).</p>
       
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
@@ -3489,7 +2461,7 @@ const firebaseConfig = {
           <button class="btn btn-ghost btn-sm" id="btnPushAllClients">📤 Envoyer tous les clients maintenant</button>
           <button class="btn btn-ghost btn-sm" id="btnPushAllFiches">📤 Envoyer toutes les fiches équipe maintenant</button>
         </div>
-        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;">✅ 163 clients envoyés vers le cloud.</div>
+        <div id="equipePushStatus" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
         <div class="hint" style="margin-top:10px;">Une fois activé, téléchargez le fichier <code>Glidji_Equipe.html</code> et donnez-le à votre équipe — il utilise la même configuration (à coller une fois sur leur appareil).</div>
       </div>
       
@@ -3532,11 +2504,11 @@ const firebaseConfig = {
           <span class="hub-module-arrow">›</span>
         </div>
         <!-- ── SYNCHRONISATION TOUT EN UN ── -->
-        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background: linear-gradient(135deg, rgb(13, 26, 13), rgb(10, 18, 10)); border: 1px solid rgb(42, 90, 42);">
-          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">✅</div>
+        <div class="hub-module-item" onclick="syncTout()" id="hubSyncToutBtn" style="background:linear-gradient(135deg,#0d1a0d,#0a120a);border:1px solid #2a5a2a;">
+          <div class="hub-module-ico" style="color:#7ecb9a;" id="hubSyncToutIco">🔄</div>
           <div class="hub-module-body">
             <div class="hub-module-name" style="color:#7ecb9a;">Tout synchroniser</div>
-            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Dernière sync : 19:10</div>
+            <div class="hub-module-desc" style="color:#5aaa7a;" id="hubSyncToutDesc">Cantine, achats, inventaire, factures mobiles</div>
           </div>
           <span class="hub-module-arrow" style="color:#7ecb9a;">›</span>
         </div>
@@ -3588,7 +2560,7 @@ const firebaseConfig = {
         <div class="hub-module-item" onclick="showView('factures-mobile')">
           <div class="hub-module-ico">📱</div>
           <div class="hub-module-body"><div class="hub-module-name">Factures Mobile</div><div class="hub-module-desc">Documents créés depuis l'app Manager</div></div>
-          <span id="hubFacturesMobileBadge" class="hub-module-badge" style="display:none;">0</span>
+          <span id="hubFacturesMobileBadge" class="hub-module-badge" style="display:none;"></span>
           <span class="hub-module-arrow">›</span>
         </div>
         <div class="hub-module-item" onclick="showView('menus-mobile')">
@@ -3844,7 +2816,7 @@ const firebaseConfig = {
   <div style="font-size:14px;color:#888;line-height:1.6;">Cet appareil a été bloqué par l'administrateur.<br>Contactez votre responsable pour rétablir l'accès.</div>
 </div>
 
-<div class="toast show" id="toast">✅ Dépôt vérifié !</div>
+<div class="toast" id="toast">✅ Sauvegarde cloud réussie !</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -3939,6 +2911,7 @@ const DB_BASE = {
   tresoTransferts: 'glidji_treso_transferts_v1',
   tresoDateDebut: 'glidji_treso_date_debut_v1',
   tresoReleves: 'glidji_treso_releves_v1',
+  tresoRepriseUndo: 'glidji_treso_reprise_undo_v1',
   tresoSeuilAlerte: 'glidji_treso_seuil_alerte_v1',
   // Drapeau « amorce posée » : les soldes de départ et les charges récurrentes
   // ne sont écrits QU'UNE FOIS. Sans lui, initTresorerie() les recréait à chaque
@@ -4301,6 +3274,7 @@ function messageCategoriesManquantes(manquantes) {
     tresoTransferts: 'transferts entre comptes', tresoReleves: 'relevés bancaires',
     tresoRecurrences: 'charges récurrentes', tresoDateDebut: 'date de début d\'exercice',
     tresoSeuilAlerte: 'seuil d\'alerte', operationsSupprimees: 'corbeille',
+    tresoRepriseUndo: 'annulation de reprise trésorerie',
     paiements: 'paiements', bulletinsPaie: 'bulletins de paie',
   };
   const noms = manquantes.map(c => jolis[c] || c);
@@ -16643,14 +15617,50 @@ function cleMouvement(refType, refId) { return refType + ':' + refId; }
  * Le montant est SIGNÉ (positif = entrée, négatif = sortie) pour que la
  * somme des pointés s'ajoute directement au solde de départ.
  */
+/**
+ * Borne BASSE d'un rapprochement, identique à celle de getSoldePoche().
+ *
+ * C'est la correction d'une incohérence qui rendait tout rapprochement de
+ * caisse impossible : getSoldePoche() part du dernier recalage et ne compte
+ * QUE les mouvements postérieurs (`p.date > baseDate`), alors que la liste à
+ * pointer n'avait aucune borne basse. Résultat mesuré sur la caisse Glidji :
+ * 124 lignes proposées au pointage dont 113 (1 078 740 F) DÉJÀ comprises dans
+ * le solde de départ. Les pointer comptait l'argent deux fois ; ne pas les
+ * pointer laissait un écart que rien ne pouvait résorber — la validation
+ * exigeant un écart nul, le rapprochement était condamné.
+ *
+ * Le dernier relevé validé, lui, ne pose PAS de borne de date : son périmètre
+ * est l'ensemble des clés qu'il a pointées (getClesRapprochees). Un mouvement
+ * antérieur non pointé est légitimement « en circulation » et doit rester
+ * proposé au relevé suivant. Un recalage, à l'inverse, absorbe par DATE :
+ * tout ce qui le précède est déjà dans le solde constaté.
+ */
+function borneBasseRapprochement(poche) {
+  // Un recalage sans date exploitable est ignoré : getSoldePoche l'écarte déjà
+  // (sa comparaison `r.date <= limite` est fausse pour undefined). Le retenir
+  // ici poserait une borne « undefined » qui n'exclut plus rien — les deux
+  // écrans se remettraient silencieusement à diverger.
+  const recalages = getTresoRecalages()
+    .filter(r => r && r.poche === poche && /^\d{4}-\d{2}-\d{2}/.test(String(r.date || '')))
+    .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  if (recalages.length) {
+    // Le jour du recalage est déjà dans le solde constaté : borne STRICTE.
+    return { date: recalages[recalages.length - 1].date, stricte: true };
+  }
+  // Poche jamais recalée : elle démarre à zéro à l'ouverture de l'exercice.
+  return { date: getTresoDateDebut(), stricte: false };
+}
+
 function getMouvementsPoche(poche, dateMax) {
   const lim = dateMax || todayStr();
+  const borne = borneBasseRapprochement(poche);
+  const horsPerimetre = d => borne.stricte ? (d <= borne.date) : (d < borne.date);
   const out = [];
 
   for (const p of getTresoPrevisions()) {
     if (p.poche !== poche || p.statut !== 'REALISE') continue;
     const d = (p.date || '').slice(0, 10);
-    if (!d || d > lim) continue;
+    if (!d || d > lim || horsPerimetre(d)) continue;
     const m = Number(p.montantReel || p.montant) || 0;
     out.push({
       cle: cleMouvement('prev', p.id),
@@ -16667,7 +15677,7 @@ function getMouvementsPoche(poche, dateMax) {
   for (const t of getTresoTransferts()) {
     if (t.statut !== 'REALISE') continue;
     const d = (t.date || '').slice(0, 10);
-    if (!d || d > lim) continue;
+    if (!d || d > lim || horsPerimetre(d)) continue;
     const m = Number(t.montant) || 0;
     if (t.pocheDest === poche) {
       out.push({
@@ -16850,9 +15860,16 @@ function tresoId() { return 'tr_' + Date.now() + '_' + Math.random().toString(36
  * @param {string} poche 'caisse' | 'ecobank'
  * @param {string} [jusqu_a] date ISO limite (incluse), défaut = aujourd'hui
  */
-function getSoldePoche(poche, jusqu_a) {
+function getSoldePoche(poche, jusqu_a, jeu) {
   const limite = jusqu_a || todayStr();
-  const recalages = getTresoRecalages()
+  // `jeu` permet de calculer un solde sur un jeu de données HYPOTHÉTIQUE sans
+  // rien écrire (simulation d'une reprise). Absent, on lit le stockage réel.
+  // Une seule implémentation du calcul : simuler et calculer ne peuvent pas
+  // diverger.
+  const _prev = (jeu && jeu.previsions) || getTresoPrevisions();
+  const _reca = (jeu && jeu.recalages)  || getTresoRecalages();
+  const _trf  = (jeu && jeu.transferts) || getTresoTransferts();
+  const recalages = _reca
     .filter(r => r.poche === poche && r.date <= limite)
     .sort((a, b) => a.date.localeCompare(b.date));
 
@@ -16874,7 +15891,7 @@ function getSoldePoche(poche, jusqu_a) {
   }
 
   // Prévisions REALISE après la base
-  const previsions = getTresoPrevisions().filter(p =>
+  const previsions = _prev.filter(p =>
     p.poche === poche && p.statut === 'REALISE' &&
     (dateStricte ? p.date > baseDate : p.date >= baseDate) && p.date <= limite
   );
@@ -16883,7 +15900,7 @@ function getSoldePoche(poche, jusqu_a) {
   }
 
   // Transferts REALISE après la base (même règle de borne)
-  const transferts = getTresoTransferts().filter(t =>
+  const transferts = _trf.filter(t =>
     t.statut === 'REALISE' &&
     (dateStricte ? t.date > baseDate : t.date >= baseDate) && t.date <= limite
   );
@@ -17246,13 +16263,30 @@ async function importerCaisseEquipe(date) {
   // ── 4. Importer dans tresoPrevisions (idempotent + borné dans le temps)
   const dateDebut = getTresoDateDebut();
   const previsions = getTresoPrevisions();
+  const transferts = getTresoTransferts();
   let countAvances = 0, countDepenses = 0, countSkip = 0, countHorsPeriode = 0, countAchats = 0;
 
   snap.forEach(doc => {
     const mv = { id: doc.id, ...doc.data() };
     const sourceId = 'caissemvt_' + doc.id;
 
-    if (previsions.find(p => p.sourceId === sourceId)) { countSkip++; return; }
+    // ⚠️ ANTI-DOUBLON ENTRE VERSIONS
+    // Une version antérieure préfixait le même mouvement Firebase
+    // « caisseequipe_<docId> » et le posait en RECETTE sur la caisse
+    // principale. Ne comparer qu'à « caissemvt_<docId> » ne trouvait donc
+    // aucune correspondance : le même argent est entré DEUX FOIS, une fois
+    // avec le mauvais signe et sur la mauvaise poche (110 lignes / 1 237 740 F
+    // constatés en production). On teste désormais toutes les formes connues.
+    //
+    // Une ligne NEUTRALISÉE (statut ANNULE, posée par la reprise) ne bloque
+    // pas : c'est précisément ce qu'on veut réimporter proprement.
+    const formesSourceId = ['caissemvt_' + doc.id, 'caisseequipe_' + doc.id,
+                            'caissemouvement_' + doc.id, 'caisse_' + doc.id];
+    const dejaVivant = previsions.some(p =>
+        formesSourceId.includes(p.sourceId) && p.statut !== 'ANNULE')
+      || transferts.some(t =>
+        formesSourceId.includes(t.sourceId) && t.statut !== 'ANNULE');
+    if (dejaVivant) { countSkip++; return; }
 
     // ⚠️ ANTI-DOUBLON STRUCTUREL
     // L'app Équipe, quand on envoie une liste d'achats, écrit DEUX FOIS le même
@@ -17386,6 +16420,187 @@ function migrerCaisseEquipeVersPocheDediee(simulation) {
   }
   return { ok: true, nbAvances: avances.length, montantAvances,
            nbDepenses: aDeplacer.length, montantDepenses };
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   REPRISE DES ÉCRITURES HÉRITÉES D'UNE VERSION ANTÉRIEURE
+   ─────────────────────────────────────────────────────────────────────────
+   Constaté en production sur la base Glidji, septembre 2026 :
+
+   • 110 prévisions portant sourceType « caisse_equipe » ou
+     « caisse_mouvement » — deux valeurs qu'AUCUNE version actuelle ne produit
+     — posées en RECETTE sur la poche « caisse » pour 1 237 740 F. Ce sont des
+     mouvements de caisse d'ÉQUIPE : des sorties. Elles gonflaient donc
+     l'encaisse du montant exact qu'elles auraient dû en retirer.
+
+   • Les mêmes mouvements Firebase ont ensuite été réimportés correctement
+     (sourceId « caissemvt_… », dépenses sur la poche équipe), parce que
+     l'anti-doublon ne comparait qu'à cette forme-là de sourceId. Le même
+     argent existait deux fois, avec deux signes opposés. Symptôme visible :
+     une caisse d'équipe à −189 347 F, ce qui est impossible — on ne peut pas
+     dépenser plus qu'on n'a reçu en avance.
+
+   • 5 recalages de 100 000 F notés « Test », résidus de l'ancien bouton
+     🧪 Tests avant qu'il ne soit rendu non destructif. Inertes tant qu'un
+     recalage plus récent existe, mais ils redeviennent le solde de référence
+     dès qu'on supprime celui-ci.
+
+   PRINCIPE : rien n'est effacé. Les prévisions héritées passent en ANNULE
+   (getSoldePoche ne compte que REALISE : elles quittent les soldes en
+   restant lisibles), les faux recalages sont retirés après photographie
+   complète. `annulerRepriseHeritageTreso()` remet tout en place.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* Ces deux sourceType n'existent nulle part dans le code actuel : leur seule
+ * présence signe une écriture d'une version antérieure. */
+const SOURCE_TYPES_HERITES = ['caisse_equipe', 'caisse_mouvement'];
+
+function estLigneHeritee(p) {
+  if (!p || p.statut !== 'REALISE') return false;
+  if (SOURCE_TYPES_HERITES.indexOf(p.sourceType || '') >= 0) return true;
+  return /^caisseequipe_/.test(p.sourceId || '');
+}
+
+function estRecalageDeTest(r) {
+  return String((r && r.note) || '').trim().toLowerCase() === 'test';
+}
+
+function analyserHeritageTreso() {
+  const previsions = getTresoPrevisions();
+  const recalages  = getTresoRecalages();
+  const lignes = previsions.filter(estLigneHeritee);
+  const faux   = recalages.filter(estRecalageDeTest);
+  return {
+    previsions, recalages, lignes, faux,
+    montant: lignes.reduce((s, p) => s + (Number(p.montantReel || p.montant) || 0), 0),
+  };
+}
+
+/**
+ * @param {boolean} simulation  true = ne rien écrire, retourner l'effet chiffré
+ */
+function reprendreHeritageTreso(simulation) {
+  if (getActiveEntity() !== 'GLIDJI') return { ok: false, err: 'Réservé à Conciergerie Glidji.' };
+
+  const a = analyserHeritageTreso();
+  const idsLignes = new Set(a.lignes.map(p => p.id));
+  const idsFaux   = new Set(a.faux.map(r => r.id));
+
+  // Jeu de données HYPOTHÉTIQUE — getSoldePoche sait calculer dessus sans
+  // qu'une seule ligne soit écrite. Simuler et exécuter empruntent donc
+  // exactement le même calcul : ils ne peuvent pas diverger.
+  const jeu = {
+    previsions: a.previsions.filter(p => !idsLignes.has(p.id)),
+    recalages:  a.recalages.filter(r => !idsFaux.has(r.id)),
+    transferts: getTresoTransferts(),
+  };
+  const avant = {}, apres = {};
+  for (const k of listePoches()) {
+    avant[k] = getSoldePoche(k);
+    apres[k] = getSoldePoche(k, null, jeu);
+  }
+
+  const resume = {
+    ok: true,
+    rien: (a.lignes.length === 0 && a.faux.length === 0),
+    nbLignes: a.lignes.length,
+    montant: a.montant,
+    nbFauxRecalages: a.faux.length,
+    avant, apres,
+  };
+  if (simulation) { resume.simulation = true; return resume; }
+  if (resume.rien) return resume;
+
+  // Photographie complète AVANT toute modification.
+  save(DB.tresoRepriseUndo, {
+    faiteLe: new Date().toISOString(),
+    previsions: JSON.parse(JSON.stringify(a.previsions)),
+    recalages:  JSON.parse(JSON.stringify(a.recalages)),
+  });
+
+  const horodatage = new Date().toISOString();
+  for (const p of a.previsions) {
+    if (!idsLignes.has(p.id)) continue;
+    p.statut = 'ANNULE';
+    p.heritageNeutralise = true;
+    p.neutraliseLe = horodatage;
+    p.motifNeutralisation = 'Écriture d\'une version antérieure : mouvement de '
+      + 'caisse d\'équipe posé en recette sur la caisse principale, puis '
+      + 'réimporté correctement.';
+  }
+  saveTresoPrevisions(a.previsions);
+  if (idsFaux.size) saveTresoRecalages(a.recalages.filter(r => !idsFaux.has(r.id)));
+
+  if (typeof logAudit === 'function') {
+    logAudit('reprise_heritage_treso',
+      a.lignes.length + ' ligne(s) héritée(s) neutralisée(s) (' + fmtFCFA(a.montant) + '), '
+      + a.faux.length + ' faux recalage(s) retiré(s)');
+  }
+  return resume;
+}
+
+/** Remet la trésorerie exactement dans l'état d'avant la reprise. */
+function annulerRepriseHeritageTreso() {
+  if (getActiveEntity() !== 'GLIDJI') return { ok: false, err: 'Réservé à Conciergerie Glidji.' };
+  const photo = load(DB.tresoRepriseUndo, null);
+  if (!photo || !Array.isArray(photo.previsions) || !Array.isArray(photo.recalages)) {
+    return { ok: false, err: 'Aucune reprise à annuler.' };
+  }
+  saveTresoPrevisions(photo.previsions);
+  saveTresoRecalages(photo.recalages);
+  save(DB.tresoRepriseUndo, null);
+  if (typeof logAudit === 'function') logAudit('reprise_heritage_annulee', 'État d\'avant reprise restauré');
+  return { ok: true, nbPrevisions: photo.previsions.length, nbRecalages: photo.recalages.length };
+}
+
+/** Bouton — montre l'effet chiffré AVANT d'écrire quoi que ce soit. */
+function reprendreHeritageTresoUI() {
+  const sim = reprendreHeritageTreso(true);
+  if (!sim.ok) { toast(sim.err, true); return; }
+
+  if (load(DB.tresoRepriseUndo, null) && sim.rien) {
+    if (confirm('La reprise a déjà été faite.\n\nVoulez-vous l\'ANNULER et revenir à l\'état d\'avant ?')) {
+      const r = annulerRepriseHeritageTreso();
+      if (!r.ok) { toast(r.err, true); return; }
+      renderTresorerie(); writeLinkedFile();
+      alert('↩️ Reprise annulée — la trésorerie est revenue à son état antérieur.');
+    }
+    return;
+  }
+  if (sim.rien) {
+    toast('Rien à reprendre — aucune écriture héritée détectée.', 'orange');
+    return;
+  }
+
+  let detail = '';
+  for (const k of listePoches()) {
+    if (sim.avant[k] === sim.apres[k]) continue;
+    detail += '  ' + labelPoche(k) + ' : ' + fmtFCFA(sim.avant[k]) + '  →  ' + fmtFCFA(sim.apres[k]) + '\n';
+  }
+
+  const msg = 'REPRISE DES ÉCRITURES HÉRITÉES\n\n'
+    + 'Une version antérieure a enregistré des mouvements de caisse d\'ÉQUIPE\n'
+    + 'comme des RECETTES de la caisse principale. Les mêmes mouvements ont\n'
+    + 'ensuite été réimportés correctement : le même argent compte deux fois,\n'
+    + 'avec deux signes opposés.\n\n'
+    + 'Ce qui va être fait :\n'
+    + '• ' + sim.nbLignes + ' ligne(s) héritée(s) — ' + fmtFCFA(sim.montant) + ' — passent en ANNULE\n'
+    + '  (elles restent lisibles, elles ne comptent plus dans les soldes)\n'
+    + '• ' + sim.nbFauxRecalages + ' recalage(s) noté(s) « Test » retiré(s)\n\n'
+    + 'Effet sur les soldes :\n' + (detail || '  (aucun)\n')
+    + '\nRien n\'est effacé. Cette opération est annulable.\n\nContinuer ?';
+  if (!confirm(msg)) return;
+
+  const res = reprendreHeritageTreso(false);
+  if (!res.ok) { toast(res.err, true); return; }
+  renderTresorerie(); writeLinkedFile();
+  alert('✅ Reprise effectuée.\n\n' + (detail || '')
+    + '\nProchaine étape : relancez « ⬇️ Importer Équipe » puis « 🛒 Importer Achats »\n'
+    + 'pour que les mouvements soient rejoués correctement (avances → transferts,\n'
+    + 'dépenses → poche Caisse d\'équipe).\n\n'
+    + 'Si le solde de caisse ne correspond pas à votre comptage physique,\n'
+    + 'posez un recalage à la date du comptage : c\'est exactement son rôle.');
+  toast('Reprise terminée — ' + res.nbLignes + ' ligne(s) neutralisée(s).');
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
