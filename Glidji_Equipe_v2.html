@@ -111,7 +111,7 @@
 .hub-tile-full{grid-column:1/-1;}
 .btn-back-hub{display:none;background:transparent;border:1px solid var(--platinum);color:var(--onyx);border-radius:var(--radius);padding:7px 12px;font-size:13px;font-weight:600;}
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb905566" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.fr.u1YzuBbBpqg.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb255018" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <div id="app">
@@ -119,7 +119,7 @@
       <div class="top-bar">
         <div style="display:flex;align-items:center;gap:10px;">
           <button class="btn-back-hub" id="btnBackHub" style="display: inline-block;">← Accueil</button>
-          <h1 id="appTitle">Inventaire matériel</h1>
+          <h1 id="appTitle">Calendrier des prestations</h1>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="btn-ghost" onclick="showGithubModal()" style="padding:8px 12px;font-size:13px;" title="Publier sur GitHub Pages">🐙</button>
@@ -127,47 +127,9 @@
         </div>
       </div>
       <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
-      <div id="tabContent">
-    <div class="card">
-      <h2>Ajouter au catalogue <span class="hint">(photo une seule fois par article)</span></h2>
-      <div class="field">
-        <label>Photo</label>
-        <input type="file" id="cat_photo" accept="image/*">
-        <div id="cat_photo_preview" style="margin-top:8px;"></div>
-      </div>
-      <div class="field">
-        <label>Nom de l'article</label>
-        <input type="text" id="cat_nom" placeholder="Ex : Chaise pliante blanche">
-      </div>
-      <button class="btn-gold btn-block" id="btnAddCatalogueMateriel">+ Ajouter au catalogue</button>
-    </div>
-    <div class="card">
-      <h2>Compter un article <span class="hint">(pas de nouvelle photo, juste la quantité de ce mois)</span></h2>
-      <div class="field">
-        <label>Rechercher dans le catalogue</label>
-        <input type="text" id="comptage_search" placeholder="Nom de l'article…">
-      </div>
-      <div id="comptageSearchResults">
-      <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--platinum);">
-        <span style="flex:1; font-size:14px;">24 Assiette blanche fleurie</span>
-        <input type="number" min="0" placeholder="Qté" style="width:70px;" id="qte_2IBr5TtscFvcbRnmmb6K">
-        <button class="btn-gold btn-sm" data-saisir="2IBr5TtscFvcbRnmmb6K" data-nom="24 Assiette blanche fleurie">OK</button>
-      </div></div>
-    </div>
-    <div class="card">
-      <h2>Déclarer une perte <span class="hint">(casse, perte, vol, péremption…)</span></h2>
-      <div class="field">
-        <label>Rechercher l'article concerné</label>
-        <input type="text" id="perte_search" placeholder="Nom de l'article…">
-      </div>
-      <div id="perteSearchResults"></div>
-    </div>
-    <div class="card">
-      <h2>Comptage du mois en cours</h2>
-      <div id="comptageListWrap"><p class="hint">Aucun comptage ce mois-ci pour l'instant.</p></div>
+      <div id="tabContent"><div class="card"><p class="hint">Chargement du calendrier…</p></div></div>
     </div></div>
-    </div></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">Code PIN incorrect.</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -469,7 +431,7 @@ function showEquipeTab(name) {
   if (name === 'inventaire') renderTabInventaire();
   if (name === 'avances')    renderTabAvances();
   if (name === 'messages')   renderTabMessages();
-  if (name === 'achats')     renderTabAchats();
+  if (name === 'achats')     { renderTabAchats(); chargerContexteAchats().then(renderTabAchats); }
   if (name === 'calendrier') renderTabCalendrier();
 }
 
@@ -937,8 +899,15 @@ async function rechercherPourComptage() {
     const resultats = [];
     snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().includes(nq)) resultats.push({ id: d.id, ...data }); });
     if (!resultats.length) { wrap.innerHTML = `<p class="hint">Aucun article du catalogue ne correspond.</p>`; return; }
+    // La photo lève l'ambiguïté au moment de compter : deux références au nom
+    // proche (« chaise pliante » / « chaise pliante blanche ») ne se
+    // distinguent qu'à l'œil, et un comptage attribué au mauvais article
+    // fausse l'inventaire sans que personne ne s'en aperçoive.
     wrap.innerHTML = resultats.slice(0, 15).map(c => `
       <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--platinum);">
+        ${c.photoB64
+          ? `<img src="${c.photoB64}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:6px;flex:0 0 auto;">`
+          : `<div style="width:42px;height:42px;border-radius:6px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;">📦</div>`}
         <span style="flex:1; font-size:14px;">${escapeHtml(c.nom)}</span>
         <input type="number" min="0" placeholder="Qté" style="width:70px;" id="qte_${c.id}">
         <button class="btn-gold btn-sm" data-saisir="${c.id}" data-nom="${escapeHtml(c.nom)}">OK</button>
@@ -982,8 +951,25 @@ async function chargerComptageMoisEnCours() {
       wrap.innerHTML = `<p class="hint">Aucun comptage ce mois-ci pour l'instant.</p>`;
       return;
     }
+    // Les comptages ne stockent JAMAIS de photo (un comptage mensuel doit rester
+    // léger) : on la récupère du catalogue, où elle n'est prise qu'une fois.
+    const photos = {};
+    try {
+      const cat = await db.collection('catalogueMateriel').get();
+      cat.forEach(d => { const c = d.data(); if (c.photoB64) photos[d.id] = c.photoB64; });
+    } catch(_) { /* sans photo, la liste reste parfaitement lisible */ }
+
     wrap.innerHTML = items.map(i => `
-      <div class="fe-row"><div class="l">${escapeHtml(i.nom)}</div><div>${i.quantite} (${escapeHtml(i.auteur || '')})</div></div>`).join('');
+      <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--platinum-light);">
+        ${photos[i.catalogueId]
+          ? `<img src="${photos[i.catalogueId]}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:6px;flex:0 0 auto;">`
+          : `<div style="width:38px;height:38px;border-radius:6px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;">📦</div>`}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;">${escapeHtml(i.nom)}</div>
+          <div style="font-size:11px;color:var(--muted);">compté par ${escapeHtml(i.auteur || '—')}</div>
+        </div>
+        <strong style="font-size:15px;">${Number(i.quantite) || 0}</strong>
+      </div>`).join('');
   } catch (e) {
     wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
   }
@@ -1462,43 +1448,199 @@ async function sendMessage() {
 
 /* ----- ACHATS EQUIPE ----- */
 var _achatLignes = [];
-function renderTabAchats() {
-  var content = document.getElementById('tabContent');
-  function renderListe() {
-    return _achatLignes.length === 0 ? '<p class="hint">Aucun achat saisi.</p>' :
-      '<table style="width:100%;font-size:14px;border-collapse:collapse;margin-bottom:12px;">' +
-      '<tr><th style="text-align:left;padding:4px;color:var(--muted);font-size:12px;">Désignation</th>' +
-      '<th style="text-align:right;padding:4px;color:var(--muted);font-size:12px;">Montant (FCFA)</th><th></th></tr>' +
-      _achatLignes.map(function(l,i){
-        return '<tr><td style="padding:4px;">' + escapeHtml(l.designation) + '</td>' +
-          '<td style="text-align:right;padding:4px;">' + l.montant.toLocaleString('fr-FR') + '</td>' +
-          '<td style="padding:4px;"><button onclick="supprimerAchat('+i+')" style="background:none;border:none;color:var(--err);cursor:pointer;font-size:16px;">✕</button></td></tr>';
-      }).join('') +
-      '<tr style="border-top:2px solid var(--platinum);font-weight:700;">' +
-      '<td style="padding:6px 4px;">TOTAL</td>' +
-      '<td style="text-align:right;padding:6px 4px;">' +
-      _achatLignes.reduce(function(s,l){return s+l.montant;},0).toLocaleString('fr-FR') + ' FCFA</td><td></td></tr></table>';
-  }
-  content.innerHTML = '<div class="card">' +
-    '<h2>Saisie des achats</h2>' +
-    '<div class="field"><label>Désignation</label><input type="text" id="achat_designation" placeholder="Ex : Tomates, Huile…"></div>' +
-    '<div class="field"><label>Montant (FCFA)</label><input type="number" id="achat_montant" placeholder="0" min="0"></div>' +
-    '<button class="btn-ghost btn-block" onclick="ajouterAchat()" style="margin-bottom:16px;">+ Ajouter cet achat</button>' +
-    '<div id="achat-liste">' + renderListe() + '</div>' +
-    '<button class="btn-gold btn-block" id="btnEnvoyerAchats" style="margin-top:8px;" onclick="envoyerAchats()">Envoyer la liste</button>' +
-    '</div>';
+/* =====================================================================
+   FACTURETTE D'ACHAT
+   ---------------------------------------------------------------------
+   Avant, une ligne d'achat valait « Tomates — 50 000 ». Un libellé et une
+   somme tapée à la main : rien ne pouvait la vérifier, elle n'alimentait
+   aucun historique de prix, et elle n'entrait même pas dans le registre des
+   achats de l'ERP. Le rapprochement était impossible par construction.
+
+   Désormais chaque ligne porte QUANTITÉ × PRIX UNITAIRE, et le total est
+   CALCULÉ. Trois conséquences : une erreur de frappe devient visible, chaque
+   achat nourrit l'historique de prix, et le téléphone peut prévenir sur place
+   quand un prix s'écarte de ce qui se payait avant.
+
+   La quantité vaut 1 par défaut : sans y toucher, la saisie reste exactement
+   aussi rapide qu'avant, et le prix unitaire est le montant. Rien ne se
+   dégrade pour l'équipe ; tout s'améliore dès qu'une quantité est saisie.
+   ===================================================================== */
+
+const ECART_PRIX_ALERTE = 0.25;     // +25 % au-dessus du dernier prix payé
+let _refPrix = [];                  // référence poussée par l'ERP
+let _achatFournisseur = '';
+let _achatFicheId = '';
+let _achatPhoto = null;
+
+/** Charge la référence de prix et les prestations à venir, sans bloquer. */
+async function chargerContexteAchats() {
+  try {
+    const snap = await db.collection('referencePrix').get();
+    _refPrix = [];
+    snap.forEach(d => { const r = d.data(); if (r && r.nom) _refPrix.push(r); });
+  } catch(_) { _refPrix = []; }
+  try {
+    if (!_fichesCache.length) {
+      const snap = await db.collection('fichesEquipe').get();
+      _fichesCache = [];
+      snap.forEach(d => _fichesCache.push({ id: d.id, ...d.data() }));
+    }
+  } catch(_) {}
 }
+
+function prixDeReference(nom) {
+  const cible = normalizeNom(nom);
+  if (!cible) return null;
+  const r = _refPrix.find(x => normalizeNom(x.nom) === cible);
+  return (r && Number.isFinite(Number(r.prixUnitaire)) && r.prixUnitaire > 0) ? Number(r.prixUnitaire) : null;
+}
+
+function totalLigneAchat(l) {
+  const q = Number(l.quantite) || 1;
+  const pu = Number(l.prixUnitaire) || 0;
+  return Math.round(q * pu);
+}
+function totalFacturette() { return _achatLignes.reduce((s, l) => s + totalLigneAchat(l), 0); }
+
+/** Prestations à venir, pour rattacher les courses au bon événement. */
+function prestationsAVenir() {
+  const auj = todayIso();
+  return _fichesCache
+    .filter(f => (f.datePrestation || '') >= auj)
+    .sort((a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || ''))
+    .slice(0, 25);
+}
+
+function renderTabAchats() {
+  const content = document.getElementById('tabContent');
+  const total = totalFacturette();
+
+  const listeHtml = !_achatLignes.length
+    ? '<p class="hint">Aucun achat saisi.</p>'
+    : _achatLignes.map((l, i) => {
+        const ref = prixDeReference(l.designation);
+        const pu = Number(l.prixUnitaire) || 0;
+        const cher = ref && pu > ref * (1 + ECART_PRIX_ALERTE);
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--platinum-light);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;">${escapeHtml(l.designation)}</div>
+            <div style="font-size:12px;color:var(--muted);">
+              ${Number(l.quantite) || 1} × ${pu.toLocaleString('fr-FR')} F
+              ${cher ? `<span style="color:var(--err);font-weight:700;"> · +${Math.round((pu / ref - 1) * 100)} % vs ${ref.toLocaleString('fr-FR')} F</span>` : ''}
+            </div>
+          </div>
+          <strong style="white-space:nowrap;">${totalLigneAchat(l).toLocaleString('fr-FR')} F</strong>
+          <button onclick="supprimerAchat(${i})" style="background:none;border:none;color:var(--err);cursor:pointer;font-size:16px;">✕</button>
+        </div>`;
+      }).join('') +
+      `<div style="display:flex;justify-content:space-between;padding:10px 0 0;border-top:2px solid var(--platinum);font-weight:800;">
+        <span>TOTAL</span><span>${total.toLocaleString('fr-FR')} FCFA</span>
+      </div>`;
+
+  const prestations = prestationsAVenir();
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>Facturette d'achat <span class="hint">(quantité × prix : le total se calcule tout seul)</span></h2>
+
+      <div class="field">
+        <label>Article</label>
+        <input type="text" id="achat_designation" list="achat_refs" autocomplete="off" placeholder="Ex : Tomates" oninput="majIndicePrix()">
+        <datalist id="achat_refs">${_refPrix.slice(0, 400).map(r => `<option value="${escapeHtml(r.nom)}">`).join('')}</datalist>
+        <div id="achat_indice" class="hint" style="margin-top:4px;"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;">
+        <div class="field" style="flex:0 0 90px;">
+          <label>Quantité</label>
+          <input type="number" id="achat_quantite" min="0" step="any" value="1" inputmode="decimal" oninput="majIndicePrix()">
+        </div>
+        <div class="field" style="flex:1;">
+          <label>Prix unitaire (FCFA)</label>
+          <input type="number" id="achat_pu" min="0" inputmode="numeric" placeholder="0" oninput="majIndicePrix()">
+        </div>
+      </div>
+      <div id="achat_alerte" style="margin-bottom:10px;"></div>
+
+      <button class="btn-ghost btn-block" onclick="ajouterAchat()" style="margin-bottom:16px;">+ Ajouter cet article</button>
+      <div id="achat-liste">${listeHtml}</div>
+    </div>
+
+    <div class="card">
+      <h2>D'où viennent ces achats ?</h2>
+      <div class="field">
+        <label>Fournisseur / marché <span style="font-weight:400;text-transform:none;">(facultatif)</span></label>
+        <input type="text" id="achat_fournisseur" value="${escapeHtml(_achatFournisseur)}" placeholder="Ex : Marché d'Adawlato">
+      </div>
+      <div class="field">
+        <label>Pour quelle prestation ? <span style="font-weight:400;text-transform:none;">(facultatif)</span></label>
+        <select id="achat_fiche">
+          <option value="">— Courses générales —</option>
+          ${prestations.map(f => `<option value="${escapeHtml(f.id)}"${_achatFicheId === f.id ? ' selected' : ''}>${escapeHtml(fmtDate(f.datePrestation))} — ${escapeHtml(f.objet || f.clientNom || 'Prestation')}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Photo du reçu <span style="font-weight:400;text-transform:none;">(facultatif)</span></label>
+        <input type="file" id="achat_photo" accept="image/*">
+        <div id="achat_photo_preview" style="margin-top:8px;">${_achatPhoto ? `<img src="${_achatPhoto}" style="max-height:90px;border-radius:6px;">` : ''}</div>
+      </div>
+      <button class="btn-gold btn-block" id="btnEnvoyerAchats" onclick="envoyerAchats()">Envoyer la facturette</button>
+    </div>`;
+
+  const photoInput = document.getElementById('achat_photo');
+  if (photoInput) photoInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const btn = document.getElementById('btnEnvoyerAchats');
+    btn.disabled = true; btn.textContent = 'Traitement de la photo…';
+    try {
+      const donnees = await compressImageFile(file, 1000, 0.7);
+      if (pieceJointeAcceptable(donnees, null, e.target)) {
+        _achatPhoto = donnees;
+        document.getElementById('achat_photo_preview').innerHTML = `<img src="${donnees}" style="max-height:90px;border-radius:6px;">`;
+      }
+    } catch(_) { toast('Impossible de traiter cette photo.', true); }
+    btn.disabled = false; btn.textContent = 'Envoyer la facturette';
+  });
+  majIndicePrix();
+}
+
+/** Indique le prix habituel et alerte si celui saisi s'en écarte trop. */
+function majIndicePrix() {
+  const nomEl = document.getElementById('achat_designation');
+  const puEl = document.getElementById('achat_pu');
+  const indice = document.getElementById('achat_indice');
+  const alerte = document.getElementById('achat_alerte');
+  if (!nomEl || !indice || !alerte) return;
+  const ref = prixDeReference(nomEl.value);
+  indice.textContent = ref ? 'Dernier prix payé : ' + ref.toLocaleString('fr-FR') + ' F' : '';
+  const pu = Number(puEl && puEl.value) || 0;
+  if (ref && pu > ref * (1 + ECART_PRIX_ALERTE)) {
+    const ecart = Math.round((pu / ref - 1) * 100);
+    alerte.innerHTML = `<div style="background:#FDF3EC;border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;font-size:12px;color:#8C2E2E;">
+      ⚠️ <strong>+${ecart} %</strong> par rapport au dernier prix payé (${ref.toLocaleString('fr-FR')} F).
+      Vérifiez avant d'ajouter — vous pouvez continuer si le prix a vraiment augmenté.
+    </div>`;
+  } else { alerte.innerHTML = ''; }
+}
+
 function ajouterAchat() {
-  var d = document.getElementById('achat_designation').value.trim();
-  var m = parseFloat(document.getElementById('achat_montant').value);
-  if (!d) { toast('Renseigne la désignation', true); return; }
-  if (isNaN(m) || m <= 0) { toast('Montant invalide', true); return; }
-  _achatLignes.push({designation: d, montant: m});
-  document.getElementById('achat_designation').value = '';
-  document.getElementById('achat_montant').value = '';
+  const d = document.getElementById('achat_designation').value.trim();
+  const q = Number(document.getElementById('achat_quantite').value);
+  const pu = Number(document.getElementById('achat_pu').value);
+  if (!d) { toast('Renseigne l\'article', true); return; }
+  if (!Number.isFinite(q) || q <= 0) { toast('Quantité invalide', true); return; }
+  if (!Number.isFinite(pu) || pu <= 0) { toast('Prix unitaire invalide', true); return; }
+  // Le montant reste écrit dans la ligne : l'ERP et les anciennes versions
+  // savent le lire même sans comprendre quantité et prix unitaire.
+  _achatLignes.push({ designation: d, quantite: q, prixUnitaire: Math.round(pu),
+                      montant: Math.round(q * pu) });
+  _achatFournisseur = (document.getElementById('achat_fournisseur') || {}).value || _achatFournisseur;
+  _achatFicheId = (document.getElementById('achat_fiche') || {}).value || _achatFicheId;
   renderTabAchats();
   document.getElementById('achat_designation').focus();
 }
+
 function supprimerAchat(i) {
   _achatLignes.splice(i, 1);
   renderTabAchats();
@@ -1508,9 +1650,14 @@ async function envoyerAchats() {
   var btn = document.getElementById('btnEnvoyerAchats');
   btn.disabled = true;
   try {
-    var total = _achatLignes.reduce(function(s,l){return s+l.montant;},0);
+    var total = totalFacturette();
     var auteur = getStaffName() || 'Equipe';
     var date   = todayIso();
+    // Contexte de la facturette, relu au moment de l'envoi : la personne a pu
+    // remplir le fournisseur ou choisir la prestation APRÈS avoir saisi ses lignes.
+    var fournisseur = ((document.getElementById('achat_fournisseur') || {}).value || '').trim();
+    var ficheId = (document.getElementById('achat_fiche') || {}).value || '';
+    var fiche = _fichesCache.find(function(f){ return f.id === ficheId; }) || null;
 
     // 1. Enregistrer la liste globale dans achatsEquipe
     // Cle stable : si l'envoi est relance (double clic, rechargement), le meme
@@ -1521,6 +1668,13 @@ async function envoyerAchats() {
       total: total,
       auteur: auteur,
       date: date,
+      fournisseur: fournisseur,
+      // Rattachement à la prestation : c'est lui qui permettra à l'ERP de
+      // calculer le coût réel d'un événement, donc la vraie marge.
+      operationId: fiche ? (fiche.operationId || fiche.id) : null,
+      operationNumero: fiche ? (fiche.numero || '') : '',
+      clientNom: fiche ? (fiche.clientNom || '') : '',
+      photoB64: _achatPhoto || null,
       clientRef: refAchat,
       createdAt: new Date().toISOString()
     });
@@ -1550,7 +1704,7 @@ async function envoyerAchats() {
       var payload = {
         type: 'depense',
         nom: ligne.designation,
-        montant: ligne.montant,
+        montant: totalLigneAchat(ligne),
         date: date,
         auteur: auteur,
         createdAt: new Date().toISOString(),
@@ -1561,7 +1715,8 @@ async function envoyerAchats() {
     }
 
     _achatLignes = [];
-    toast('Achats envoyes et enregistres dans la caisse (' + total.toLocaleString('fr-FR') + ' FCFA)');
+    _achatPhoto = null; _achatFournisseur = ''; _achatFicheId = '';
+    toast('Facturette envoyée et enregistrée dans la caisse (' + total.toLocaleString('fr-FR') + ' FCFA)');
     renderTabAchats();
   } catch(e) {
     toast('Erreur : ' + e.message, true);
@@ -1583,6 +1738,11 @@ async function envoyerAchats() {
    programmé, jamais les montants.
    ===================================================================== */
 let _fichesCache = [];
+/* Les prestations terminées encombraient le calendrier : l'équipe cherchait le
+   travail à venir au milieu de ce qui était déjà fait. Elles sont masquées par
+   défaut, mais RESTENT consultables d'un bouton — un calendrier qui ment sur
+   le passé est inutilisable pour retrouver ce qu'on a servi la semaine dernière. */
+let _calMasquerPassees = true;
 let _calVue = 'semaine';
 let _calLundi = null;
 let _calYear = new Date().getFullYear();
@@ -1595,6 +1755,17 @@ function lundiDeLaSemaineEquipe(iso) {
   return d.toISOString().slice(0, 10);
 }
 function calLundiCourant() { return _calLundi || lundiDeLaSemaineEquipe(todayIso()); }
+
+/** Fiches à afficher, selon que l'on masque ou non les prestations passées. */
+function fichesCalendrier() {
+  if (!_calMasquerPassees) return _fichesCache;
+  const auj = todayIso();
+  return _fichesCache.filter(f => (f.datePrestation || '') >= auj);
+}
+function calBasculerPassees() {
+  _calMasquerPassees = !_calMasquerPassees;
+  dessinerCalendrier();
+}
 
 async function renderTabCalendrier() {
   const wrap = document.getElementById('tabContent');
@@ -1620,6 +1791,12 @@ function dessinerCalendrier() {
       ${onglet('semaine', '📆 Semaine')}${onglet('mois', '🗓️ Mois')}
       <span style="flex:1;"></span>
       <button class="btn-ghost btn-sm" onclick="calAujourdhui()">Aujourd'hui</button>
+    </div>
+    <div style="margin:-6px 0 12px;font-size:12px;color:var(--muted);">
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" style="width:auto;" ${_calMasquerPassees ? 'checked' : ''} onchange="calBasculerPassees()">
+        Masquer les prestations déjà passées
+      </label>
     </div>`;
   wrap.innerHTML = barre + (_calVue === 'semaine' ? vueCalendrierSemaine() : vueCalendrierMois());
 }
@@ -1671,7 +1848,7 @@ function vueCalendrierSemaine() {
   }
   const debut = jours[0], fin = jours[6];
   const parJour = {};
-  _fichesCache.forEach(f => {
+  fichesCalendrier().forEach(f => {
     const dp = f.datePrestation || '';
     if (!dp || dp < debut || dp > fin) return;
     (parJour[dp] = parJour[dp] || []).push(f);
@@ -1713,7 +1890,7 @@ function vueCalendrierMois() {
   const estMoisCourant = today.getFullYear() === _calYear && today.getMonth() === _calMonth;
 
   const parJour = {};
-  _fichesCache.forEach(f => {
+  fichesCalendrier().forEach(f => {
     const dp = f.datePrestation || '';
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dp)) return;
     const parts = dp.split('-');
@@ -1742,7 +1919,7 @@ function vueCalendrierMois() {
   const auj = todayIso();
   const dans30 = new Date(); dans30.setDate(dans30.getDate() + 30);
   const limite = dans30.toISOString().slice(0, 10);
-  const prochaines = _fichesCache
+  const prochaines = fichesCalendrier()
     .filter(f => f.datePrestation && f.datePrestation >= auj && f.datePrestation <= limite)
     .sort((a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || ''));
   html += `<h4 style="margin:16px 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;">Prochaines prestations (30 jours)</h4>`;
@@ -1946,7 +2123,7 @@ init();
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1788852837742" name="I0_1788852837742" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1788852837742&amp;_gfid=I0_1788852837742&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=48660749" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789029016931" name="I0_1789029016931" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.fr.u1YzuBbBpqg.O%2Fd%3D1%2Frs%3DAHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA%2Fm%3D__features__#id=I0_1789029016931&amp;_gfid=I0_1789029016931&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=62291729" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
     <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
       <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
       <div style="margin-bottom:12px;">
