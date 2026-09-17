@@ -316,6 +316,16 @@
   /* ---------- Document (facture/proforma) preview ---------- */
   #docPreviewWrap{background:#e9e7e1; padding:24px; border-radius:var(--radius);}
   .doc{background:var(--white); max-width:800px; margin:0 auto; padding:32px 34px; box-shadow:var(--shadow); position:relative;}
+  /* Actions portées par la carte de poche (tableau de bord trésorerie).
+     Discrètes au repos, lisibles au survol : la carte reste d'abord un
+     chiffre qu'on lit, pas une barre d'outils. Sur téléphone, il n'y a pas
+     de survol — les boutons y sont donc toujours visibles. */
+  .poche-actions{display:flex; gap:6px; justify-content:center; margin-top:8px;
+    opacity:.55; transition:opacity .15s;}
+  .poche-carte:hover .poche-actions{opacity:1;}
+  .poche-actions .btn{padding:4px 8px; font-size:11px; white-space:nowrap;}
+  @media (hover:none){ .poche-actions{opacity:1;} }
+  @media print{ .poche-actions{display:none !important;} }
   .doc-watermark{position:absolute; top:45%; left:50%; transform:translate(-50%,-50%) rotate(-30deg); font-size:38px; font-weight:800; color:rgba(140,106,52,0.10); letter-spacing:.05em; white-space:nowrap; pointer-events:none; z-index:0; text-align:center; line-height:1.3;}
   .doc > *:not(.doc-watermark){position:relative; z-index:1;}
   @media print{
@@ -711,6 +721,12 @@ nav.hub-nav button .hn-badge{position:absolute;top:5px;right:8px;background:var(
 .hub-view-header h2{font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;color:var(--gold-light);margin:0 0 3px;}
 .hub-view-header p{font-size:.73rem;color:rgba(255,255,255,.42);margin:0;}
 .hub-modules-list{display:flex;flex-direction:column;gap:8px;padding:14px 18px 24px;}
+/* Titre de famille dans un hub. Volontairement discret : c'est un repère de
+   lecture, pas un bouton. La première famille n'a pas de marge haute — elle
+   suit déjà l'en-tête de la vue. */
+.hub-famille{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--gold-deep);margin:16px 0 2px;padding-bottom:5px;border-bottom:1px solid var(--gold-light);}
+.hub-famille:first-child{margin-top:0;}
 .hub-module-item{background:var(--white);border-radius:8px;padding:13px 15px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);cursor:pointer;border:1px solid rgba(0,0,0,.04);transition:transform .1s;}
 .hub-module-item:hover{transform:translateX(2px);}
 .hub-module-ico{width:40px;height:40px;border-radius:8px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
@@ -786,7 +802,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
       <button data-view="paiements">Paiements</button>
       <button data-view="relances">Relances <span id="relancesBadge" style="display:none; background:var(--burgundy); color:#fff; font-size:10px; font-weight:700; border-radius:8px; padding:1px 5px; margin-left:4px; vertical-align:middle;"></span></button>
       <button data-view="cantine" class="glidji-seul">Cantine</button>
-      <button data-view="achats" class="">Achats</button>
+      <button data-view="achats">Achats</button>
       <button data-view="inventaire">Inventaire</button>
       <button data-view="clients">Clients</button>
       <button data-view="equipe">Fiche équipe</button>
@@ -930,7 +946,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         <div class="grid cols-2" style="align-items:end; margin-bottom:8px;">
           <div class="field">
             <label>Charger un modèle <span class="opt">(facultatif)</span></label>
-            <select id="f_modeleSelect"><option value="">— Choisir un modèle —</option><option value="msw9a9xv7kk8da">AGAPE TENUE INSTALLATION (4 lignes)</option></select>
+            <select id="f_modeleSelect"><option value="">— Choisir un modèle —</option><option value="msw9a9xv7kk8da">AGAPE TENUE INSTALLATION (4 lignes)</option><option value="mu4gzhg75okcdr">AGAPE SCDT (6 lignes)</option></select>
           </div>
           <button class="btn btn-ghost btn-sm" id="btnEnregistrerModele" style="margin-bottom:14px;">💾 Enregistrer ces lignes comme modèle</button>
         </div>
@@ -1227,7 +1243,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         </div>
         <button class="btn btn-gold btn-sm" id="btnAddProduit">+ Ajouter au catalogue</button>
         <button class="btn btn-ghost btn-sm" id="btnAnnulerEditProduit" style="display:none; margin-left:8px;">✖ Annuler la modification</button>
-        <div id="produitsListWrap" style="margin-top:14px;"><div class="empty" style="padding:16px;"><div class="icon">📦</div>Aucun article dans le catalogue pour l'instant — ajoutez-en un ci-dessus.</div></div>
+        <div id="produitsListWrap" style="margin-top:14px;"></div>
       </div>
 
       <div class="card">
@@ -1268,14 +1284,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         </div>
         <table>
           <thead><tr><th>Article</th><th style="width:100px;">Quantité</th><th style="width:130px;">Prix unitaire</th><th style="width:120px;">Sous-total</th><th style="width:40px;"></th></tr></thead>
-          <tbody id="achLignesBody">
-    <tr>
-      <td><input type="text" data-ach="0" data-field="produitNom" list="ach_produits_datalist" placeholder="Nom de l'article"></td>
-      <td><input type="number" data-ach="0" data-field="quantite" min="0" step="any"></td>
-      <td><input type="number" data-ach="0" data-field="prixUnitaire" min="0"></td>
-      <td class="num">0 FCFA</td>
-      <td><button class="row-remove" data-ach-remove="0" title="Retirer">✕</button></td>
-    </tr></tbody>
+          <tbody id="achLignesBody"></tbody>
         </table>
         <datalist id="ach_produits_datalist"></datalist>
         <button class="btn btn-ghost btn-sm" id="btnAddAchLigne" style="margin-top:10px;">+ Ajouter une ligne</button>
@@ -1294,7 +1303,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
 
       <div class="card">
         <h2>Devis à comparer <small>Devis reçus de plusieurs fournisseurs, regroupés par article, pour choisir avant de confirmer.</small></h2>
-        <div id="devisComparaisonWrap"><p class="hint">Aucun devis en attente de comparaison.</p></div>
+        <div id="devisComparaisonWrap"></div>
       </div>
 
       <div class="card">
@@ -1303,7 +1312,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <label>Article</label>
           <input type="text" id="comp_article" list="ach_produits_datalist" placeholder="Choisir ou taper un article">
         </div>
-        <div id="comparateurPrixWrap"><p class="hint">Tapez un nom d'article ci-dessus pour voir son historique de prix par fournisseur.</p></div>
+        <div id="comparateurPrixWrap"></div>
       </div>
 
       <div class="card">
@@ -1312,183 +1321,13 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         <div class="search-row">
           <input type="text" id="ach_search" placeholder="Rechercher un fournisseur, un article…">
           <select id="ach_filterCategorie"><option value="">Toutes catégories</option></select>
-          <select id="ach_filterYear"><option value="">Toutes les années</option><option value="2026">2026</option></select>
+          <select id="ach_filterYear"><option value="">Toutes les années</option></select>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 0;">
           <button class="btn btn-ghost btn-sm" id="btnExportAchatsCsv">⬇ Exporter en CSV</button>
-          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">763 040 FCFA</strong></div>
+          <div style="font-size:13px; color:var(--muted);">Total dépensé (résultats affichés) : <strong id="achTotalFiltre">0 FCFA</strong></div>
         </div>
-        <div id="achatsTableWrap"><table><thead><tr>
-      <th>Date</th><th>Fournisseur</th><th>Articles</th><th>Pour</th><th style="text-align:right">Total</th><th></th><th></th>
-    </tr></thead><tbody>
-      <tr>
-        <td>14/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Clément" style="color:var(--gold-deep);">Clément</a></td>
-        <td style="font-size:12px;">Transport achats (1)</td>
-        <td>ADADE Serge</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu2bf0hrxuy3tg">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu2bf0hrxuy3tg" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu2bf0hrxuy3tg">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Marché" style="color:var(--gold-deep);">Marché</a></td>
-        <td style="font-size:12px;">Carottes (1), Concombre (1), Betterave (1), Tomates fraîches (1), Pâte de boeuf (1), Poulet carton (1), Crème fraîche (2), Ananas (1), Pastèque (1), Pomme (1), Mangue (1), Raisins (1), Papaye (1), Beurre (1), Persil (1), Basilic (1), Pomme de terre (1), Tomates concentré (1), Assainissement poulet (1), Citron (1), Tige brochettes (6)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">66 600 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxn06khbdm">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxn06khbdm" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxn06khbdm">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Clément" style="color:var(--gold-deep);">Clément</a></td>
-        <td style="font-size:12px;">Livraison mr Almeida (6)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxn2fqnrzo">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxn2fqnrzo" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxn2fqnrzo">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>12/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Croustillant" style="color:var(--gold-deep);">Croustillant</a></td>
-        <td style="font-size:12px;">Pain (2)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">300 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxn1jncads">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxn1jncads" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxn1jncads">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>11/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Clément" style="color:var(--gold-deep);">Clément</a></td>
-        <td style="font-size:12px;">Chocolat (1), Chou rouge (1), Oignon rouge (1), Laitue (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">4 200 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxmz42x1eh">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxmz42x1eh" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxmz42x1eh">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Marché" style="color:var(--gold-deep);">Marché</a></td>
-        <td style="font-size:12px;">Laitue (1), Concombre (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">300 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxn3cv4tca">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxn3cv4tca" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxn3cv4tca">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Marché (équipe)" style="color:var(--gold-deep);">Marché (équipe)</a></td>
-        <td style="font-size:12px;">Pain d'épices (1), Sucre (1), Chocolat (1), Beurre (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">7 800 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mu1kvxmyonduxu">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mu1kvxmyonduxu" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mu1kvxmyonduxu">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="MME ADJETE" style="color:var(--gold-deep);">MME ADJETE</a></td>
-        <td style="font-size:12px;">PACK BATTERIE SOLAIRE (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">228 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtvtvaotxl7ohu">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtvtvaotxl7ohu" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtvtvaotxl7ohu">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Clément" style="color:var(--gold-deep);">Clément</a></td>
-        <td style="font-size:12px;">Livraison(monsieur Almeida) (6)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtvb6kxzbgz6av">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtvb6kxzbgz6av" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtvb6kxzbgz6av">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="Marché (équipe)" style="color:var(--gold-deep);">Marché (équipe)</a></td>
-        <td style="font-size:12px;">Transport (livraison carrefour bodjona) (1), Livraison (adidogomé) (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">3 500 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtva2nheuf0hq0">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtva2nheuf0hq0" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtva2nheuf0hq0">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="fabrice" style="color:var(--gold-deep);">fabrice</a></td>
-        <td style="font-size:12px;">location tables et chaises (1), PRESTATION JOEL TRAITEUR (1), ACHAT DE VIANDE HACHEE (10), ACHAT DE LEGUMES (1)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">275 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtp4b03w6qucxv">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtp4b03w6qucxv" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtp4b03w6qucxv">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>01/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="SIMAG" style="color:var(--gold-deep);">SIMAG</a></td>
-        <td style="font-size:12px;">Prosseco Aldini (12)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">72 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtrfw91b9tqtok">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtrfw91b9tqtok" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtrfw91b9tqtok">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>01/09/2026</td>
-        <td><a href="#" data-voir-fournisseur="SIMAG SARL U" style="color:var(--gold-deep);">SIMAG SARL U</a></td>
-        <td style="font-size:12px;">Champagne (3), vin pinot gris (3)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">78 000 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtrfv4wq64oyom">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtrfv4wq64oyom" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtrfv4wq64oyom">Supprimer</button></td>
-      </tr>
-      <tr>
-        <td>26/08/2026</td>
-        <td><a href="#" data-voir-fournisseur="champion" style="color:var(--gold-deep);">champion</a></td>
-        <td style="font-size:12px;">sacpoubelle (2)</td>
-        <td><span class="hint">Provision générale</span></td>
-        <td style="text-align:right; font-weight:600;">2 340 FCFA</td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-edit-achat="mtab92niqa5qkb">✏️</button>
-          <button class="btn btn-ghost btn-sm" data-facturette="mtab92niqa5qkb" title="Imprimer une facturette — justificatif d'achat à faire signer par le vendeur">🧾</button>
-        </td>
-        <td><button class="btn btn-ghost btn-sm" data-del-achat="mtab92niqa5qkb">Supprimer</button></td>
-      </tr></tbody></table></div>
+        <div id="achatsTableWrap"></div>
       </div>
 
       <div class="card">
@@ -1497,1075 +1336,10 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <button class="btn btn-ghost btn-sm" id="btnSyncCaisseEquipe">🔄 Synchroniser avec l'équipe</button>
         </div>
         <div class="hint" id="caisseSyncStatus" style="margin-bottom:10px;"></div>
-        <div id="caisseCompteActifWrap">
-    <div class="totals" style="margin-bottom:14px;">
-      <div class="l sub"><span>Total des avances reçues</span><span>464 477 FCFA</span></div>
-      <div class="l sub"><span>Total dépensé</span><span>442 377 FCFA</span></div>
-      <div class="l grand"><span>Solde disponible</span><span style="color:#3a6b2a;">22 100 FCFA</span></div>
-    </div>
-
-    <div class="grid cols-3" style="margin-bottom:8px;">
-      <div class="field"><label>Ajouter une avance</label><input type="number" id="caisse_montantAvance" min="0" placeholder="Montant"></div>
-      <div class="field"><label>Par</label><input type="text" id="caisse_auteurAvance" placeholder="Votre nom"></div>
-      <button class="btn btn-gold btn-sm" id="btnAjouterAvanceCaisse" style="margin-bottom:14px;">+ Avance</button>
-    </div>
-    <div class="grid cols-3" style="margin-bottom:8px;">
-      <div class="field"><label>Ajouter une dépense</label><input type="text" id="caisse_nomDepense" placeholder="Ex : Carottes"></div>
-      <div class="field"><label>Montant</label><input type="number" id="caisse_montantDepense" min="0"></div>
-      <button class="btn btn-ghost btn-sm" id="btnAjouterDepenseCaisse" style="margin-bottom:14px;">+ Dépense</button>
-    </div>
-
-    <button class="btn btn-danger btn-sm" id="btnCloturerCompteCaisse">🔒 Clôturer ce compte</button>
-
-    <h3 style="font-size:14px; margin:20px 0 8px;">Mouvements (129)</h3>
-    <table><thead><tr>
-      <th>Date</th><th>Type</th><th>Détail</th><th style="text-align:right">Montant</th><th>Par</th><th></th>
-    </tr></thead><tbody>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport achats</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9daef672-0009-41ae-8e20-512a635ee01c" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tige brochettes</td>
-        <td style="text-align:right; font-weight:600;">2 400 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="cd75b01e-2171-4d14-9951-291063effde8" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Citron</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="12608ce8-8153-4d3f-b3ad-28e347291fdb" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Assainissement poulet</td>
-        <td style="text-align:right; font-weight:600;">1 200 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3edf7a1f-427b-4ec0-b41a-4cb088b8a912" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates concentré</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="73b95f58-abc2-4449-96d7-82282dcfc722" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pomme de terre</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4edc9e41-6031-49f9-ab19-7e1e4e4edd27" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Basilic</td>
-        <td style="text-align:right; font-weight:600;">200 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="841e4846-aaeb-43e2-8914-c7de89a02348" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Persil</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="2da50b35-1ae2-4869-b648-61a7cfab7d5a" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">2 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="b34c6402-31ac-4366-94aa-8e5bc902fdfd" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Papaye</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="7a59971e-3f55-4c0b-a907-7a079390c5e6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Raisins</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="c941f4b4-f2be-47c5-8153-7efb64096a53" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Mangue</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="762d9afc-490c-4a95-ad90-3d81df7c74a1" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pomme</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="e0784cf8-4c07-401c-90ef-8c544b46fe22" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pastèque</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="0e593706-98f8-4bc5-a9d9-c0553550411e" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ananas</td>
-        <td style="text-align:right; font-weight:600;">1 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="a24c63fb-56ae-4c05-8d1e-bbe6e65bc4c8" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Crème fraîche</td>
-        <td style="text-align:right; font-weight:600;">6 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="00dd9315-7e74-4552-8cf0-8456fe2b8cb0" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poulet carton</td>
-        <td style="text-align:right; font-weight:600;">19 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="215caead-98b4-47ab-9148-7109757132b7" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pâte de boeuf</td>
-        <td style="text-align:right; font-weight:600;">14 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="22dc2968-8451-429d-9797-9fd32cd85124" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates fraîches</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="8dbed069-1834-4485-bf2c-ae72fb22d5c7" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Betterave</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="6ff12023-887e-464b-884a-e16dbc0da5ed" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Concombre</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="febeeebd-1e31-48f4-a13c-7c10f46874ef" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Carottes</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4a1e77fb-abd8-4d3e-915c-bfaa26092e12" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="21bd0127-a1e6-4e0b-bb42-2899328fa485" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">110 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="d825c574-b996-4105-98d1-2a308eff60c6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>14/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Livraison mr Almeida</td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="918b8b74-1cda-46e8-aaec-6c4586186d64" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>12/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport</td>
-        <td style="text-align:right; font-weight:600;">7 700 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="39208d78-46f9-41bc-9ba0-4b538baebf20" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>12/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain</td>
-        <td style="text-align:right; font-weight:600;">300 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="25680a4c-e534-4c06-bf7f-cb2311574711" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>11/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Laitue</td>
-        <td style="text-align:right; font-weight:600;">200 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="f98d04d0-6690-4d05-ab2f-a6a7c31b0752" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>11/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oignon rouge</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="b56d5341-92ef-4177-941b-504bb65268aa" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>11/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chou rouge</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="1dc4140a-d5a3-4570-ad5c-63d0a63b03c4" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>11/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="2a9a8297-6f5e-4207-8229-43888e55012c" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Concombre</td>
-        <td style="text-align:right; font-weight:600;">200 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="97bc842b-605a-4165-b385-b99c4d7719dd" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Laitue</td>
-        <td style="text-align:right; font-weight:600;">100 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="0bd8f1df-ca0e-4374-90f5-a6be2f604e8f" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">1 200 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="8292b2ad-5c5e-4532-a8a6-7c6abe9a08bc" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="88e9b6e3-3756-42f1-afa7-c56774349690" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Sucre</td>
-        <td style="text-align:right; font-weight:600;">800 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="b401bfec-545b-4cca-a4dc-8996ccd53207" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain d'épices</td>
-        <td style="text-align:right; font-weight:600;">3 800 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="0cd6d16c-7c31-490f-80e9-7e78dc2a3bc6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Livraison nappes</td>
-        <td style="text-align:right; font-weight:600;">1 500 FCFA</td>
-        <td>M Gile</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="11066608-36c4-4f30-9160-93ef03bcf631" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">13 500 FCFA</td>
-        <td>M Gile</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="5da021ea-eaf2-467c-a482-1c884ddd91fe" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Livraison(monsieur Almeida)</td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="206d1e2a-e135-4516-a0de-73a7a182f694" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">3 500 FCFA</td>
-        <td>Gile</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="aeb62a3e-32d4-49bc-9d7b-adf21bded7f9" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Livraison (adidogomé)</td>
-        <td style="text-align:right; font-weight:600;">1 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="7d576964-6053-4205-a597-fc34f1e50188" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>10/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport (livraison carrefour bodjona)</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="db4a97f9-7fd3-45ee-9389-007891ef3561" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>09/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">20 500 FCFA</td>
-        <td>M Gile</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="1f36b31f-9fd0-419a-8e07-38a29bff6686" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>09/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pressing</td>
-        <td style="text-align:right; font-weight:600;">20 500 FCFA</td>
-        <td>M Gile</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="5e6c47a8-b8e9-403b-8306-9f658e912491" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>08/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">113 630 FCFA</td>
-        <td>GILE</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtsyyyg41p0vwq" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Avocat</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="e423208e-f7a9-44e0-b6dd-05d54855dacf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Huile</td>
-        <td style="text-align:right; font-weight:600;">8 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="f288860c-3295-4535-9716-6d2a670025e1" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Amanda</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ede64f16-d07d-40cb-b94d-d00720f38515" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson fumé</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3e3e7038-ccc0-44e9-951b-bc535be71b5f" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gombo</td>
-        <td style="text-align:right; font-weight:600;">700 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="a411d49b-f23c-4022-92ba-41d5cfc74f50" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>07/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gaz</td>
-        <td style="text-align:right; font-weight:600;">10 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="c7c0f2f2-b77a-4b7d-8920-ea3c50046782" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>pressing</td>
-        <td style="text-align:right; font-weight:600;">6 800 FCFA</td>
-        <td>Vous</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtp42bftww9vn8" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport matériel retour</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="0dTD9Afx3CO1bJO0GBFc" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>06/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Extra</td>
-        <td style="text-align:right; font-weight:600;">7 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9YV74oW4ejn3hKI7L1pf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ablo rajout</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="OEYjnjSS01XKYuzZ4rkl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MI9N0uBl0bunmv4H4Bsw" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Glaçon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="fDXNfaLqVWCVh9Tj7aFx" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Œuf</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4Rt0WMHgAfl95Wk9sWR3" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport nourriture</td>
-        <td style="text-align:right; font-weight:600;">5 450 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ZkwfgiGYTorxTT4VSVvO" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport Alexandre</td>
-        <td style="text-align:right; font-weight:600;">1 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="jzRNBLsZLjAgpLxXnPoU" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Bouquet de fleurs</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="c64gXl3AAfiFqCndsFQ0" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gâteau d'anniversaire</td>
-        <td style="text-align:right; font-weight:600;">13 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="dzXd1ogXLtDq67fFCyt4" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>05/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Cube</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="HSKT3eL0eUm0KCqUKIlk" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport achats</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="z6Nuyx5e7ahnbDO2nBVS" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>3 casiers de boissons</td>
-        <td style="text-align:right; font-weight:600;">19 980 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="EhECcMI85V0YrbTtXFbs" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Akpan</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="GVJUXxRIlmv2vfOHEcZB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Savon liquide</td>
-        <td style="text-align:right; font-weight:600;">600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xbhSLLnj8jDmegBmpqKB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport prestation suprême conseil</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="zG90599YjCF1IU1z5ar2" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Nouyouinyin</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="fHe7ZC8Cl2w61rFA03KL" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates fraîches</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hxPcrHNh7DVbe2OHzZIq" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gingembre</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="EVZBrpIMJtln0tt76VKP" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Goussi</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="W5F3UIsvqJe4rvzrpVHK" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oignon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="8QuTQNMLGKmyFNp1R2ua" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson fumé</td>
-        <td style="text-align:right; font-weight:600;">5 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mfae6hTYOeqWVWwz1GyG" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Viande de boeuf</td>
-        <td style="text-align:right; font-weight:600;">12 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="vJNRIinjaJ388bP9cK5e" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport matériel</td>
-        <td style="text-align:right; font-weight:600;">5 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="kHDJ4mpFEmuASpC5Mdqx" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Riz 25kg</td>
-        <td style="text-align:right; font-weight:600;">33 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="SBvQjizXK7J0FpqjYVEp" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Brûleur</td>
-        <td style="text-align:right; font-weight:600;">8 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MJpZGHxHX4Op8AHtsn44" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="lRuCwQCxdHNzTxHupiAc" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Wangash</td>
-        <td style="text-align:right; font-weight:600;">3 600 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="DffWVdDgkAEFw18DTG11" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Halloumi</td>
-        <td style="text-align:right; font-weight:600;">4 700 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="Hpk7odzLLE6Y2xrqSVFf" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>04/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Blanc de poulet</td>
-        <td style="text-align:right; font-weight:600;">27 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4w7XmPxmh6Qgmjja7LZe" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chocolat</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="WxhVzggZ4sylvF1n1vJ7" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Raisin</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9pRImb5znsOLCAigFH8K" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pomme</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="eHt1SuPcozrp4bVtZs5r" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ananas</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3n2A9LCIT095kWWcVeMw" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pastèque</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="NMtpE8LNDnaA8JIQRtzQ" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Mangue</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="yIAWmgn9f44NYCkY4gNn" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poivrons</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ZyEPcdiuOlzzTA93ycFb" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Aubergine</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="cS87pH4uDMAXkZp14p8z" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Courgettes</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4npk0GB29O5Ash5Agi4R" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Curcuma</td>
-        <td style="text-align:right; font-weight:600;">1 150 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xdfGPHosVtPflSoi9R01" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Gingembre</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="KjUqnVjUeHs78XlEsLY6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Crème liquide</td>
-        <td style="text-align:right; font-weight:600;">3 300 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="gpIM5bohvDqZtqrVozmd" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Poisson corvina</td>
-        <td style="text-align:right; font-weight:600;">19 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="WP4amAlGlr9rJ43Z2D09" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oignon</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="qbG3TKGsfpTNnuLySV9T" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Citron vert</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="agErtISwHbYx5xrpQYkn" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Ablo</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="7GQWaWYndF9HKH93ihbl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Patates douces</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="iadD98DDA83JF88yZCYp" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport prestation</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="k9LJvb6Y0m5Kt0hvxfwh" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="rl5M5wT36ZmRb1rpa4Gl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Farine</td>
-        <td style="text-align:right; font-weight:600;">750 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="nmRaQ1Yy20EFxUTX4nJl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Piment</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="j53ncKtoukk5vdOAxeoG" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates fraîches</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="gNhYTrecFcn0KeJtnpKj" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tomates concentré</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="FYlrPPm18Yttp59pgAVV" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Concombre</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hWbV2PGPAdb3yWzd5Fer" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Chou</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="ygvpyw9RIC0EBVDJR48w" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Carottes</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="qGAgUvNhfSorcDvZIjFV" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Laitue</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Clément</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="hauotLoObHart2cUCeOX" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">155 000 FCFA</td>
-        <td>GILE</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtlo6rsjxatcqe" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">11 347 FCFA</td>
-        <td>REMBOURSEMENT</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mtlmy53ib26akm" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport</td>
-        <td style="text-align:right; font-weight:600;">2 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="xV69ncLAT1OVcQhYg7LM" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:#3a6b2a;">↑ Avance</span></td>
-        <td>—</td>
-        <td style="text-align:right; font-weight:600;">25 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="eZA4rmmJPWGvhs0vEYbl" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Transport achat</td>
-        <td style="text-align:right; font-weight:600;">1 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3rbA8cHh60twIFjQnKlQ" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Vat 18%</td>
-        <td style="text-align:right; font-weight:600;">1 922 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="2aP4vtf3T6TVgDyh83cF" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Grand’s</td>
-        <td style="text-align:right; font-weight:600;">5 508 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="AP0VLkirBWjvO8tSjiyz" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Beurre</td>
-        <td style="text-align:right; font-weight:600;">762 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="YQWAGFsys5As4KBLo9ZI" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Coca</td>
-        <td style="text-align:right; font-weight:600;">2 372 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="4ReCZ8b2eDQuffdT9KxB" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Bière</td>
-        <td style="text-align:right; font-weight:600;">2 033 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="3RFKYWC3NFpfpKuxHUO2" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Farine</td>
-        <td style="text-align:right; font-weight:600;">850 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="NhUFPoRdvGhGNeghyFi6" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Tige brochette</td>
-        <td style="text-align:right; font-weight:600;">400 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="PPeS6upoiXEvjqPI3bJH" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Sprite</td>
-        <td style="text-align:right; font-weight:600;">2 500 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="QTiociv6Bd90C3LqrukU" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Sachet</td>
-        <td style="text-align:right; font-weight:600;">200 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="9vZQcBScyZENsM9NZHiS" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Pain</td>
-        <td style="text-align:right; font-weight:600;">500 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="x6JqKtn11Ge6oGXwB8Lz" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Crème</td>
-        <td style="text-align:right; font-weight:600;">3 300 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="mBBGDsHuT2waGC9fX3MO" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Oeuf</td>
-        <td style="text-align:right; font-weight:600;">3 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="36rAvpd1doNvdC8aZUCj" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Saucisse</td>
-        <td style="text-align:right; font-weight:600;">4 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="6ypWVKWvhXvWIBo8yHxH" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr>
-      <tr>
-        <td>03/09/2026</td>
-        <td><span style="color:var(--burgundy);">↓ Dépense</span></td>
-        <td>Blanc de poulet</td>
-        <td style="text-align:right; font-weight:600;">6 000 FCFA</td>
-        <td>Samuel</td>
-        <td style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" data-del-caisse="MkQcf7uTqzO2rEfc7Gc5" style="color:var(--burgundy);" title="Supprimer">🗑</button></td>
-      </tr></tbody></table>
-  </div>
+        <div id="caisseCompteActifWrap"></div>
 
         <h3 style="font-size:14px; margin:24px 0 8px;">Comptes précédents (clôturés)</h3>
-        <div id="caisseHistoriqueWrap"><table><thead><tr>
-    <th>Clôturé vers le</th><th style="text-align:right">Avances</th><th style="text-align:right">Dépenses</th><th style="text-align:right">Solde final</th><th>Mouvements</th>
-  </tr></thead><tbody>
-    <tr>
-      <td>01/09/2026</td>
-      <td style="text-align:right;">401 383 FCFA</td>
-      <td style="text-align:right;">415 316 FCFA</td>
-      <td style="text-align:right; font-weight:700; color:var(--burgundy);">-13 933 FCFA</td>
-      <td>87</td>
-    </tr></tbody></table></div>
+        <div id="caisseHistoriqueWrap"></div>
       </div>
     </section>
 
@@ -3244,22 +2018,24 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
     <section class="view" id="view-hub-tresorerie">
       <div class="hub-view-header">
         <h2>💰 Trésorerie</h2>
-        <p>Où est l'argent, ce qui rentre, ce qui sort, et la preuve par le relevé</p>
+        <p>Vérifier un solde ou transférer se fait depuis le tableau de bord, sur la carte de la poche concernée</p>
       </div>
+      <!-- ═══ HUIT ENTRÉES, RANGÉES EN QUATRE FAMILLES ═══
+           Les huit modules étaient ALIGNÉS, tous au même niveau : le tableau
+           de bord qu'on regarde chaque semaine et les charges récurrentes
+           qu'on configure une fois par an avaient le même poids visuel, et
+           rien ne disait lequel ouvrir. Le propriétaire : « trop d'onglets,
+           trop de jonglages, c'est dur ».
+           Ils sont désormais groupés par la QUESTION qu'on se pose, pas par
+           le mécanisme interne. Deux modules par famille : c'est assez peu
+           pour qu'on lise le titre de la famille et qu'on sache déjà où aller.
+           Le titre de la famille est une phrase, pas un mot de comptabilité. -->
       <div class="hub-modules-list">
+
+        <div class="hub-famille">Où en est l'argent</div>
         <div class="hub-module-item" onclick="showView('tresorerie')">
           <div class="hub-module-ico accent">📊</div>
-          <div class="hub-module-body"><div class="hub-module-name">Tableau de bord</div><div class="hub-module-desc">Soldes par poche, disponible, à recevoir</div></div>
-          <span class="hub-module-arrow">›</span>
-        </div>
-        <div class="hub-module-item" onclick="showView('tresorerie-rapprochement')">
-          <div class="hub-module-ico">🔍</div>
-          <div class="hub-module-body"><div class="hub-module-name">Rapprochement</div><div class="hub-module-desc">Pointer un relevé ligne à ligne — l'écart doit tomber à zéro</div></div>
-          <span class="hub-module-arrow">›</span>
-        </div>
-        <div class="hub-module-item" onclick="showView('tresorerie-encaissements')">
-          <div class="hub-module-ico">📥</div>
-          <div class="hub-module-body"><div class="hub-module-name">Encaissements</div><div class="hub-module-desc">Journal de tout ce qui est rentré, et par quel compte</div></div>
+          <div class="hub-module-body"><div class="hub-module-name">Tableau de bord</div><div class="hub-module-desc">Soldes par poche, disponible, à recevoir — et de là, vérifier un solde ou transférer</div></div>
           <span class="hub-module-arrow">›</span>
         </div>
         <div class="hub-module-item" onclick="showView('tresorerie-echeancier')">
@@ -3267,6 +2043,34 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <div class="hub-module-body"><div class="hub-module-name">Échéancier 13 semaines</div><div class="hub-module-desc">Ce qui rentre et ce qui sort, semaine par semaine</div></div>
           <span class="hub-module-arrow">›</span>
         </div>
+
+        <div class="hub-famille">Ce qui est rentré</div>
+        <div class="hub-module-item" onclick="showView('tresorerie-encaissements')">
+          <div class="hub-module-ico">📥</div>
+          <div class="hub-module-body"><div class="hub-module-name">Encaissements</div><div class="hub-module-desc">Journal de tout ce qui est rentré, et par quel compte</div></div>
+          <span class="hub-module-arrow">›</span>
+        </div>
+        <!-- ⚠️ TROIS ENTRÉES ONT ÉTÉ RETIRÉES D'ICI LE 16/09/2026 :
+             « Rapprochement », « Recalage de solde » et « Transferts entre
+             comptes ». Les trois écrans EXISTENT TOUJOURS et sont pleinement
+             fonctionnels — ils s'ouvrent désormais depuis la carte de la poche
+             concernée, sur le tableau de bord, avec la poche déjà choisie.
+             Pourquoi : le hub portait onze entrées au même niveau, et deux
+             d'entre elles répondaient à la MÊME question — « mon solde est-il
+             juste ? » — en obligeant le propriétaire à savoir lequel des deux
+             mots correspondait à ce qu'il avait en main (un relevé, ou un
+             comptage). Partir de la poche affichée supprime la question : un
+             seul bouton « Vérifier ce solde », et l'application demande en
+             français ce qu'on a sous les yeux.
+             Ne pas les remettre ici : ce serait proposer deux chemins pour la
+             même chose, dont un qui redemande de choisir la poche. -->
+        <div class="hub-module-item glidji-seul" onclick="showView('treso-caisse-manager')">
+          <div class="hub-module-ico">🧾</div>
+          <div class="hub-module-body"><div class="hub-module-name">Caisse Manager</div><div class="hub-module-desc">Importer les encaissements saisis au téléphone</div></div>
+          <span class="hub-module-arrow">›</span>
+        </div>
+
+        <div class="hub-famille">Ce qui va sortir</div>
         <div class="hub-module-item" onclick="showView('tresorerie-previsions')">
           <div class="hub-module-ico">📅</div>
           <div class="hub-module-body"><div class="hub-module-name">Prévisions</div><div class="hub-module-desc">Dépenses et recettes annoncées, à pointer quand elles tombent</div></div>
@@ -3277,21 +2081,8 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <div class="hub-module-body"><div class="hub-module-name">Charges récurrentes</div><div class="hub-module-desc">Loyer, salaires, électricité — générés chaque mois</div></div>
           <span class="hub-module-arrow">›</span>
         </div>
-        <div class="hub-module-item" onclick="showView('tresorerie-transferts')">
-          <div class="hub-module-ico">🔁</div>
-          <div class="hub-module-body"><div class="hub-module-name">Transferts entre comptes</div><div class="hub-module-desc">Déplacer de l'argent d'une poche à l'autre</div></div>
-          <span class="hub-module-arrow">›</span>
-        </div>
-        <div class="hub-module-item" onclick="showView('tresorerie-recalage')">
-          <div class="hub-module-ico">⚖️</div>
-          <div class="hub-module-body"><div class="hub-module-name">Recalage de solde</div><div class="hub-module-desc">Poser le solde constaté après un comptage physique</div></div>
-          <span class="hub-module-arrow">›</span>
-        </div>
-        <div class="hub-module-item glidji-seul" onclick="showView('treso-caisse-manager')">
-          <div class="hub-module-ico">🧾</div>
-          <div class="hub-module-body"><div class="hub-module-name">Caisse Manager</div><div class="hub-module-desc">Importer les encaissements saisis au téléphone</div></div>
-          <span class="hub-module-arrow">›</span>
-        </div>
+
+        <div class="hub-famille">Les achats</div>
         <div class="hub-module-item" onclick="showView('achats')">
           <div class="hub-module-ico">🛒</div>
           <div class="hub-module-body"><div class="hub-module-name">Achats fournisseurs</div><div class="hub-module-desc">Registre des achats et des devis fournisseurs</div></div>
@@ -3303,7 +2094,8 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <span class="hub-module-arrow">›</span>
         </div>
       </div>
-    </section>
+      </section></main></div>
+    
 
     <!-- ===================== VUE : TRESORERIE DASHBOARD ===================== -->
     <section class="view" id="view-tresorerie">
@@ -3390,8 +2182,129 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         </div>
       </details>
       <div id="tresoDashboard" style="padding:0 4px;">
-        <p style="color:#888;text-align:center;padding:32px;">Chargement…</p>
+  
+    <div class="card" style="border-left:5px solid #2e7d32;margin-bottom:14px;">
+      <div style="font-size:15px;line-height:1.65;">
+        Tu as <strong style="font-size:19px;color:#0d47a1;">1 187 370 F</strong> disponible tout de suite.
+        Il doit rentrer <strong>370 000 F</strong> de tes clients, et rien n'est prévu à la sortie d'ici 30 jours.
       </div>
+      <div style="margin-top:8px;font-size:14px;font-weight:700;color:#2e7d32;">
+        Si tout tombe comme prévu, il te restera 1 557 370 F.
+      </div>
+      <div style="margin-top:6px;font-size:12.5px;color:#666;">
+        285 800 F sont en plus confiés à l'équipe pour ses achats — ils t'appartiennent
+        toujours, mais ils ne sont pas dans tes mains, donc ils ne comptent pas ci-dessus.
+      </div>
+    </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;">
+    <div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">💵</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">987 370 F</div>
+      <div style="color:#666;font-size:12px;">Caisse espèces</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 10/09/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('caisse')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('caisse')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div><div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">🏦</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
+      <div style="color:#666;font-size:12px;">Ecobank</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 09/09/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('ecobank')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('ecobank')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div><div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">🏦</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
+      <div style="color:#666;font-size:12px;">Orabank</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-08">🔍 prouvé au 31/08/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('orabank')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('orabank')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div><div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">📱</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">200 000 F</div>
+      <div style="color:#666;font-size:12px;">Mixx</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 09/09/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('mixx')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('mixx')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div><div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">📱</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">0 F</div>
+      <div style="color:#666;font-size:12px;">Flooz</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 08/09/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('flooz')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('flooz')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div><div class="card poche-carte" style="text-align:center;">
+      <div style="font-size:24px;">👥</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;">285 800 F</div>
+      <div style="color:#666;font-size:12px;">Caisse d'équipe</div>
+      <div style="font-size:10px;color:#2e7d32;" title="Relevé REL-2026-09">🔍 prouvé au 10/09/2026</div>
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('equipe')" title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('equipe')" title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:24px;">💰</div>
+      <div style="font-size:22px;font-weight:700;color:#0d47a1;">1 187 370 F</div>
+      <div style="color:#666;font-size:13px;">Disponible tout de suite</div>
+      <div style="margin-top:6px;padding-top:6px;border-top:1px dashed #ddd;font-size:11.5px;color:#777;line-height:1.4;">
+        + 285 800 F confiés à l'équipe<br>
+        <span style="color:#999;">soit 1 473 170 F au total</span>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:24px;">📅</div>
+      <div style="font-size:22px;font-weight:700;color:#e65100;">0 F</div>
+      <div style="color:#666;font-size:13px;">Engagé (30j)</div>
+    </div>
+    <div class="card" style="text-align:center;background:#d4edda;">
+      <div style="font-size:24px;">✅</div>
+      <div style="font-size:22px;font-weight:700;color:#155724;">1 187 370 F</div>
+      <div style="color:#155724;font-size:13px;">Libre (30j)</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;">
+    <div class="card">
+      <h3 style="margin:0 0 8px;font-size:15px;">📥 À Recevoir (factures en cours)</h3>
+      <div style="font-size:20px;font-weight:700;color:#1565c0;">370 000 F</div>
+      <div style="color:#c62828;font-size:13px;margin-top:4px;">⚠️ Échu : 370 000 F</div>
+      
+      
+      
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px;font-size:15px;">🔄 Flux du mois en cours</h3>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:3px;">
+        <span style="color:#2e7d32;">↗ Encaissé</span>
+        <strong style="color:#2e7d32;">2 095 500 F</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;">
+        <span style="color:#c62828;">↘ Décaissé</span>
+        <strong style="color:#c62828;">1 277 727 F</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;border-top:1px solid #e0e0e0;padding-top:6px;">
+        <span>Solde du mois</span>
+        <strong style="color:#2e7d32;">817 773 F</strong>
+      </div>
+      <div style="color:#888;font-size:11px;margin-top:6px;">« À recevoir » n'est pas de la trésorerie : c'est une créance, jamais additionnée au disponible.</div>
+    </div>
+  </div><div class="card" style="color:#888;text-align:center;padding:16px;">
+      Aucune prévision pour les 30 prochains jours.
+      <button onclick="genererPrevisionsMois(); renderTresorerie();" style="display:block;margin:8px auto 0;padding:6px 16px;cursor:pointer;border:1px solid #1565c0;border-radius:6px;background:#e3f2fd;color:#1565c0;">🔄 Générer prévisions ce mois</button>
+    </div></div>
     </section>
 
     <!-- ===================== VUE : TRESORERIE RECURRENCES ===================== -->
@@ -3412,10 +2325,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <div class="field"><label>Libellé *</label><input type="text" id="trec_libelle" placeholder="Ex: Salaire Manager"></div>
           <div class="field"><label>Montant (FCFA) *</label><input type="number" id="trec_montant" min="0"></div>
           <div class="field"><label>Poche de paiement</label>
-            <select id="trec_poche">
-              <option value="ecobank">🏦 Ecobank</option>
-              <option value="caisse">💵 Caisse espèces</option>
-            </select>
+            <select id="trec_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
           </div>
           <div class="field"><label>Jour du mois (1-31)</label><input type="number" id="trec_jour" min="1" max="31" placeholder="Ex: 30"></div>
           <div class="field"><label>Catégorie</label>
@@ -3478,10 +2388,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
           <div class="field"><label>Montant estimé (FCFA) *</label><input type="number" id="tprev_montant" min="0"></div>
           <div class="field"><label>Date prévue *</label><input type="date" id="tprev_date"></div>
           <div class="field"><label>Poche</label>
-            <select id="tprev_poche">
-              <option value="ecobank">🏦 Ecobank</option>
-              <option value="caisse">💵 Caisse espèces</option>
-            </select>
+            <select id="tprev_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
           </div>
           <div class="field"><label>Type</label>
             <select id="tprev_type">
@@ -3509,10 +2416,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         <h3>Nouveau recalage</h3>
         <div class="grid cols-1" style="gap:12px;">
           <div class="field"><label>Poche à recaler</label>
-            <select id="trecal_poche">
-              <option value="caisse">💵 Caisse espèces</option>
-              <option value="ecobank">🏦 Ecobank</option>
-            </select>
+            <select id="trecal_poche"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
           </div>
           <div class="field"><label>Date du recalage</label><input type="date" id="trecal_date"></div>
           <div class="field"><label>Solde réel constaté (FCFA)</label><input type="number" id="trecal_solde" min="0" placeholder="Ex: 125000"></div>
@@ -3670,16 +2574,10 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         <h3>Nouveau transfert</h3>
         <div class="grid cols-2">
           <div class="field"><label>De (source)</label>
-            <select id="trtf_source">
-              <option value="caisse">💵 Caisse espèces</option>
-              <option value="ecobank">🏦 Ecobank</option>
-            </select>
+            <select id="trtf_source"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
           </div>
           <div class="field"><label>Vers (destination)</label>
-            <select id="trtf_dest">
-              <option value="ecobank">🏦 Ecobank</option>
-              <option value="caisse">💵 Caisse espèces</option>
-            </select>
+            <select id="trtf_dest"><option value="caisse">💵 Caisse espèces</option><option value="ecobank">🏦 Ecobank</option><option value="orabank">🏦 Orabank</option><option value="mixx">📱 Mixx</option><option value="flooz">📱 Flooz</option><option value="equipe">👥 Caisse d'équipe</option></select>
           </div>
           <div class="field"><label>Montant (FCFA)</label><input type="number" id="trtf_montant" min="1" placeholder="Ex: 50000"></div>
           <div class="field"><label>Date</label><input type="date" id="trtf_date"></div>
@@ -3856,7 +2754,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
     </div>
     
       <p class="hint">Gist lié : <a href="https://gist.github.com/tbg-boop/fc43b6db3998c611234fea01f5397da9" target="_blank" rel="noopener">fc43b6db3998c611234fea01f5397da9</a></p>
-      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-16).</p>
+      <p class="hint">✅ Sauvegarde cloud déjà faite aujourd'hui (2026-09-17).</p>
       
     
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
@@ -3869,7 +2767,7 @@ details[open] > .rg-sum .rg-chev{transform:rotate(90deg);}
         <h2>Sauvegarde quotidienne automatique <small>Un fichier daté est déposé automatiquement, une fois par jour, dans le dossier de votre choix. Nécessite Chrome ou Edge.</small></h2>
         <div id="backupFolderWrap">
       <p>Dossier actuel : <strong>logiciel et donnees</strong></p>
-      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-16).</p>
+      <p class="hint">✅ Sauvegarde déjà faite aujourd'hui (2026-09-17).</p>
       
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-gold btn-sm" id="btnBackupNow">💾 Sauvegarder maintenant</button>
@@ -3962,7 +2860,7 @@ const firebaseConfig = {
         <div id="regularisationProformaStatus" style="font-size:12px; color:var(--muted); margin-bottom:8px;">✅ Déjà appliqué — 151 proforma marquée(s) comme historique.</div>
         <button class="btn btn-gold btn-sm" id="btnRegulariserProforma">Appliquer (proforma avant le 01/07/2026)</button>
         <button class="btn btn-danger btn-sm" id="btnReclasserProforma" style="display:none;">Reclasser les proforma hors du nouveau seuil</button>
-      </div></div></details><details class="rg-group reglages-groupe" data-groupe="Données et maintenance"><summary class="rg-sum"><span class="rg-ico">🧹</span><span class="rg-txt"><h2 class="rg-titre">Données et maintenance</h2><span class="rg-sous">Vérifications, corbeille, et remise à zéro.</span></span><span class="rg-count">4</span><span class="rg-chev">›</span></summary><div class="rg-body"><div class="card">
+      </div></div></details><details class="rg-group reglages-groupe" data-groupe="Données et maintenance" open=""><summary class="rg-sum"><span class="rg-ico">🧹</span><span class="rg-txt"><h2 class="rg-titre">Données et maintenance</h2><span class="rg-sous">Vérifications, corbeille, et remise à zéro.</span></span><span class="rg-count">4</span><span class="rg-chev">›</span></summary><div class="rg-body"><div class="card">
         <h2>🗑️ Corbeille <small>Clients et paiements archivés — jamais supprimés définitivement, restaurables à tout moment.</small></h2>
         <div id="corbeilleWrap"><h3 style="font-size:13px; margin-bottom:6px;">Documents supprimés (4)</h3>
       <table><tbody><tr>
@@ -4311,8 +3209,8 @@ const firebaseConfig = {
       </div>
     </div>
 
-  </main>
-</div>
+  
+
 
 <!-- =====================================================================
      RECHERCHE GLOBALE (Ctrl+K)
@@ -4391,7 +3289,7 @@ const firebaseConfig = {
   <div style="font-size:14px;color:#888;line-height:1.6;">Cet appareil a été bloqué par l'administrateur.<br>Contactez votre responsable pour rétablir l'accès.</div>
 </div>
 
-<div class="toast" id="toast">✅ Dépôt vérifié !</div>
+<div class="toast show" id="toast">✅ Dépôt vérifié !</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -17577,12 +16475,20 @@ const TRESO_DATE_DEBUT_DEFAUT = '2026-09-01';
  * Source unique de vérité : les <select> de l'interface sont remplis à partir
  * d'ici (voir remplirSelectsPoches), jamais codés en dur.
  */
+/* `releve` — CETTE POCHE PRODUIT-ELLE UN RELEVÉ QU'ON PEUT POINTER ?
+   Une banque et un compte mobile envoient un relevé : on pointe ligne à ligne
+   et l'écart doit tomber à zéro (rapprochement). Les espèces et l'argent
+   confié à l'équipe n'en produisent aucun : on les COMPTE, et on pose le
+   solde constaté (recalage).
+   Sans cette distinction, l'application demandait « avez-vous un relevé ? »
+   même pour la caisse en espèces — une question dont la réponse est toujours
+   non, et qui force à comprendre deux mots de comptabilité pour rien. */
 const TRESO_POCHES = {
-  caisse:  { label: 'Caisse espèces', icone: '💵', ordre: 1 },
-  ecobank: { label: 'Ecobank',        icone: '🏦', ordre: 2 },
-  orabank: { label: 'Orabank',        icone: '🏦', ordre: 3 },
-  mixx:    { label: 'Mixx',           icone: '📱', ordre: 4 },
-  flooz:   { label: 'Flooz',          icone: '📱', ordre: 5 },
+  caisse:  { label: 'Caisse espèces', icone: '💵', ordre: 1, releve: false },
+  ecobank: { label: 'Ecobank',        icone: '🏦', ordre: 2, releve: true },
+  orabank: { label: 'Orabank',        icone: '🏦', ordre: 3, releve: true },
+  mixx:    { label: 'Mixx',           icone: '📱', ordre: 4, releve: true },
+  flooz:   { label: 'Flooz',          icone: '📱', ordre: 5, releve: true },
   // RÉGIE D'AVANCE — l'argent confié à l'équipe.
   // Avant, une avance de 100 000 F était comptée comme une DÉPENSE, puis les
   // achats payés avec cette avance étaient comptés une SECONDE fois : la caisse
@@ -17590,7 +16496,7 @@ const TRESO_POCHES = {
   // Une avance n'est pas une dépense, c'est un DÉPLACEMENT : l'argent reste à
   // l'entreprise tant que l'équipe ne l'a pas dépensé. Il vit désormais dans
   // cette poche, d'où les achats de l'équipe le font sortir pour de bon.
-  equipe:  { label: "Caisse d'équipe", icone: '👥', ordre: 6 },
+  equipe:  { label: "Caisse d'équipe", icone: '👥', ordre: 6, releve: false },
 };
 
 /* Toutes les poches n'existent pas dans toutes les entités. SIMAG n'a qu'un
@@ -18084,8 +16990,51 @@ function getSoldePoche(poche, jusqu_a, jeu) {
 /**
  * Solde total disponible = somme de toutes les poches
  */
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEUX QUESTIONS, DEUX CHIFFRES — ne plus les confondre
+   ───────────────────────────────────────────────────────────────────────────
+   OBSERVATION DU PROPRIÉTAIRE, 17/09/2026 :
+   « Considérer l'argent donné en avance aux équipes comme une disponibilité
+     est une erreur. Cet argent est programmé pour des achats. »
+
+   Il a raison sur le fond, et le mot « disponible » faisait DEUX MÉTIERS :
+     • « combien l'entreprise POSSÈDE en argent » — c'est ce qui doit tomber
+       juste au rapprochement : caisse + banques + équipe = ce qui existe
+       physiquement. L'avance en fait partie : elle n'est pas dépensée, elle a
+       changé de main. C'est précisément pour ça que la poche « Caisse
+       d'équipe » existe (voir le bug du double débit, §7 du journal) ;
+     • « combien je peux ENGAGER tout de suite » — et là, non : l'argent est
+       dans la poche de quelqu'un d'autre, à l'autre bout de la ville. On ne
+       paie pas un fournisseur avec.
+
+   Un seul chiffre ne pouvait pas répondre aux deux. Le calcul du total n'a
+   donc PAS changé — c'est l'affichage et la décision qui se dédoublent.
+
+   ⚠️ CE QUI EST CONFIÉ À L'ÉQUIPE N'EST PAS DE L'ARGENT « ENGAGÉ ».
+   Une facture fournisseur due mardi a un montant et une date. L'avance, non :
+   si personne n'achète rien cette semaine, on peut demander qu'elle soit
+   rendue. Ce n'est ni disponible, ni engagé — c'est une TROISIÈME catégorie,
+   et la fondre dans « engagé » serait aussi faux que la compter disponible.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Tout ce que l'entreprise possède en argent, poche équipe comprise.
+ *  C'est le chiffre du rapprochement et du bilan : il doit égaler ce qu'on
+ *  trouverait en comptant physiquement partout. NE PAS en retirer l'avance. */
 function getDisponible() {
   return listePoches().reduce((s, k) => s + getSoldePoche(k), 0);
+}
+
+/** Ce qui est entre les mains de l'équipe et pas dans les nôtres.
+ *  Vaut 0 pour une entité sans poche équipe — le filtre sur listePoches()
+ *  évite de lire une poche qui n'appartient pas à la société active. */
+function getConfieEquipe() {
+  return listePoches().includes('equipe') ? getSoldePoche('equipe') : 0;
+}
+
+/** Ce qu'on peut réellement engager MAINTENANT : le total moins ce qui est
+ *  entre les mains de l'équipe. C'est le chiffre qui doit servir à décider. */
+function getDisponibleImmediat() {
+  return getDisponible() - getConfieEquipe();
 }
 
 /**
@@ -18105,7 +17054,10 @@ function getEngage(jours) {
  * Libre = Disponible − Engagé
  */
 function getLibre(jours) {
-  return getDisponible() - getEngage(jours || 30);
+  /* Part du disponible IMMÉDIAT, plus du total. C'est le cœur de la
+     correction du 17/09/2026 : « Libre » est le nombre qu'on regarde pour
+     s'engager, et il comptait l'argent qui est dans la poche de l'équipe. */
+  return getDisponibleImmediat() - getEngage(jours || 30);
 }
 
 /**
@@ -20119,9 +19071,11 @@ function renderTresorerie() {
   // Solde de chaque poche (une poche = un compte réel, vérifiable)
   const soldes = {};
   listePoches().forEach(k => { soldes[k] = getSoldePoche(k); });
-  const dispo = listePoches().reduce((s, k) => s + soldes[k], 0);
+  const dispo = listePoches().reduce((s, k) => s + soldes[k], 0);   // total possédé
+  const confieEquipe = listePoches().includes('equipe') ? soldes.equipe : 0;
+  const dispoImmediat = dispo - confieEquipe;                        // ce qu'on peut engager
   const engage = getEngage(30);
-  const libre = dispo - engage;
+  const libre = dispoImmediat - engage;
   const aRecevoirData = getARecevoir();
 
   // Encaissements du mois en cours (recettes réalisées) — contrepartie
@@ -20158,15 +19112,64 @@ function renderTresorerie() {
     const preuve = dernier
       ? '<div style="font-size:10px;color:#2e7d32;" title="Relevé ' + escapeHtml(dernier.numero || '') + '">🔍 prouvé au ' + (dernier.dateFin || '').split('-').reverse().join('/') + '</div>'
       : '<div style="font-size:10px;color:#e65100;">⚠️ non rapproché</div>';
-    return `<div class="card" style="text-align:center;${neg ? 'border-left:3px solid #c62828;' : ''}cursor:pointer;" onclick="showView('tresorerie-rapprochement')" title="Rapprocher cette poche">
+    /* ═══ LES ACTIONS SONT ACCROCHÉES À LA CARTE, PAS DANS UN AUTRE ÉCRAN ═══
+       Avant, toute la carte était cliquable et menait au Rapprochement. Deux
+       défauts :
+         • pour vérifier le solde d'Orabank, il fallait quitter le tableau de
+           bord, retrouver le bon module dans onze entrées, puis re-choisir
+           Orabank dans une liste. Trois gestes pour agir sur une chose qu'on
+           avait déjà sous les yeux ;
+         • une carte entièrement cliquable ne dit pas ce qu'elle va faire. Elle
+           menait toujours au rapprochement, même pour la caisse en espèces,
+           qui ne se rapproche pas — elle se compte.
+       Les deux actions utiles sont donc écrites sur la carte, et elles
+       arrivent sur la poche déjà choisie. */
+    return `<div class="card poche-carte" style="text-align:center;${neg ? 'border-left:3px solid #c62828;' : ''}">
       <div style="font-size:24px;">${TRESO_POCHES[k].icone}</div>
       <div style="font-size:20px;font-weight:700;color:${neg ? '#c62828' : '#1a1a1a'};">${fmt(soldes[k])}</div>
       <div style="color:#666;font-size:12px;">${TRESO_POCHES[k].label}</div>
       ${preuve}
+      <div class="poche-actions">
+        <button class="btn btn-ghost btn-sm" onclick="verifierSoldePoche('${k}')"
+          title="Confronter ce solde à un relevé bancaire ou à un comptage">✓ Vérifier ce solde</button>
+        <button class="btn btn-ghost btn-sm" onclick="transfererDepuisPoche('${k}')"
+          title="Déplacer de l'argent depuis cette poche vers une autre">⇄ Transférer</button>
+      </div>
     </div>`;
   }).join('');
 
+  /* ═══ LA PHRASE QUI RÉPOND À LA VRAIE QUESTION ═══
+     Le propriétaire : « trop d'onglets, trop de jonglages ». Les trois chiffres
+     de cette phrase existaient déjà sur cet écran — mais dans trois blocs
+     séparés, qu'il fallait additionner de tête pour répondre à la seule
+     question qui compte en arrivant : « est-ce que ça passe ce mois-ci ? ».
+     Elle est en français, elle tutoie les chiffres, et elle est la PREMIÈRE
+     chose lue. Le ton change avec la situation : rien à inventer, seulement à
+     dire ce que l'arithmétique montre.
+     Le montant confié à l'équipe est nommé ici, parce que c'est exactement là
+     qu'on pourrait croire qu'il a disparu. */
+  const aRecevoir30 = (aRecevoirData.echu || 0) + (aRecevoirData.aEcheance || 0);
+  const soldeProjete = dispoImmediat + aRecevoir30 - engage;
+  const tonBon = soldeProjete >= 0;
+  const phrase = `
+    <div class="card" style="border-left:5px solid ${tonBon ? '#2e7d32' : '#c62828'};margin-bottom:14px;">
+      <div style="font-size:15px;line-height:1.65;">
+        Tu as <strong style="font-size:19px;color:#0d47a1;">${fmt(dispoImmediat)}</strong> disponible tout de suite.
+        ${aRecevoir30 > 0 ? `Il doit rentrer <strong>${fmt(aRecevoir30)}</strong> de tes clients` : 'Rien n\'est attendu de tes clients'}${engage > 0 ? `, et sortir <strong>${fmt(engage)}</strong>` : ', et rien n\'est prévu à la sortie'} d'ici 30 jours.
+      </div>
+      <div style="margin-top:8px;font-size:14px;font-weight:700;color:${tonBon ? '#2e7d32' : '#c62828'};">
+        ${tonBon
+          ? `Si tout tombe comme prévu, il te restera ${fmt(soldeProjete)}.`
+          : `⚠️ Si tout tombe comme prévu, il te manquera ${fmt(Math.abs(soldeProjete))}.`}
+      </div>
+      ${confieEquipe > 0 ? `<div style="margin-top:6px;font-size:12.5px;color:#666;">
+        ${fmt(confieEquipe)} sont en plus confiés à l'équipe pour ses achats — ils t'appartiennent
+        toujours, mais ils ne sont pas dans tes mains, donc ils ne comptent pas ci-dessus.
+      </div>` : ''}
+    </div>`;
+
   let html = `
+  ${phrase}
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;">
     ${tuilesPoches}
   </div>
@@ -20174,8 +19177,12 @@ function renderTresorerie() {
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
     <div class="card" style="text-align:center;">
       <div style="font-size:24px;">💰</div>
-      <div style="font-size:22px;font-weight:700;color:#0d47a1;">${fmt(dispo)}</div>
-      <div style="color:#666;font-size:13px;">Total disponible</div>
+      <div style="font-size:22px;font-weight:700;color:#0d47a1;">${fmt(dispoImmediat)}</div>
+      <div style="color:#666;font-size:13px;">Disponible tout de suite</div>
+      ${confieEquipe > 0 ? `<div style="margin-top:6px;padding-top:6px;border-top:1px dashed #ddd;font-size:11.5px;color:#777;line-height:1.4;">
+        + ${fmt(confieEquipe)} confiés à l'équipe<br>
+        <span style="color:#999;">soit ${fmt(dispo)} au total</span>
+      </div>` : ''}
     </div>
     <div class="card" style="text-align:center;">
       <div style="font-size:24px;">📅</div>
@@ -20841,7 +19848,13 @@ function construireEcheancier(nbSemaines) {
   }
 
   // ── 4. Cumul du solde, semaine après semaine
-  const soldeDepart = getDisponible();
+  /* Le point de départ de la projection est le disponible IMMÉDIAT, avance à
+     l'équipe exclue (décision du propriétaire, 17/09/2026). Une projection de
+     trésorerie sert à voir venir le moment où l'argent manquera : la faire
+     partir d'un solde qui inclut de l'argent posé chez quelqu'un d'autre la
+     rend rassurante au mauvais moment. Le montant confié est rappelé sous le
+     tableau pour que rien ne semble avoir disparu. */
+  const soldeDepart = getDisponibleImmediat();
   let courant = soldeDepart;
   for (const sem of semaines) {
     sem.net = sem.totalIn - sem.totalOut;
@@ -20891,6 +19904,90 @@ function initCaisseManagerUI() {
   renderPocheMapUI();
   const ap = document.getElementById('cmApercu');
   if (ap && !_cmLignes.length) ap.innerHTML = '<p class="hint">Choisissez une période puis cliquez sur « Examiner ».</p>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AGIR SUR LA POCHE QU'ON REGARDE
+   ───────────────────────────────────────────────────────────────────────────
+   LE PROBLÈME RÉSOLU. Le hub de trésorerie portait onze entrées au même
+   niveau, et deux d'entre elles — Rapprochement et Recalage — répondent à la
+   MÊME question : « mon solde est-il juste ? ». Le propriétaire devait savoir
+   lequel des deux mots correspondait à ce qu'il avait en main. C'était ça, le
+   jonglage.
+   Ces deux fonctions renversent le sens : on part de la poche affichée, et
+   c'est l'application qui pose la question en français au lieu d'exiger le
+   vocabulaire comptable.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Une seule porte pour « mon solde est-il juste ? ».
+ *  Demande ce qu'on a en main, puis emmène au bon écran avec la poche déjà
+ *  choisie. Pour une poche d'espèces, il n'y a pas de relevé possible : on va
+ *  directement au comptage, sans poser une question dont la réponse est
+ *  connue. */
+function verifierSoldePoche(poche) {
+  if (!TRESO_POCHES[poche]) { toast('Poche inconnue.', true); return; }
+  const label = labelPoche(poche);
+  /* Voir le drapeau `releve` dans TRESO_POCHES. Une poche future dont on
+     aurait oublié de le renseigner posera la question : c'est le comportement
+     sûr, on ne présume pas à la place de l'utilisateur. */
+  const sansReleve = TRESO_POCHES[poche].releve === false;
+  if (sansReleve) {
+    ouvrirRecalagePour(poche);
+    toast('Comptez ' + label + ', puis saisissez le solde constaté.');
+    return;
+  }
+  const avecReleve = confirm(
+    'Vérifier le solde de ' + label + '.\n\n' +
+    'OK  →  j\'ai un RELEVÉ de ' + label + ' sous les yeux\n' +
+    '       (on pointe ligne à ligne, l\'écart doit tomber à zéro)\n\n' +
+    'Annuler  →  je viens de COMPTER / je connais juste le solde\n' +
+    '       (on pose le solde constaté, sans pointer)'
+  );
+  if (avecReleve) ouvrirRapprochementPour(poche);
+  else ouvrirRecalagePour(poche);
+}
+
+/** Ouvre le rapprochement sur une poche donnée. */
+function ouvrirRapprochementPour(poche) {
+  showView('tresorerie-rapprochement');
+  const sel = document.getElementById('rap_poche');
+  if (sel) {
+    sel.value = poche;
+    /* Le sélecteur peut être rempli par l'affichage de la vue, APRÈS ce
+       setter : si la valeur n'a pas pris, on la repose au tour suivant. */
+    if (sel.value !== poche) setTimeout(() => { sel.value = poche; chargerRapprochement(); }, 0);
+    else if (typeof chargerRapprochement === 'function') chargerRapprochement();
+  }
+}
+
+/** Ouvre le recalage sur une poche donnée, date du jour pré-remplie. */
+function ouvrirRecalagePour(poche) {
+  showView('tresorerie-recalage');
+  const sel = document.getElementById('trecal_poche');
+  if (sel) { sel.value = poche; if (sel.value !== poche) setTimeout(() => { sel.value = poche; }, 0); }
+  const dt = document.getElementById('trecal_date');
+  if (dt && !dt.value) dt.value = todayStr();
+  const montant = document.getElementById('trecal_solde');
+  if (montant) { montant.value = ''; try { montant.focus(); } catch (_) {} }
+}
+
+/** Ouvre l'écran des transferts avec cette poche comme SOURCE.
+ *  Choisit une destination différente par défaut : laisser source et
+ *  destination identiques affiche un formulaire que le garde refusera. */
+function transfererDepuisPoche(poche) {
+  if (!TRESO_POCHES[poche]) { toast('Poche inconnue.', true); return; }
+  showView('tresorerie-transferts');
+  const src = document.getElementById('trtf_source');
+  const dst = document.getElementById('trtf_dest');
+  const poser = () => {
+    if (src) src.value = poche;
+    if (dst && dst.value === poche) {
+      const autre = listePoches().find(k => k !== poche);
+      if (autre) dst.value = autre;
+    }
+  };
+  poser();
+  setTimeout(poser, 0);      // au cas où la vue remplisse ses listes après coup
 }
 
 function renderPocheMapUI() {
@@ -21339,6 +20436,18 @@ function renderEcheancier() {
     '<h3 style="margin:0;font-size:15px;">Semaine par semaine</h3>' +
     '<div style="font-size:12px;color:#666;">Départ : <strong>' + fmt(e.soldeDepart) + '</strong> · ' +
     jm(e.debut) + ' → ' + jm(e.fin) + '</div></div>';
+
+  /* Le départ exclut l'avance à l'équipe (voir getDisponibleImmediat). Sans
+     cette ligne, le chiffre semblerait plus bas que le tableau de bord sans
+     qu'on sache pourquoi — et un écart inexpliqué fait douter de tout
+     l'écran. */
+  const confie = (typeof getConfieEquipe === 'function') ? getConfieEquipe() : 0;
+  if (confie > 0) {
+    html += '<div style="font-size:11.5px;color:#777;margin:-4px 0 10px;">' +
+      'Le départ ne compte pas les ' + fmt(confie) + ' confiés à l\'équipe : ils ' +
+      'vous appartiennent, mais vous ne pouvez pas les engager sans les redemander. ' +
+      'Ils sortiront de la projection au fur et à mesure des achats de l\'équipe.</div>';
+  }
 
   html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:520px;">';
   html += '<thead><tr style="border-bottom:2px solid #e0e0e0;">' +
