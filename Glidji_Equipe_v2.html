@@ -110,8 +110,66 @@
 .hub-tile-badge{position:absolute;top:9px;right:11px;background:var(--burgundy);color:#fff;font-size:.6rem;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px;}
 .hub-tile-full{grid-column:1/-1;}
 .btn-back-hub{display:none;background:transparent;border:1px solid var(--platinum);color:var(--onyx);border-radius:var(--radius);padding:7px 12px;font-size:13px;font-weight:600;}
+/* ── INVENTAIRE : GRILLE PHOTO + LISTE À COCHER ────────────────────────────
+   Deux articles au nom proche ne se distinguent qu'à l'œil : la photo doit
+   être assez grande pour trancher sur un téléphone. On vise donc deux
+   colonnes en portrait, trois dès 480 px, et pas de vignette de 42 px. */
+.inv-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;}
+.inv-grille-mini{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;}
+.inv-tuile{background:var(--white);border:1px solid var(--platinum);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;}
+.inv-tuile.inv-fait{border-color:var(--ok);background:#F6FAF7;}
+.inv-photo{width:100%;object-fit:cover;border-radius:8px;background:var(--platinum-light);display:block;}
+.inv-photo-vide{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--muted);}
+.inv-nom{font-size:12.5px;font-weight:600;color:var(--onyx);line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+.inv-etat{font-size:11.5px;color:var(--ok);}
+.inv-a-faire{color:var(--muted);}
+.inv-saisie{display:flex;gap:5px;align-items:center;}
+.inv-saisie input{flex:1;min-width:0;padding:8px;font-size:14px;text-align:center;}
+.inv-saisie select{min-width:0;padding:8px 4px;font-size:12.5px;}
+/* Ligne « perte » : le motif porte plus d'information que le nombre (on déclare
+   presque toujours 1 ou 2), il lui faut donc la place — sinon on lit « Cass ». */
+.inv-saisie-perte input[type=number]{flex:0 0 48px;}
+.inv-saisie-perte select{flex:1 1 auto;}
+.inv-saisie button{flex:0 0 auto;padding:8px 10px;}
+/* Attribution d'un article a une societe, saisie pendant le comptage. */
+.inv-ent-choix{display:flex;gap:4px;align-items:stretch;}
+.inv-ent-btn{flex:1 1 0;min-width:0;padding:7px 4px;font-size:11px;font-weight:700;
+  border-radius:7px;border:1px solid transparent;cursor:pointer;line-height:1.15;}
+.inv-ent-GLIDJI{background:#E6D9BE;color:#5A4318;border-color:#D3C09A;}
+.inv-ent-SIMAG{background:#D5E5E6;color:#1D3C40;border-color:#B4D0D2;}
+.inv-ent-btn:active{transform:scale(.96);}
+.inv-ent-annuler{flex:0 0 auto;padding:7px 8px;font-size:11px;border-radius:7px;
+  border:1px solid var(--platinum);background:var(--white);color:var(--muted);cursor:pointer;}
+.inv-ent-pastille{align-self:flex-start;border:1px solid rgba(0,0,0,.08);cursor:pointer;
+  font-family:inherit;padding:3px 8px;}
+.inv-tuile.inv-sans-ent{border-left:3px solid #B8935A;}
+.inv-attrib-rappel{background:#FFF4D6;border-left:4px solid #B8935A;border-radius:8px;
+  padding:9px 12px;font-size:12.5px;color:#5d4037;margin:0 0 10px;}
+.inv-attrib-ok{background:#F1F7F1;border-left:4px solid var(--ok);border-radius:8px;
+  padding:9px 12px;font-size:12.5px;color:#2e5c34;margin:0 0 10px;}
+/* ═══ BANDEAU D'ENTITÉ ═══
+   Deux sociétés, deux caisses, la même équipe et le même téléphone. Le seul
+   garde-fou qui tient sur le terrain, c'est que l'écran dise en permanence et
+   sans ambiguïté DE QUELLE société on parle. Deux couleurs franches, jamais
+   la même, toujours visibles en haut de l'écran. */
+.ent-bandeau{display:flex;align-items:center;gap:10px;border-radius:10px;padding:11px 14px;margin-bottom:14px;color:#fff;font-weight:700;font-size:15px;}
+.ent-bandeau .ent-sous{font-weight:400;font-size:12px;opacity:.9;display:block;margin-top:1px;}
+.ent-GLIDJI{background:#8C6A34;}
+.ent-SIMAG{background:#2F5D62;}
+.ent-pastille{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em;}
+.ent-pastille-GLIDJI{background:#E6D9BE;color:#5A4318;}
+.ent-pastille-SIMAG{background:#D5E5E6;color:#1D3C40;}
+.ent-manque{background:#FFF4D6;border-left:4px solid #B8935A;border-radius:8px;padding:11px 13px;font-size:13px;color:#5d4037;margin-bottom:12px;}
+.hub-tile-simag .hub-tile-name{color:#1D3C40;}
+.inv-avancement{margin:6px 0 10px;}
+.inv-jauge{height:7px;border-radius:4px;background:var(--platinum-light);overflow:hidden;}
+.inv-jauge span{display:block;height:100%;background:var(--gold);border-radius:4px;transition:width .25s;}
+.inv-avancement-txt{font-size:12px;color:var(--muted);margin-top:5px;}
+.inv-filtres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.cat-alerte{border:1px solid var(--gold);background:#FDFAF3;border-radius:10px;padding:10px;margin-top:8px;}
+.cat-alerte-titre{font-size:12.5px;font-weight:700;color:var(--gold-deep);margin-bottom:8px;}
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.fr.u1YzuBbBpqg.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb255018" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.fr.KPiGfX1PM3k.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo_8RcYeTCnKEnqkKtxNmJo8MWsCKg/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb116353" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <div id="app">
@@ -127,9 +185,61 @@
         </div>
       </div>
       <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
-      <div id="tabContent"><div class="card"><p class="hint">Chargement du calendrier…</p></div></div>
+      <div id="tabContent"><div class="card" style="display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:12px;">
+      <button class="btn-gold btn-sm" onclick="calSetVue('semaine')">📆 Semaine</button><button class="btn-ghost btn-sm" onclick="calSetVue('mois')">🗓️ Mois</button>
+      <span style="flex:1;"></span>
+      <button class="btn-ghost btn-sm" onclick="calAujourdhui()">Aujourd'hui</button>
+    </div>
+    <div style="margin:-6px 0 12px;font-size:12px;color:var(--muted);">
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" style="width:auto;" checked="" onchange="calBasculerPassees()">
+        Masquer les prestations déjà passées
+      </label>
+    </div><div class="card" style="display:flex;align-items:center;gap:8px;padding:12px;margin-bottom:12px;">
+    <button class="btn-ghost btn-sm" onclick="calNav(-1)">◀</button>
+    <div style="flex:1;text-align:center;">
+      <strong style="font-size:14px;">14/09/2026 — 20/09/2026</strong>
+      <div style="font-size:12px;color:var(--muted);">aucune prestation</div>
+    </div>
+    <button class="btn-ghost btn-sm" onclick="calNav(1)">▶</button>
+  </div><div class="card"><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Lundi 14/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Mardi 15/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Mercredi 16/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Jeudi 17/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Vendredi 18/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
+        Samedi 19/09/2026
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);background:#FBF6EA;border-radius:8px;padding-left:10px;padding-right:10px;">
+      <div style="font-size:12px;font-weight:700;color:var(--gold-deep);text-transform:uppercase;margin-bottom:6px;">
+        Dimanche 20/09/2026 · aujourd'hui
+      </div>
+      <div style="font-size:13px;color:var(--muted);">—</div>
+    </div></div></div>
     </div></div>
-<div class="toast" id="toast">Code PIN incorrect.</div>
+<div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -305,6 +415,81 @@ let clientsCache = [];
 /* tab courant pour le rafraîchissement auto (caisse hors-ligne) */
 let _equipeTabActif = null;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   LES DEUX SOCIÉTÉS — CONCIERGERIE ET SIMAG
+   ───────────────────────────────────────────────────────────────────────────
+   La même équipe travaille pour deux personnes morales distinctes. Chacune a
+   sa propre caisse d'avance et ses propres achats, et l'argent de l'une ne
+   doit JAMAIS payer un achat de l'autre : ce sont deux comptabilités, deux
+   déclarations, deux patrimoines.
+
+   COMMENT LA SÉPARATION TIENT, techniquement.
+   1. Chaque société a son PROPRE compte de caisse, désigné par son propre
+      document `caisseMeta/actif_<ENTITE>`. Deux comptes, deux `compteId`
+      différents, donc deux soldes calculés indépendamment. C'est le compteId
+      qui sépare réellement les soldes — pas l'étiquette.
+   2. Chaque mouvement et chaque facturette porte en plus `entity`, qui sert
+      à l'ERP pour savoir dans quelle trésorerie faire entrer la dépense.
+
+   ⚠️ POURQUOI LE SOLDE EST FILTRÉ SUR compteId ET NON SUR entity.
+   Tous les mouvements écrits AVANT cette version n'ont pas de champ `entity`
+   du tout. Or Firestore ne fait PAS correspondre un document où le champ est
+   absent à `where('entity','==','GLIDJI')` : filtrer sur `entity` aurait fait
+   disparaître d'un coup tout l'historique de la caisse de Conciergerie. En
+   filtrant sur `compteId` — que tous les mouvements portent depuis toujours —
+   l'historique reste intact et aucune migration n'est nécessaire. Là où
+   `entity` doit être lu malgré tout, on lit `m.entity || 'GLIDJI'` : un
+   mouvement sans étiquette EST un mouvement de Conciergerie, puisque c'était
+   la seule société à avoir une caisse d'équipe.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const ENTITES_EQUIPE = {
+  GLIDJI: { nom: 'Conciergerie', complet: 'Glidji Conciergerie' },
+  SIMAG:  { nom: 'SIMAG',        complet: 'SIMAG SARL U' },
+};
+const ENTITE_DEFAUT = 'GLIDJI';
+
+/* L'entité de l'écran ouvert. Ce n'est pas un mode global de l'application :
+   chaque tuile de l'accueil ouvre son écran avec sa société, et l'accueil
+   n'appartient à aucune des deux. */
+let _entiteEcran = ENTITE_DEFAUT;
+
+function entiteValide(e) { return Object.prototype.hasOwnProperty.call(ENTITES_EQUIPE, e) ? e : ENTITE_DEFAUT; }
+function nomEntite(e) { return (ENTITES_EQUIPE[entiteValide(e)]).nom; }
+function nomCompletEntite(e) { return (ENTITES_EQUIPE[entiteValide(e)]).complet; }
+
+/* L'étiquette d'un mouvement : absente = Conciergerie (voir l'encadré). */
+function entiteDuMouvement(m) { return entiteValide((m && m.entity) || ENTITE_DEFAUT); }
+
+/** Le compte de caisse actif d'une société.
+ *  Lit d'abord le document dédié `actif_<ENTITE>`. Pour Conciergerie
+ *  seulement, retombe sur l'ancien document `actif` : avant la séparation il
+ *  n'y en avait qu'un, et il désignait la caisse de Conciergerie. Ce repli
+ *  est ce qui permet de déployer cette version sans rien migrer. */
+async function compteActifIdPour(entite) {
+  const ent = entiteValide(entite);
+  try {
+    const snap = await db.collection('caisseMeta').doc('actif_' + ent).get();
+    if (snap && snap.exists && snap.data().compteActifId) return snap.data().compteActifId;
+  } catch (e) { throw e; }
+  if (ent === ENTITE_DEFAUT) {
+    try {
+      const snap = await db.collection('caisseMeta').doc('actif').get();
+      if (snap && snap.exists) return snap.data().compteActifId || null;
+    } catch (_) {}
+  }
+  return null;
+}
+
+/** Le bandeau de couleur, en haut de chaque écran qui touche à l'argent. */
+function bandeauEntite(entite, sousTitre) {
+  const ent = entiteValide(entite);
+  return `<div class="ent-bandeau ent-${ent}">
+    <span style="font-size:20px;">${ent === 'SIMAG' ? '🏢' : '🔑'}</span>
+    <span>${nomCompletEntite(ent)}
+      ${sousTitre ? `<span class="ent-sous">${sousTitre}</span>` : ''}</span>
+  </div>`;
+}
+
 async function renderMain() {
   const cfg = loadDeviceConfig();
   if (!initFirebase(cfg.configText)) {
@@ -353,16 +538,18 @@ function renderHub() {
       <div class="hub-welcome-sub" id="hubWelcomeSub">Que voulez-vous faire ?${_equipeLastSyncAt ? ' · Sync ' + _equipeLastSyncAt : ''}</div>
     </div>
     <div class="hub-grid">
+      <!-- La cantine est une activité de Conciergerie : la mention l'indique,
+           pour que personne ne cherche « la cantine de SIMAG ». -->
       <div class="hub-tile" onclick="showEquipeTab('commande')">
         <div class="hub-tile-ico">🍽️</div>
         <div class="hub-tile-name">Commande cantine</div>
-        <div class="hub-tile-desc">Saisir le repas du jour</div>
+        <div class="hub-tile-desc">Saisir le repas du jour · Conciergerie</div>
         <div class="hub-tile-badge" id="cantineBadgeEquipe" style="display:none;"></div>
       </div>
       <div class="hub-tile" onclick="showEquipeTab('historique')">
         <div class="hub-tile-ico">📋</div>
         <div class="hub-tile-name">Historique</div>
-        <div class="hub-tile-desc">Toutes les commandes</div>
+        <div class="hub-tile-desc">Commandes cantine · Conciergerie</div>
       </div>
       <div class="hub-tile" onclick="showEquipeTab('fiches')">
         <div class="hub-tile-ico">📁</div>
@@ -374,9 +561,19 @@ function renderHub() {
         <div class="hub-tile-name">Inventaire</div>
         <div class="hub-tile-desc">Compter le matériel</div>
       </div>
-      <div class="hub-tile" onclick="showEquipeTab('avances')">
+      <!-- DEUX CAISSES, DEUX SOCIÉTÉS. Quatre entrées plutôt qu'un sélecteur :
+           sur le terrain, choisir la société AVANT d'ouvrir l'écran évite de
+           saisir dix lignes puis de découvrir qu'on était sur la mauvaise.
+           Un seul écran derrière, ouvert avec sa société en paramètre — donc
+           aucun code dupliqué. -->
+      <div class="hub-tile" onclick="showEquipeTab('avances','GLIDJI')">
         <div class="hub-tile-ico">💰</div>
-        <div class="hub-tile-name">Caisse d'équipe</div>
+        <div class="hub-tile-name">Caisse Conciergerie</div>
+        <div class="hub-tile-desc">Avances et dépenses</div>
+      </div>
+      <div class="hub-tile hub-tile-simag" onclick="showEquipeTab('avances','SIMAG')">
+        <div class="hub-tile-ico">💵</div>
+        <div class="hub-tile-name">Caisse SIMAG</div>
         <div class="hub-tile-desc">Avances et dépenses</div>
       </div>
       <div class="hub-tile" onclick="showEquipeTab('messages')" style="position:relative;">
@@ -390,10 +587,15 @@ function renderHub() {
         <div class="hub-tile-name">Calendrier</div>
         <div class="hub-tile-desc">Prestations de la semaine</div>
       </div>
-      <div class="hub-tile hub-tile-full" onclick="showEquipeTab('achats')">
+      <div class="hub-tile" onclick="showEquipeTab('achats','GLIDJI')">
         <div class="hub-tile-ico">🛒</div>
-        <div class="hub-tile-name">Achats</div>
-        <div class="hub-tile-desc">Saisir une liste d'achats</div>
+        <div class="hub-tile-name">Achats Conciergerie</div>
+        <div class="hub-tile-desc">Saisir une facturette</div>
+      </div>
+      <div class="hub-tile hub-tile-simag" onclick="showEquipeTab('achats','SIMAG')">
+        <div class="hub-tile-ico">🧺</div>
+        <div class="hub-tile-name">Achats SIMAG</div>
+        <div class="hub-tile-desc">Saisir une facturette</div>
       </div>
     </div>`;
   // Charger le badge commandes en attente de façon asynchrone
@@ -413,13 +615,25 @@ async function updateCantineBadgeEquipe() {
   } catch(_) {}
 }
 
-function showEquipeTab(name) {
+function showEquipeTab(name, entite) {
   const labels = {
     commande: 'Commande cantine', historique: 'Historique cantine',
     fiches: 'Fiches équipe', inventaire: 'Inventaire matériel',
     avances: "Caisse d'équipe", messages: 'Messages', achats: 'Achats',
     calendrier: 'Calendrier des prestations'
   };
+  /* Les écrans d'argent portent la société dans leur titre : l'équipe voit
+     dès le bandeau du haut où elle est, sans avoir à se souvenir de la tuile
+     sur laquelle elle a appuyé. Les autres écrans ne connaissent pas les
+     sociétés et ne changent pas.
+     Une entité inconnue ou absente retombe sur Conciergerie : c'est le
+     comportement d'avant la séparation, donc rien ne casse si un lien ancien
+     appelle encore showEquipeTab('avances') tout court. */
+  if (name === 'avances' || name === 'achats') {
+    _entiteEcran = entiteValide(entite);
+    labels.avances = 'Caisse ' + nomEntite(_entiteEcran);
+    labels.achats  = 'Achats ' + nomEntite(_entiteEcran);
+  }
   _equipeTabActif = name;
   const backBtn = document.getElementById('btnBackHub');
   const titleEl = document.getElementById('appTitle');
@@ -439,11 +653,27 @@ async function renderTabCommande() {
   const wrap = document.getElementById('tabContent');
   wrap.innerHTML = `<div class="card"><p class="hint">Chargement de la liste des clients…</p></div>`;
   try { await authReady; } catch(_) {}
+  /* ═══ LA CANTINE EST UNE ACTIVITÉ DE CONCIERGERIE ═══
+     Décision du propriétaire, 15/09/2026 : SIMAG ne fait pas de cantine.
+     La collection `clients` mélange pourtant les clients des deux sociétés
+     (pas de collision : chaque client a son identifiant propre). Sans ce tri,
+     l'équipe voyait toute la liste en prenant une commande, et une commande de
+     cantine pouvait partir sur un client de SIMAG — une commande imputée à la
+     mauvaise personne morale, que rien ensuite ne rattrape.
+     Un client sans étiquette est de Conciergerie : c'était la seule société à
+     envoyer ses clients au téléphone. Tri en JavaScript, jamais par un
+     where() — Firestore ne fait pas correspondre un champ absent. */
   try {
     const snap = await db.collection('clients').get();
     clientsCache = [];
-    snap.forEach(d => clientsCache.push({ id: d.id, nom: d.data().nom }));
-    clientsCache.sort((a, b) => a.nom.localeCompare(b.nom));
+    let autresSocietes = 0;
+    snap.forEach(d => {
+      const c = d.data() || {};
+      if (((c.entity) || ENTITE_DEFAUT) !== 'GLIDJI') { autresSocietes++; return; }
+      clientsCache.push({ id: d.id, nom: c.nom });
+    });
+    clientsCache.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    if (autresSocietes) console.info('[Cantine] ' + autresSocietes + ' client(s) d\'une autre société écarté(s).');
   } catch (e) {
     wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger les clients : ${escapeHtml(e.message)}</p></div>`;
     return;
@@ -760,6 +990,20 @@ async function renderTabInventaire() {
   try { await authReady; } catch(_) {}
   wrap.innerHTML = `
     <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <h2 style="flex:1;">Comptage du mois <span class="hint" id="inv_mois"></span></h2>
+        <button class="btn-ghost btn-sm" id="btnInvRafraichir" title="Recharger le catalogue depuis le serveur">🔄</button>
+      </div>
+      <div id="inv_avancement" class="inv-avancement"></div>
+      <div id="inv_attribution"></div>
+      <div class="field" style="margin-bottom:10px;">
+        <input type="text" id="inv_search" placeholder="🔍 Filtrer par nom…" autocomplete="off">
+      </div>
+      <div class="inv-filtres" id="inv_filtres"></div>
+      <div id="inv_grille"><p class="hint">Chargement du catalogue…</p></div>
+    </div>
+
+    <div class="card">
       <h2>Ajouter au catalogue <span class="hint">(photo une seule fois par article)</span></h2>
       <div class="field">
         <label>Photo</label>
@@ -770,26 +1014,20 @@ async function renderTabInventaire() {
         <label>Nom de l'article</label>
         <input type="text" id="cat_nom" placeholder="Ex : Chaise pliante blanche">
       </div>
+      <div id="cat_similaires"></div>
       <button class="btn-gold btn-block" id="btnAddCatalogueMateriel">+ Ajouter au catalogue</button>
     </div>
-    <div class="card">
-      <h2>Compter un article <span class="hint">(pas de nouvelle photo, juste la quantité de ce mois)</span></h2>
-      <div class="field">
-        <label>Rechercher dans le catalogue</label>
-        <input type="text" id="comptage_search" placeholder="Nom de l'article…">
-      </div>
-      <div id="comptageSearchResults"></div>
-    </div>
+
     <div class="card">
       <h2>Déclarer une perte <span class="hint">(casse, perte, vol, péremption…)</span></h2>
-      <div class="field">
-        <label>Rechercher l'article concerné</label>
-        <input type="text" id="perte_search" placeholder="Nom de l'article…">
+      <div class="field" style="margin-bottom:10px;">
+        <input type="text" id="perte_search" placeholder="🔍 Filtrer par nom…" autocomplete="off">
       </div>
-      <div id="perteSearchResults"></div>
+      <div id="perteGrille"><p class="hint">Chargement…</p></div>
     </div>
+
     <div class="card">
-      <h2>Comptage du mois en cours</h2>
+      <h2>Déjà compté ce mois <span class="hint">(récapitulatif, avec qui a compté)</span></h2>
       <div id="comptageListWrap"><p class="hint">Chargement…</p></div>
     </div>`;
 
@@ -810,171 +1048,592 @@ async function renderTabInventaire() {
     document.getElementById('btnAddCatalogueMateriel').textContent = '+ Ajouter au catalogue';
   });
 
-  document.getElementById('btnAddCatalogueMateriel').addEventListener('click', async () => {
-    if (catPhotoEnCoursDeTraitement) { toast('La photo est encore en cours de traitement, patientez un instant.', true); return; }
-    const nom = document.getElementById('cat_nom').value.trim();
-    if (!nom) { toast('Merci de renseigner le nom de l\'article.', true); return; }
-    const btn = document.getElementById('btnAddCatalogueMateriel');
-    try {
-      const snap = await db.collection('catalogueMateriel').get();
-      const nomNorm = nom.toLowerCase().trim();
-      let existantSimilaire = null;
-      snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().trim() === nomNorm) existantSimilaire = data.nom; });
-      if (existantSimilaire && !confirm('Un article similaire existe déjà dans le catalogue ("' + existantSimilaire + '"). Ajouter quand même comme référence distincte ? (Préférez chercher l\'article existant plutôt que d\'en recréer un.)')) {
-        return;
-      }
-    } catch (e) { /* si la verification echoue, on n'empeche pas l'ajout */ }
-    btn.disabled = true;
-    try {
-      const _refCat = nouvelleCleClient();
-      await db.collection('catalogueMateriel').doc(_refCat).set({ nom, photoB64: catPhotoData || null, clientRef: _refCat, auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString() });
-      document.getElementById('cat_nom').value = '';
-      document.getElementById('cat_photo').value = '';
-      document.getElementById('cat_photo_preview').innerHTML = '';
-      catPhotoData = null;
-      toast('Article ajouté au catalogue.');
-    } catch (e) {
-      toast('Échec de l\'envoi : ' + e.message, true);
-    }
-    btn.disabled = false;
+  document.getElementById('btnAddCatalogueMateriel').addEventListener('click', ajouterAuCatalogue);
+  document.getElementById('btnInvRafraichir').addEventListener('click', async () => {
+    const b = document.getElementById('btnInvRafraichir');
+    b.disabled = true; b.textContent = '⏳';
+    await chargerInventaire(true);
+    b.disabled = false; b.textContent = '🔄';
+    toast('Catalogue rechargé (' + _catalogue.length + ' article(s)).');
   });
 
-  document.getElementById('comptage_search').addEventListener('input', rechercherPourComptage);
-  document.getElementById('perte_search').addEventListener('input', rechercherPourPerte);
-  chargerComptageMoisEnCours();
+  // Le champ FILTRE ce qui est déjà affiché : plus aucune lecture réseau à la
+  // frappe. Avant, chaque caractère déclenchait un catalogueMateriel.get()
+  // COMPLET, photos comprises — taper « chaise » coûtait six lectures de toute
+  // la collection. Sur un forfait mobile, ça se paie.
+  document.getElementById('inv_search').addEventListener('input', renderGrilleInventaire);
+  document.getElementById('perte_search').addEventListener('input', renderGrillePertes);
+  document.getElementById('cat_nom').addEventListener('input', signalerSimilaires);
+
+  chargerInventaire(false);
 }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   INVENTAIRE — LE CATALOGUE EST CHARGÉ UNE FOIS, PUIS MIS EN CACHE
+   ─────────────────────────────────────────────────────────────────────────
+   Deux défauts corrigés d'un coup :
+
+   1. On ne voyait RIEN avant d'avoir tapé (`if (!q) return;`). Qui ne se
+      rappelle pas le libellé exact était bloqué. Et la vignette faisait
+      42 px — trop petit pour distinguer deux chaises pliantes, c'est-à-dire
+      précisément le cas où on en a besoin.
+
+   2. Chaque frappe relisait TOUTE la collection, photos base64 comprises.
+
+   Le catalogue s'affiche donc en entier, en grille photo, dès l'ouverture de
+   l'onglet ; le champ de recherche devient un filtre local ; et un bouton 🔄
+   permet de forcer le rechargement quand un article vient d'être ajouté
+   depuis un autre téléphone.
+
+   Le comptage devient une LISTE À COCHER : chaque tuile porte son état
+   (« compté : 24 » ou « à compter »), avec un compteur d'avancement et un
+   filtre. La difficulté d'un inventaire mensuel n'est pas de trouver UN
+   article, c'est de savoir lesquels des soixante restent à faire.
+   ═════════════════════════════════════════════════════════════════════════ */
+const CAT_CACHE_KEY = 'glidji_equipe_catalogue_v1';
+let _catalogue = [];        // [{ id, nom, photoB64 }]
+let _comptagesMois = {};    // catalogueId -> document de comptage du mois
+let _invFiltre = 'tous';    // 'tous' | 'restant' | 'faits'
+let _catalogueInjoignable = '';  // message réseau, s'il y en a un
+
+function lireCatalogueCache() {
+  try {
+    const brut = JSON.parse(localStorage.getItem(CAT_CACHE_KEY) || 'null');
+    return (brut && Array.isArray(brut.articles)) ? brut : null;
+  } catch (_) { return null; }
+}
+function ecrireCatalogueCache(articles) {
+  try {
+    localStorage.setItem(CAT_CACHE_KEY, JSON.stringify({ le: new Date().toISOString(), articles }));
+  } catch (_) { /* quota plein : on se contente de la mémoire de la session */ }
+}
+
+/** Charge catalogue + comptages du mois, puis dessine les deux grilles. */
+async function chargerInventaire(forcerReseau) {
+  const grille = document.getElementById('inv_grille');
+  const cache = lireCatalogueCache();
+  // Affichage immédiat depuis le cache : l'équipe voit sa grille sans attendre
+  // le réseau, ce qui change tout sur une connexion lente.
+  if (!forcerReseau && cache && cache.articles.length) {
+    _catalogue = cache.articles;
+    renderGrilleInventaire(); renderGrillePertes();
+  }
+  try { await authReady; } catch (_) {}
+  try {
+    const snap = await db.collection('catalogueMateriel').get();
+    const liste = [];
+    snap.forEach(d => {
+      const c = d.data() || {};
+      if (!c.nom) return;
+      // `entity` reste VOLONTAIREMENT vide tant que personne n'a tranche : c'est
+      // ce qui distingue « pas encore attribue » de « attribue a Conciergerie ».
+      // Mettre ENTITE_DEFAUT ici ferait croire que la repartition est faite.
+      liste.push({ id: d.id, nom: c.nom, photoB64: c.photoB64 || null,
+                   entity: (c.entity === 'GLIDJI' || c.entity === 'SIMAG') ? c.entity : null });
+    });
+    liste.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    _catalogue = liste;
+    _catalogueInjoignable = '';
+    ecrireCatalogueCache(liste);
+  } catch (e) {
+    // « Le catalogue est vide » ferait croire à l'équipe qu'on a perdu ses
+    // articles. Le vrai message, c'est : le réseau manque. On le retient pour
+    // que renderGrilleInventaire l'affiche au lieu du message « vide ».
+    _catalogueInjoignable = e && e.message ? e.message : 'réseau indisponible';
+  }
+  await chargerComptagesDuMois();
+  // Les attributions saisies hors reseau repartent ici, une fois la connexion
+  // revenue. Ne jamais bloquer le rendu dessus : c'est du rattrapage.
+  rejouerAttribEnAttente().catch(function(){});
+  renderGrilleInventaire();
+  renderGrillePertes();
+  renderRecapComptage();
+}
+
+/** Comptages du mois en cours, indexés par article. */
+async function chargerComptagesDuMois() {
+  const mois = moisActuelInventaire();
+  _comptagesMois = {};
+  try {
+    const snap = await db.collection('inventaireMateriel').get();
+    snap.forEach(d => {
+      const x = d.data() || {};
+      if (x.mois !== mois || !x.catalogueId) return;
+      // Les bases existantes contiennent des comptages EN DOUBLE, écrits avec
+      // une clé aléatoire avant le correctif ci-dessous. Le plus récent
+      // l'emporte — même règle que stockConnuMateriel côté ERP.
+      const dejaLa = _comptagesMois[x.catalogueId];
+      if (!dejaLa || String(x.createdAt || '') > String(dejaLa.createdAt || '')) {
+        _comptagesMois[x.catalogueId] = x;
+      }
+    });
+  } catch (_) { /* hors ligne : la grille reste utilisable, sans les états */ }
+}
+
+function invArticlesFiltres(champ) {
+  const q = normalizeNom((document.getElementById(champ) || {}).value || '');
+  return _catalogue.filter(c => !q || normalizeNom(c.nom).includes(q));
+}
+
+function invVignette(c, taille) {
+  const px = taille || 100;
+  return c.photoB64
+    ? `<img class="inv-photo" src="${c.photoB64}" alt="" loading="lazy"
+         style="height:${px}px;" onclick="agrandirPhotoInventaire('${escapeHtml(c.id)}')">`
+    : `<div class="inv-photo inv-photo-vide" style="height:${px}px;">📦</div>`;
+}
+
+function renderGrilleInventaire() {
+  const wrap = document.getElementById('inv_grille');
+  if (!wrap) return;
+  const moisEl = document.getElementById('inv_mois');
+  if (moisEl) moisEl.textContent = '(' + moisActuelInventaire() + ')';
+
+  const faits = _catalogue.filter(c => _comptagesMois[c.id] !== undefined).length;
+  const total = _catalogue.length;
+  const avEl = document.getElementById('inv_avancement');
+  if (avEl) {
+    const pct = total ? Math.round(faits / total * 100) : 0;
+    avEl.innerHTML = total
+      ? `<div class="inv-jauge"><span style="width:${pct}%"></span></div>
+         <div class="inv-avancement-txt"><strong>${faits}</strong> sur ${total} compté${faits > 1 ? 's' : ''}
+         ${faits === total ? ' — inventaire terminé 🎉' : ' · il en reste ' + (total - faits)}</div>`
+      : '';
+  }
+
+  // Attribution des articles aux deux societes : avancement propre, distinct
+  // du comptage. Les deux se font dans le meme geste mais ne se confondent pas.
+  const attribues = _catalogue.filter(c => c.entity === 'GLIDJI' || c.entity === 'SIMAG').length;
+  const attEl = document.getElementById('inv_attribution');
+  if (attEl) {
+    attEl.innerHTML = (total && attribues < total)
+      ? `<div class="inv-attrib-rappel">🏷️ <strong>${total - attribues}</strong> article(s) sans société.
+           Pendant que vous comptez, touchez « Conciergerie » ou « SIMAG » sur la tuile.</div>`
+      : (total ? `<div class="inv-attrib-ok">🏷️ Tous les articles sont attribués à une société.</div>` : '');
+  }
+
+  const filtresEl = document.getElementById('inv_filtres');
+  if (filtresEl) {
+    const b = (cle, libelle, n) =>
+      `<button class="${_invFiltre === cle ? 'btn-gold' : 'btn-ghost'} btn-sm"
+        onclick="invSetFiltre('${cle}')">${libelle}${n === null ? '' : ' (' + n + ')'}</button>`;
+    filtresEl.innerHTML = b('tous', 'Tous', total)
+      + b('restant', 'À compter', total - faits)
+      + b('faits', 'Comptés', faits)
+      + b('aattribuer', 'Sans société', total - attribues);
+  }
+
+  if (!total) {
+    wrap.innerHTML = _catalogueInjoignable
+      ? `<p class="hint">⛔ Catalogue injoignable : ${escapeHtml(_catalogueInjoignable)}<br>Vos articles ne sont pas perdus — reconnectez-vous, puis touchez 🔄.</p>`
+      : `<p class="hint">Le catalogue est vide. Ajoutez un premier article ci-dessous.</p>`;
+    return;
+  }
+  const liste = invArticlesFiltres('inv_search').filter(c => {
+    const fait = _comptagesMois[c.id] !== undefined;
+    if (_invFiltre === 'restant') return !fait;
+    if (_invFiltre === 'faits') return fait;
+    if (_invFiltre === 'aattribuer') return c.entity !== 'GLIDJI' && c.entity !== 'SIMAG';
+    return true;
+  });
+  if (!liste.length) {
+    wrap.innerHTML = `<p class="hint">Aucun article ne correspond à ce filtre.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `<div class="inv-grille">` + liste.map(c => {
+    const cpt = _comptagesMois[c.id];
+    const fait = cpt !== undefined;
+    const ent = (c.entity === 'GLIDJI' || c.entity === 'SIMAG') ? c.entity : null;
+    // Attribue : une pastille discrete, touchable pour corriger.
+    // Non attribue : les deux choix, en clair. Jamais bloquant pour le comptage.
+    const blocEnt = ent
+      ? `<button class="inv-ent-pastille ent-pastille ent-pastille-${ent}"
+                 data-attrib-reouvrir="${escapeHtml(c.id)}"
+                 title="Toucher pour changer de société">${escapeHtml(nomEntite(ent))} ✎</button>`
+      : `<div class="inv-ent-choix" data-attrib-zone="${escapeHtml(c.id)}">
+           <button class="inv-ent-btn inv-ent-GLIDJI" data-attrib="${escapeHtml(c.id)}" data-ent="GLIDJI">${escapeHtml(nomEntite('GLIDJI'))}</button>
+           <button class="inv-ent-btn inv-ent-SIMAG"  data-attrib="${escapeHtml(c.id)}" data-ent="SIMAG">${escapeHtml(nomEntite('SIMAG'))}</button>
+           ${c._entAncienne ? `<button class="inv-ent-annuler" data-attrib-annuler="${escapeHtml(c.id)}" title="Annuler, garder ${escapeHtml(nomEntite(c._entAncienne))}">✕</button>` : ''}
+         </div>`;
+    return `<div class="inv-tuile${fait ? ' inv-fait' : ''}${ent ? '' : ' inv-sans-ent'}" id="invt_${escapeHtml(c.id)}">
+      ${invVignette(c, 100)}
+      <div class="inv-nom">${escapeHtml(c.nom)}</div>
+      ${blocEnt}
+      <div class="inv-etat">${fait
+        ? '✅ compté : <strong>' + (Number(cpt.quantite) || 0) + '</strong>'
+        : '<span class="inv-a-faire">à compter</span>'}</div>
+      <div class="inv-saisie">
+        <input type="number" min="0" inputmode="numeric" placeholder="Qté"
+               id="invq_${escapeHtml(c.id)}" value="${fait ? (Number(cpt.quantite) || 0) : ''}">
+        <button class="btn-gold btn-sm" data-compter="${escapeHtml(c.id)}">${fait ? '↻' : 'OK'}</button>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+
+  wrap.querySelectorAll('[data-compter]').forEach(btn => {
+    btn.addEventListener('click', () => enregistrerComptage(btn.dataset.compter, btn));
+  });
+  wrap.querySelectorAll('[data-attrib]').forEach(btn => {
+    btn.addEventListener('click', () => marquerEntiteArticle(btn.dataset.attrib, btn.dataset.ent));
+  });
+  // Rouvrir le choix sur un article deja attribue : on efface localement pour
+  // reafficher les deux boutons. Rien n'est ecrit tant qu'aucun n'est touche,
+  // donc un appui par megarde ne perd pas l'attribution enregistree.
+  wrap.querySelectorAll('[data-attrib-reouvrir]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const a = _catalogue.find(c => c.id === btn.dataset.attribReouvrir);
+      if (!a) return;
+      a._entAncienne = a.entity; a.entity = null;
+      renderGrilleInventaire();
+    });
+  });
+  wrap.querySelectorAll('[data-attrib-annuler]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const a = _catalogue.find(c => c.id === btn.dataset.attribAnnuler);
+      if (!a) return;
+      a.entity = a._entAncienne || null; delete a._entAncienne;
+      renderGrilleInventaire();
+    });
+  });
+}
+
+function invSetFiltre(cle) {
+  _invFiltre = (cle === 'restant' || cle === 'faits' || cle === 'aattribuer') ? cle : 'tous';
+  renderGrilleInventaire();
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   ATTRIBUTION D'UN ARTICLE A UNE SOCIETE
+   ─────────────────────────────────────────────────────────────────────────
+   Le materiel appartient a une societe une fois pour toutes : l'attribution
+   vit donc sur l'ARTICLE (catalogueMateriel.entity), pas sur le comptage du
+   mois. On la saisit pendant le comptage parce que c'est le seul moment ou
+   quelqu'un a l'objet sous les yeux — mais elle ne se redemande jamais.
+
+   Ecriture en MERGE : un `.set()` complet ecraserait la photo et la date de
+   creation, que le cache local ne porte pas.
+
+   L'attribution n'est JAMAIS bloquante : un article non attribue se compte
+   normalement. Bloquer le comptage pour obtenir une etiquette ferait perdre
+   les deux.
+   ═════════════════════════════════════════════════════════════════════════ */
+const ATTRIB_FILE_KEY = 'glidji_equipe_attrib_en_attente_v1';
+
+function lireAttribEnAttente() {
+  try { const v = JSON.parse(localStorage.getItem(ATTRIB_FILE_KEY) || '{}'); return (v && typeof v === 'object') ? v : {}; }
+  catch (_) { return {}; }
+}
+function ecrireAttribEnAttente(o) {
+  try { localStorage.setItem(ATTRIB_FILE_KEY, JSON.stringify(o)); } catch (_) {}
+}
+
+async function ecrireEntiteArticle(catalogueId, entity) {
+  await db.collection('catalogueMateriel').doc(catalogueId).set({
+    entity: entity,
+    entityAuteur: getStaffName() || 'Équipe',
+    entityLe: new Date().toISOString(),
+  }, { merge: true });
+}
+
+/** Rejoue les attributions saisies hors reseau. Appelee au chargement. */
+async function rejouerAttribEnAttente() {
+  const att = lireAttribEnAttente();
+  const ids = Object.keys(att);
+  if (!ids.length) return;
+  try { await authReady; } catch (_) {}
+  let ok = 0;
+  for (const id of ids) {
+    try { await ecrireEntiteArticle(id, att[id]); delete att[id]; ok++; }
+    catch (_) { /* toujours hors reseau : on garde pour la prochaine fois */ }
+  }
+  ecrireAttribEnAttente(att);
+  if (ok) toast('✅ ' + ok + ' attribution(s) en attente envoyée(s).');
+}
+
+async function marquerEntiteArticle(catalogueId, entity) {
+  if (entity !== 'GLIDJI' && entity !== 'SIMAG') return;
+  const art = _catalogue.find(c => c.id === catalogueId);
+  if (!art) { toast('Article introuvable — touchez 🔄 pour recharger.', true); return; }
+
+  const avant = art.entity || null;
+  art.entity = entity;                 // affichage immediat, avant le reseau
+  ecrireCatalogueCache(_catalogue);
+  renderGrilleInventaire();
+
+  try { await authReady; } catch (_) {}
+  try {
+    await ecrireEntiteArticle(catalogueId, entity);
+    toast('✅ ' + art.nom + ' → ' + nomEntite(entity) + '.');
+  } catch (e) {
+    // Hors reseau : on NE REVIENT PAS en arriere, on met en file. Annuler le
+    // choix ferait recompter l'article a la prochaine ouverture.
+    const att = lireAttribEnAttente(); att[catalogueId] = entity; ecrireAttribEnAttente(att);
+    toast('✅ ' + art.nom + ' → ' + nomEntite(entity) + ' — enregistré sur cet appareil, il partira dès le retour du réseau.');
+    if (avant === null) { /* rien a defaire */ }
+  }
+}
+
+/**
+ * Enregistre un comptage. CLÉ DÉTERMINISTE `mois_article` : recompter le même
+ * article dans le mois ÉCRASE la valeur au lieu d'en ajouter une seconde.
+ *
+ * Avant, la clé était aléatoire (nouvelleCleClient) : corriger un comptage
+ * créait un DEUXIÈME document, et le récapitulatif affichait l'article deux
+ * fois avec deux nombres différents. C'est exactement ce que la règle d'or
+ * du projet (§3.4) interdit : toute écriture doit porter une clé stable.
+ *
+ * Passe par la file hors-ligne : un comptage saisi dans un entrepôt sans
+ * réseau n'est plus perdu, il repart tout seul.
+ */
+async function enregistrerComptage(catalogueId, btn) {
+  const art = _catalogue.find(c => c.id === catalogueId);
+  if (!art) { toast('Article introuvable — rechargez le catalogue.', true); return; }
+  const champ = document.getElementById('invq_' + catalogueId);
+  // Un <input type="number"> VIDE la valeur quand la frappe n'est pas un nombre :
+  // « abc » et « rien du tout » arrivent tous deux comme ''. Number('') vaut 0,
+  // donc sans ce garde-fou un doigt maladroit enregistrait « 0 en stock » — un
+  // comptage faux est bien pire qu'un comptage manquant, parce qu'il a l'air fait.
+  const saisie = champ ? String(champ.value).trim() : '';
+  if (saisie === '') { toast('Saisissez une quantité avant de valider.', true); return; }
+  const quantite = Number(saisie);
+  if (!Number.isFinite(quantite) || quantite < 0) { toast('Quantité invalide.', true); return; }
+
+  const mois = moisActuelInventaire();
+  const ref = mois + '_' + catalogueId;
+  const payload = {
+    catalogueId, nom: art.nom, mois, quantite: Math.round(quantite),
+    auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
+  };
+  if (btn) btn.disabled = true;
+  const res = await envoyerAvecRepliHorsLigne('inventaireMateriel', payload, ref);
+  if (btn) btn.disabled = false;
+  _comptagesMois[catalogueId] = payload;
+  renderGrilleInventaire();
+  renderRecapComptage();
+  toast(res.viaFile
+    ? '✅ ' + art.nom + ' : ' + payload.quantite + ' — enregistré sur cet appareil, il partira dès le retour du réseau.'
+    : '✅ ' + art.nom + ' : ' + payload.quantite + '.');
+}
+
+/* ─── PERTES : la même grille, avec la photo ────────────────────────────────
+ * Elle n'en avait AUCUNE — juste une recherche à l'aveugle. Déclarer une
+ * casse sur le mauvais article fausse l'inventaire en silence. */
 const MOTIFS_PERTE = ['Casse', 'Perte', 'Vol', 'Péremption', 'Usure', 'Autre'];
-async function rechercherPourPerte() {
-  const wrap = document.getElementById('perteSearchResults');
-  const q = document.getElementById('perte_search').value.trim();
-  if (!q) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `<p class="hint">Recherche…</p>`;
-  try {
-    const snap = await db.collection('catalogueMateriel').get();
-    const nq = q.toLowerCase();
-    const resultats = [];
-    snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().includes(nq)) resultats.push({ id: d.id, ...data }); });
-    if (!resultats.length) { wrap.innerHTML = `<p class="hint">Aucun article du catalogue ne correspond.</p>`; return; }
-    wrap.innerHTML = resultats.slice(0, 15).map(c => `
-      <div style="display:flex; align-items:center; gap:6px; padding:6px 0; border-bottom:1px solid var(--platinum); flex-wrap:wrap;">
-        <span style="flex:1; font-size:14px;">${escapeHtml(c.nom)}</span>
-        <input type="number" min="1" value="1" placeholder="Qté" style="width:60px;" id="pqte_${c.id}">
-        <select id="pmotif_${c.id}" style="width:110px;">${MOTIFS_PERTE.map(m => `<option value="${m}">${m}</option>`).join('')}</select>
-        <button class="btn-danger btn-sm" data-declarer="${c.id}" data-nom="${escapeHtml(c.nom)}">Déclarer</button>
-      </div>`).join('');
-    wrap.querySelectorAll('[data-declarer]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const catalogueId = btn.dataset.declarer;
-        const nom = btn.dataset.nom;
-        const quantite = Number(document.getElementById('pqte_' + catalogueId).value) || 1;
-        const motif = document.getElementById('pmotif_' + catalogueId).value;
-        try {
-          const _refPerte = nouvelleCleClient();
-          await db.collection('pertes').doc(_refPerte).set({
-            catalogueId, nom, quantite, motif, date: todayIso(), clientRef: _refPerte,
-            auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
-          });
-          document.getElementById('perte_search').value = '';
-          wrap.innerHTML = '';
-          toast('Perte déclarée : ' + nom + '.');
-        } catch (e) {
-          toast('Échec : ' + e.message, true);
-        }
-      });
-    });
-  } catch (e) {
-    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
+
+function renderGrillePertes() {
+  const wrap = document.getElementById('perteGrille');
+  if (!wrap) return;
+  if (!_catalogue.length) {
+    wrap.innerHTML = `<p class="hint">Le catalogue est vide.</p>`;
+    return;
   }
+  const liste = invArticlesFiltres('perte_search');
+  if (!liste.length) { wrap.innerHTML = `<p class="hint">Aucun article ne correspond.</p>`; return; }
+  wrap.innerHTML = `<div class="inv-grille">` + liste.slice(0, 60).map(c => `
+    <div class="inv-tuile">
+      ${invVignette(c, 80)}
+      <div class="inv-nom">${escapeHtml(c.nom)}</div>
+      <div class="inv-saisie inv-saisie-perte">
+        <input type="number" min="1" value="1" inputmode="numeric" id="pqte_${escapeHtml(c.id)}">
+        <select id="pmotif_${escapeHtml(c.id)}">${MOTIFS_PERTE.map(m => `<option value="${m}">${m}</option>`).join('')}</select>
+      </div>
+      <button class="btn-danger btn-sm btn-block" data-declarer="${escapeHtml(c.id)}">Déclarer</button>
+    </div>`).join('') + `</div>`
+    + (liste.length > 60 ? `<p class="hint">60 premiers articles affichés — affinez le filtre.</p>` : '');
+
+  wrap.querySelectorAll('[data-declarer]').forEach(btn => {
+    btn.addEventListener('click', () => declarerPerte(btn.dataset.declarer, btn));
+  });
 }
 
-async function rechercherPourComptage() {
-  const wrap = document.getElementById('comptageSearchResults');
-  const q = document.getElementById('comptage_search').value.trim();
-  if (!q) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `<p class="hint">Recherche…</p>`;
-  try {
-    const snap = await db.collection('catalogueMateriel').get();
-    const nq = q.toLowerCase();
-    const resultats = [];
-    snap.forEach(d => { const data = d.data(); if (data.nom.toLowerCase().includes(nq)) resultats.push({ id: d.id, ...data }); });
-    if (!resultats.length) { wrap.innerHTML = `<p class="hint">Aucun article du catalogue ne correspond.</p>`; return; }
-    // La photo lève l'ambiguïté au moment de compter : deux références au nom
-    // proche (« chaise pliante » / « chaise pliante blanche ») ne se
-    // distinguent qu'à l'œil, et un comptage attribué au mauvais article
-    // fausse l'inventaire sans que personne ne s'en aperçoive.
-    wrap.innerHTML = resultats.slice(0, 15).map(c => `
-      <div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--platinum);">
-        ${c.photoB64
-          ? `<img src="${c.photoB64}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:6px;flex:0 0 auto;">`
-          : `<div style="width:42px;height:42px;border-radius:6px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;">📦</div>`}
-        <span style="flex:1; font-size:14px;">${escapeHtml(c.nom)}</span>
-        <input type="number" min="0" placeholder="Qté" style="width:70px;" id="qte_${c.id}">
-        <button class="btn-gold btn-sm" data-saisir="${c.id}" data-nom="${escapeHtml(c.nom)}">OK</button>
-      </div>`).join('');
-    wrap.querySelectorAll('[data-saisir]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const catalogueId = btn.dataset.saisir;
-        const nom = btn.dataset.nom;
-        const quantite = Number(document.getElementById('qte_' + catalogueId).value);
-        if (!(quantite >= 0)) { toast('Quantité invalide.', true); return; }
-        try {
-          const _refInv = nouvelleCleClient();
-          await db.collection('inventaireMateriel').doc(_refInv).set({
-            catalogueId, nom, mois: moisActuelInventaire(), quantite, clientRef: _refInv,
-            auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
-          });
-          document.getElementById('comptage_search').value = '';
-          wrap.innerHTML = '';
-          toast('Comptage enregistré.');
-          chargerComptageMoisEnCours();
-        } catch (e) {
-          toast('Échec : ' + e.message, true);
-        }
-      });
-    });
-  } catch (e) {
-    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
-  }
+async function declarerPerte(catalogueId, btn) {
+  const art = _catalogue.find(c => c.id === catalogueId);
+  if (!art) { toast('Article introuvable.', true); return; }
+  const q = Number((document.getElementById('pqte_' + catalogueId) || {}).value) || 1;
+  const motif = (document.getElementById('pmotif_' + catalogueId) || {}).value || 'Autre';
+  if (!confirm('Déclarer ' + q + ' × « ' + art.nom + ' » en perte (' + motif + ') ?')) return;
+  const ref = nouvelleCleClient();
+  if (btn) btn.disabled = true;
+  const res = await envoyerAvecRepliHorsLigne('pertes', {
+    catalogueId, nom: art.nom, quantite: q, motif, date: todayIso(),
+    auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString(),
+  }, ref);
+  if (btn) btn.disabled = false;
+  toast(res.viaFile
+    ? '✅ Perte enregistrée sur cet appareil — elle partira dès le retour du réseau.'
+    : 'Perte déclarée : ' + art.nom + '.');
 }
 
-async function chargerComptageMoisEnCours() {
+/* ─── AJOUT AU CATALOGUE : ALERTER SUR LES NOMS PROCHES ─────────────────────
+ * L'alerte ne se déclenchait que sur un nom IDENTIQUE : « chaise pliante » et
+ * « chaise pliante blanche » passaient sans un mot, et le doublon était créé.
+ * Elle compare désormais avec normalizeNom() — accents et casse ignorés — et
+ * signale tout article dont le nom contient le nouveau ou est contenu dedans,
+ * PHOTO À L'APPUI. Elle avertit, elle ne bloque jamais : deux tailles de nappe
+ * sont deux références légitimes. */
+function articlesProches(nom) {
+  const n = normalizeNom(nom);
+  if (n.length < 3) return [];
+  return _catalogue.filter(c => {
+    const m = normalizeNom(c.nom);
+    return m === n || m.includes(n) || n.includes(m);
+  }).slice(0, 4);
+}
+
+function signalerSimilaires() {
+  const zone = document.getElementById('cat_similaires');
+  if (!zone) return;
+  const nom = (document.getElementById('cat_nom') || {}).value || '';
+  const proches = articlesProches(nom);
+  if (!proches.length) { zone.innerHTML = ''; return; }
+  zone.innerHTML = `<div class="cat-alerte">
+    <div class="cat-alerte-titre">⚠️ ${proches.length} article${proches.length > 1 ? 's' : ''} déjà au catalogue ressemble${proches.length > 1 ? 'nt' : ''} à ce nom</div>
+    <div class="inv-grille inv-grille-mini">${proches.map(c => `
+      <div class="inv-tuile">
+        ${invVignette(c, 70)}
+        <div class="inv-nom">${escapeHtml(c.nom)}</div>
+        <button class="btn-ghost btn-sm btn-block" onclick="invVoirArticle('${escapeHtml(c.id)}')">C'est celui-là</button>
+      </div>`).join('')}</div>
+    <p class="hint" style="margin-top:6px;">Si c'est le même article, comptez-le plutôt que d'en créer un second. Sinon, ajoutez sans crainte.</p>
+  </div>`;
+}
+
+/** Amène l'équipe sur l'article existant, filtre posé, plutôt que de la laisser en créer un doublon. */
+function invVoirArticle(catalogueId) {
+  const art = _catalogue.find(c => c.id === catalogueId);
+  if (!art) return;
+  const champ = document.getElementById('inv_search');
+  if (champ) champ.value = art.nom;
+  _invFiltre = 'tous';
+  renderGrilleInventaire();
+  const tuile = document.getElementById('invt_' + catalogueId);
+  if (tuile) tuile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const q = document.getElementById('invq_' + catalogueId);
+  if (q) setTimeout(() => q.focus(), 400);
+}
+
+async function ajouterAuCatalogue() {
+  if (catPhotoEnCoursDeTraitement) { toast('La photo est encore en cours de traitement, patientez un instant.', true); return; }
+  const nom = (document.getElementById('cat_nom').value || '').trim();
+  if (!nom) { toast('Merci de renseigner le nom de l\'article.', true); return; }
+  const btn = document.getElementById('btnAddCatalogueMateriel');
+  // Plus aucune lecture réseau ici : le catalogue est déjà en mémoire.
+  const proches = articlesProches(nom);
+  const avertissement = (proches.length > 1 ? 'Articles déjà' : 'Article déjà')
+      + ' au catalogue :\n\n'
+      + proches.map(c => '  \u2022 ' + c.nom).join('\n')
+      + '\n\nAjouter \u00ab ' + nom + ' \u00bb comme référence DISTINCTE ?';
+  if (proches.length && !confirm(avertissement)) {
+    signalerSimilaires();
+    return;
+  }
+  btn.disabled = true;
+  try {
+    const ref = nouvelleCleClient();
+    const article = { nom, photoB64: catPhotoData || null, clientRef: ref,
+                      auteur: getStaffName() || 'Équipe', createdAt: new Date().toISOString() };
+    await db.collection('catalogueMateriel').doc(ref).set(article);
+    // Le cache suit immédiatement : l'article apparaît dans la grille sans
+    // relire la collection entière.
+    _catalogue.push({ id: ref, nom, photoB64: catPhotoData || null });
+    _catalogue.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    ecrireCatalogueCache(_catalogue);
+    document.getElementById('cat_nom').value = '';
+    document.getElementById('cat_photo').value = '';
+    document.getElementById('cat_photo_preview').innerHTML = '';
+    document.getElementById('cat_similaires').innerHTML = '';
+    catPhotoData = null;
+    renderGrilleInventaire(); renderGrillePertes();
+    toast('Article ajouté au catalogue.');
+  } catch (e) {
+    toast('Échec de l\'envoi : ' + e.message, true);
+  }
+  btn.disabled = false;
+}
+
+/** Photo en grand : une vignette de 100 px ne tranche pas toujours. */
+function agrandirPhotoInventaire(catalogueId) {
+  const art = _catalogue.find(c => c.id === catalogueId);
+  if (!art || !art.photoB64) return;
+  const d = document.createElement('div');
+  d.className = 'cal-popup';
+  d.innerHTML = `<div class="cal-popup-inner" style="text-align:center;">
+    <img src="${art.photoB64}" alt="" style="max-width:100%;border-radius:8px;">
+    <div style="font-weight:700;margin:10px 0 12px;">${escapeHtml(art.nom)}</div>
+    <button class="btn-ghost btn-block" onclick="this.closest('.cal-popup').remove()">Fermer</button>
+  </div>`;
+  d.addEventListener('click', e => { if (e.target === d) d.remove(); });
+  document.body.appendChild(d);
+}
+
+/** Récapitulatif : ce que la grille ne dit pas, c'est QUI a compté. */
+function renderRecapComptage() {
   const wrap = document.getElementById('comptageListWrap');
   if (!wrap) return;
-  try {
-    const mois = moisActuelInventaire();
-    const snap = await db.collection('inventaireMateriel').get();
-    const items = [];
-    snap.forEach(d => { const data = d.data(); if (data.mois === mois) items.push(data); });
-    items.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
-    if (!items.length) {
-      wrap.innerHTML = `<p class="hint">Aucun comptage ce mois-ci pour l'instant.</p>`;
-      return;
-    }
-    // Les comptages ne stockent JAMAIS de photo (un comptage mensuel doit rester
-    // léger) : on la récupère du catalogue, où elle n'est prise qu'une fois.
-    const photos = {};
-    try {
-      const cat = await db.collection('catalogueMateriel').get();
-      cat.forEach(d => { const c = d.data(); if (c.photoB64) photos[d.id] = c.photoB64; });
-    } catch(_) { /* sans photo, la liste reste parfaitement lisible */ }
-
-    wrap.innerHTML = items.map(i => `
-      <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--platinum-light);">
-        ${photos[i.catalogueId]
-          ? `<img src="${photos[i.catalogueId]}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:6px;flex:0 0 auto;">`
-          : `<div style="width:38px;height:38px;border-radius:6px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;">📦</div>`}
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;">${escapeHtml(i.nom)}</div>
-          <div style="font-size:11px;color:var(--muted);">compté par ${escapeHtml(i.auteur || '—')}</div>
-        </div>
-        <strong style="font-size:15px;">${Number(i.quantite) || 0}</strong>
-      </div>`).join('');
-  } catch (e) {
-    wrap.innerHTML = `<p class="hint">⛔ ${escapeHtml(e.message)}</p>`;
+  // Un comptage hérité peut ne pas porter de nom : sans ce repli, la ligne
+  // s'affichait « compté par Ama » sans dire de QUOI. Le catalogue le sait.
+  const nomDe = id => {
+    const c = _catalogue.find(x => x.id === id);
+    return c ? c.nom : '';
+  };
+  const items = Object.entries(_comptagesMois)
+    .map(([id, i]) => Object.assign({}, i, { catalogueId: i.catalogueId || id,
+                                             nom: i.nom || nomDe(id) || '(article retiré du catalogue)' }))
+    .sort((a, b) => a.nom.localeCompare(b.nom));
+  if (!items.length) {
+    wrap.innerHTML = `<p class="hint">Aucun comptage ce mois-ci pour l'instant.</p>`;
+    return;
   }
+  const photos = {};
+  _catalogue.forEach(c => { if (c.photoB64) photos[c.id] = c.photoB64; });
+  wrap.innerHTML = items.map(i => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--platinum-light);">
+      ${photos[i.catalogueId]
+        ? `<img src="${photos[i.catalogueId]}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:6px;flex:0 0 auto;">`
+        : `<div style="width:38px;height:38px;border-radius:6px;background:var(--platinum-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;">📦</div>`}
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;">${escapeHtml(i.nom)}</div>
+        <div style="font-size:11px;color:var(--muted);">compté par ${escapeHtml(i.auteur || '—')}</div>
+      </div>
+      <strong style="font-size:15px;">${Number(i.quantite) || 0}</strong>
+    </div>`).join('');
 }
 
+
+/* ═════════════════════════════════════════════════════════════════════════
+   MOIS D'EMISSION DEDUIT DU NUMERO DE DOCUMENT
+   ─────────────────────────────────────────────────────────────────────────
+   92 % des documents de l'ERP n'ont AUCUNE date de prestation : ce sont des
+   factures historiques ou personne n'a jamais rempli ce champ. Les afficher
+   toutes sous « Date a preciser » noyait les 9 fiches utiles sous 321 vieux
+   documents de 2024-2025.
+
+   La fiche transmise a l'equipe ne porte pas la date d'emission — mais le
+   NUMERO la contient : « 015/GC/05/2024 », « F048/GC/09/2026 ». Les deux
+   derniers segments sont le mois et l'annee. On filtre donc sans avoir a
+   renvoyer quoi que ce soit vers Firestore : ca marche immediatement sur
+   les fiches deja en place.
+
+   Un numero illisible est GARDE visible : mieux vaut une fiche de trop qu'une
+   prestation reelle cachee par une regle de tri.
+   ═════════════════════════════════════════════════════════════════════════ */
+function moisDuNumero(numero) {
+  const p = String(numero || '').split('/');
+  if (p.length < 4) return null;
+  const mm = p[p.length - 2], aaaa = p[p.length - 1];
+  if (!/^\d{4}$/.test(aaaa) || !/^\d{1,2}$/.test(mm)) return null;
+  const m = Number(mm);
+  if (m < 1 || m > 12) return null;
+  return aaaa + '-' + String(m).padStart(2, '0');
+}
+
+/** Mois plancher : on recule de n mois sur le mois courant. */
+function moisMoins(moisIso, n) {
+  const a = Number(moisIso.slice(0, 4)), m = Number(moisIso.slice(5, 7));
+  const t = a * 12 + (m - 1) - n;
+  return String(Math.floor(t / 12)) + '-' + String((t % 12) + 1).padStart(2, '0');
+}
 
 async function renderTabFiches() {
   const wrap = document.getElementById('tabContent');
@@ -982,34 +1641,58 @@ async function renderTabFiches() {
   try { await authReady; } catch(_) {}
   try {
     const snap = await db.collection('fichesEquipe').get();
-    const fiches = [];
     const aujourdhui = todayIso();
+    // Fenetre de retro-visibilite : une prestation du week-end est encore
+    // « vivante » le lundi (achats a saisir, materiel a rendre, photos a
+    // remonter). L'ancienne condition dp >= aujourdhui la faisait disparaitre
+    // a minuit pile, alors que le calendrier, lui, la gardait via son bouton
+    // « Masquer les passees » : les deux vues se contredisaient.
+    const RETRO_JOURS = 7;
+    const limiteBasse = (() => {
+      const d = new Date(aujourdhui + 'T00:00:00');
+      d.setDate(d.getDate() - RETRO_JOURS);
+      return d.toISOString().slice(0, 10);
+    })();
+
+    // Une fiche sans date n'a d'interet que si le document est RECENT. Une
+    // facture de mai 2024 sans date de prestation ne sera jamais precisee :
+    // c'est de l'archive, pas une action a mener.
+    // 3 mois = le mois courant PLUS les deux precedents. D'ou le -1 : reculer
+    // de 3 mois pleins en garderait quatre.
+    const FENETRE_SANS_DATE_MOIS = 3;
+    const moisPlancher = moisMoins(aujourdhui.slice(0, 7), FENETRE_SANS_DATE_MOIS - 1);
+
+    const sansDate = [], recentes = [], aVenir = [];
+    let sansDateAnciennes = 0;
     snap.forEach(d => {
       const f = d.data();
-      // Seules les prestations a venir restent visibles a l'equipe - une
-      // prestation passee n'a plus d'utilite operationnelle une fois l'evenement
-      // termine, et encombrerait la liste inutilement au fil des mois.
-      // Une fiche SANS date reste visible : '' >= '2026-09-06' est faux, donc
-      // l'ancienne condition la faisait disparaitre sans le moindre message.
-      // L'equipe n'avait aucun moyen de savoir qu'une prestation existait.
       const dp = f.datePrestation || '';
-      if (!dp || dp >= aujourdhui) fiches.push(f);
-    });
-    // Les fiches sans date passent en tete : ce sont celles qui demandent une
-    // action (faire preciser la date), pas celles qu'on peut planifier.
-    fiches.sort((a, b) => {
-      const da = a.datePrestation || '', dbb = b.datePrestation || '';
-      if (!da && dbb) return -1;
-      if (da && !dbb) return 1;
-      return da.localeCompare(dbb);
+      if (!dp) {
+        const md = moisDuNumero(f.numero);
+        // Numero illisible -> on garde. Document ancien -> on masque et on compte.
+        if (md && md < moisPlancher) { sansDateAnciennes++; return; }
+        sansDate.push(f); return;
+      }
+      if (dp >= aujourdhui) { aVenir.push(f); return; }
+      if (dp >= limiteBasse) { recentes.push(f); return; }
+      // Au-dela de la fenetre, la fiche n'a plus d'utilite operationnelle et
+      // alourdirait la liste sur mobile : elle reste visible dans le calendrier.
     });
 
-    if (!fiches.length) {
-      wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.</div></div>`;
+    const parDate = (a, b) => (a.datePrestation || '').localeCompare(b.datePrestation || '');
+    aVenir.sort(parDate);
+    recentes.sort((a, b) => parDate(b, a)); // la plus recente en tete
+
+    if (!sansDate.length && !recentes.length && !aVenir.length) {
+      // Si tout ce qui existe est ancien, le dire : « aucune prestation » tout
+      // court laisserait croire que les fiches ont ete perdues.
+      wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.${
+        sansDateAnciennes ? `<br><span class="hint">(${sansDateAnciennes} document(s) de plus de ${FENETRE_SANS_DATE_MOIS} mois sans date de prestation ne sont pas affichés.)</span>` : ''
+      }</div></div>`;
       return;
     }
-    wrap.innerHTML = `<div class="card"><h2>Prestations à venir <span class="hint">(sans information financière)</span></h2>
-      ${fiches.map(f => `
+
+    const carteFiche = f => `
         <div class="fe-card">
           <div class="num">${escapeHtml(f.type)} N° ${escapeHtml(f.numero)}</div>
           <div class="obj">${escapeHtml(f.objet)}</div>
@@ -1020,7 +1703,22 @@ async function renderTabFiches() {
           <div class="fe-row"><div class="l">Heure</div><div>${escapeHtml(f.heure)}</div></div>
           <div class="fe-row"><div class="l">Convives</div><div>${escapeHtml(f.convives)}</div></div>
           <ul class="fe-items">${(f.items || []).map(it => `<li>${escapeHtml(it.designation)} ${it.qte > 1 ? '× ' + it.qte : ''}</li>`).join('')}</ul>
-        </div>`).join('')}
+        </div>`;
+
+    const section = (titre, liste) => liste.length
+      ? `<h4 style="margin:18px 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">${titre}</h4>${liste.map(carteFiche).join('')}`
+      : '';
+
+    // Rien n'est masque en silence : le nombre est dit, avec la raison.
+    const noteAnciennes = sansDateAnciennes
+      ? `<p class="hint" style="margin:10px 0 0;">${sansDateAnciennes} document(s) de plus de ${FENETRE_SANS_DATE_MOIS} mois sans date de prestation ne sont pas affichés ici.</p>`
+      : '';
+
+    wrap.innerHTML = `<div class="card"><h2>Fiches équipe <span class="hint">(sans information financière)</span></h2>
+      ${section('⚠️ Date à préciser', sansDate)}
+      ${section('À venir', aVenir)}
+      ${section('Récentes (' + RETRO_JOURS + ' derniers jours)', recentes)}
+      ${noteAnciennes}
     </div>`;
   } catch (e) {
     wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger les fiches : ${escapeHtml(e.message)}</p></div>`;
@@ -1145,17 +1843,22 @@ async function renderTabAvances() {
   wrap.innerHTML = `<div class="card"><p class="hint">Chargement…</p></div>`;
   try { await authReady; } catch(_) {}
 
+  const ent = _entiteEcran;
   let compteActifId = null;
   try {
-    const metaSnap = await db.collection('caisseMeta').doc('actif').get();
-    compteActifId = metaSnap && metaSnap.exists ? metaSnap.data().compteActifId : null;
+    compteActifId = await compteActifIdPour(ent);
   } catch (e) {
-    wrap.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
+    wrap.innerHTML = bandeauEntite(ent) + `<div class="card"><p class="hint">⛔ ${escapeHtml(e.message)}</p></div>`;
     return;
   }
 
   if (!compteActifId) {
-    wrap.innerHTML = `<div class="card"><div class="empty">Aucun compte de caisse actif pour l'instant. Demandez à Hello d'en ouvrir un.</div></div>`;
+    /* Le message nomme la société : « aucun compte actif » tout court laissait
+       croire à un problème général, alors que l'autre caisse fonctionne. */
+    wrap.innerHTML = bandeauEntite(ent) + `<div class="card"><div class="empty">
+      Aucune caisse ouverte pour <strong>${nomCompletEntite(ent)}</strong>.<br>
+      <span class="hint">Demandez à Hello d'ouvrir la caisse ${nomEntite(ent)} depuis l'ERP.
+      La caisse de l'autre société, elle, n'est pas concernée.</span></div></div>`;
     return;
   }
 
@@ -1190,9 +1893,9 @@ async function renderTabAvances() {
   const solde = totalAvances - totalDepenses;
   const nbAttente = enAttente.length;
 
-  wrap.innerHTML = `
+  wrap.innerHTML = bandeauEntite(ent, 'Cette caisse ne paie que les achats de cette société') + `
     <div class="card">
-      <h2>Caisse d'équipe <span class="hint">(visible par toute l'équipe)</span></h2>
+      <h2>Caisse ${nomEntite(ent)} <span class="hint">(visible par toute l'équipe)</span></h2>
       <div style="display:flex; justify-content:space-around; text-align:center; margin:16px 0; font-size:14px;">
         <div><div class="hint">Avances</div><strong>${totalAvances.toLocaleString('fr-FR')} FCFA</strong></div>
         <div><div class="hint">Dépensé</div><strong>${totalDepenses.toLocaleString('fr-FR')} FCFA</strong></div>
@@ -1217,7 +1920,7 @@ async function renderTabAvances() {
     </div>
 
     <div class="card">
-      <h2>Ajouter une avance reçue</h2>
+      <h2>Ajouter une avance reçue de ${nomEntite(ent)}</h2>
       <div class="field"><label>Montant reçu (FCFA)</label><input type="number" id="cx_montantAvance" min="0"></div>
       <button class="btn-ghost btn-block" id="btnAjouterAvanceEquipe">Envoyer</button>
     </div>
@@ -1259,8 +1962,7 @@ async function renderTabAvances() {
   // temps, a l'insu de la personne qui saisit sur son telephone.
   async function verifierCompteEncoreValide() {
     try {
-      const metaSnap = await db.collection('caisseMeta').doc('actif').get();
-      const idReel = metaSnap && metaSnap.exists ? metaSnap.data().compteActifId : null;
+      const idReel = await compteActifIdPour(ent);
       return idReel === compteActifId;
     } catch (e) {
       // Pas de reseau au moment de la verification : on laisse passer, la
@@ -1287,6 +1989,7 @@ async function renderTabAvances() {
       compteId: compteActifId, type: 'depense', nom, montant,
       date: todayIso(), auteur: getStaffName() || 'Équipe',
       photoB64: avPhotoRecuData || null, createdAt: new Date().toISOString(),
+      entity: ent,          // pour que l'ERP sache dans quelle trésorerie l'inscrire
     };
     const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
     avPhotoRecuData = null;
@@ -1315,6 +2018,7 @@ async function renderTabAvances() {
       compteId: compteActifId, type: 'avance', nom: '', montant,
       date: todayIso(), auteur: getStaffName() || 'Équipe',
       photoB64: null, createdAt: new Date().toISOString(),
+      entity: ent,          // pour que l'ERP sache de quelle caisse l'argent sort
     };
     const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
     btn.disabled = false;
@@ -1448,6 +2152,49 @@ async function sendMessage() {
 
 /* ----- ACHATS EQUIPE ----- */
 var _achatLignes = [];
+/* La société pour laquelle le panier en cours a été commencé.
+   Un panier appartient à UNE société : mélanger des tomates de Conciergerie
+   et des tomates de SIMAG dans la même facturette rendrait la dépense
+   inventilable, et c'est exactement ce qu'on veut empêcher. Si l'équipe
+   ouvre l'écran de l'autre société avec un panier non vide, on le lui dit
+   au lieu de reprendre silencieusement ses lignes sous la mauvaise étiquette. */
+var _achatEntite = null;
+/* Solde de la caisse de la société de l'écran, relu à chaque ouverture. */
+var _achatSoldeCaisse = null;
+var _achatCompteId = null;
+var _achatCaisseTenue = false;
+
+/** Solde de la caisse d'une société, vu du téléphone.
+ *  Inclut les mouvements encore en file d'attente hors ligne : l'argent est
+ *  déjà sorti physiquement, l'ignorer afficherait un solde trop élevé sur la
+ *  foi duquel l'équipe continuerait à dépenser. */
+async function soldeCaisseEntite(entite) {
+  const compteId = await compteActifIdPour(entite);
+  if (!compteId) return { compteId: null, solde: null };
+  let mouvements = [];
+  try {
+    const snap = await db.collection('caisseMouvements').where('compteId', '==', compteId).get();
+    snap.forEach(d => mouvements.push(d.data()));
+  } catch (_) {
+    try {
+      const snap = await db.collection('caisseMouvements').get();
+      snap.forEach(d => { const m = d.data(); if (m && m.compteId === compteId) mouvements.push(m); });
+    } catch (e2) { return { compteId: compteId, solde: null }; }
+  }
+  const enAttente = getOfflineQueue()
+    .map(it => (it && it.collection === 'caisseMouvements') ? it.payload : null)
+    .filter(pl => pl && pl.compteId === compteId);
+  const tous = mouvements.concat(enAttente).filter(m => !m._deleted);
+  const avances = tous.filter(m => m.type === 'avance');
+  const av = avances.reduce((t, m) => t + (Number(m.montant) || 0), 0);
+  const dep = tous.filter(m => m.type === 'depense').reduce((t, m) => t + (Number(m.montant) || 0), 0);
+  /* `tenue` : cette caisse a-t-elle reçu au moins une avance déclarée ?
+     C'est la distinction qui décide si un solde à zéro veut dire « plus
+     d'argent » ou « personne ne déclare les avances ici ». Voir le garde de
+     découvert dans envoyerAchats() : les deux situations n'ont pas du tout
+     les mêmes conséquences. */
+  return { compteId: compteId, solde: av - dep, tenue: avances.length > 0 };
+}
 /* =====================================================================
    FACTURETTE D'ACHAT
    ---------------------------------------------------------------------
@@ -1474,10 +2221,32 @@ let _achatPhoto = null;
 
 /** Charge la référence de prix et les prestations à venir, sans bloquer. */
 async function chargerContexteAchats() {
+  /* Le solde de la caisse de CETTE société : c'est lui qui dira si la
+     facturette peut être payée, et c'est la première chose que l'équipe doit
+     voir en haut de l'écran. */
+  try {
+    const r = await soldeCaisseEntite(_entiteEcran);
+    _achatCompteId = r.compteId;
+    _achatSoldeCaisse = r.solde;
+    _achatCaisseTenue = !!r.tenue;
+  } catch (_) { _achatCompteId = null; _achatSoldeCaisse = null; _achatCaisseTenue = false; }
+  /* La référence de prix est propre à chaque société : le même article peut
+     s'acheter à des prix différents selon l'activité, et surtout l'alerte
+     « +25 % » doit se comparer au dernier prix payé PAR CETTE société. Sans ce
+     tri, l'équipe voyait le prix de référence de l'autre société et l'alerte
+     se déclenchait à tort — ou restait muette quand il fallait qu'elle parle.
+     Une référence sans étiquette est celle de Conciergerie, qui était la seule
+     à en envoyer. Tri en JavaScript, jamais par un where() : Firestore ne fait
+     pas correspondre un document où le champ est absent. */
   try {
     const snap = await db.collection('referencePrix').get();
     _refPrix = [];
-    snap.forEach(d => { const r = d.data(); if (r && r.nom) _refPrix.push(r); });
+    snap.forEach(d => {
+      const r = d.data();
+      if (!r || !r.nom) return;
+      if (((r.entity) || ENTITE_DEFAUT) !== _entiteEcran) return;
+      _refPrix.push(r);
+    });
   } catch(_) { _refPrix = []; }
   try {
     if (!_fichesCache.length) {
@@ -1513,7 +2282,27 @@ function prestationsAVenir() {
 
 function renderTabAchats() {
   const content = document.getElementById('tabContent');
+  const ent = _entiteEcran;
   const total = totalFacturette();
+
+  /* Un panier commencé pour l'autre société. On ne le jette pas — l'équipe a
+     peut-être saisi vingt lignes — et on ne le réétiquette pas en silence :
+     on lui laisse le choix explicite. */
+  if (_achatLignes.length && _achatEntite && _achatEntite !== ent) {
+    content.innerHTML = bandeauEntite(ent) + `<div class="card">
+      <div class="ent-manque">
+        <strong>Une facturette est déjà commencée pour ${nomCompletEntite(_achatEntite)}</strong>
+        — ${_achatLignes.length} article(s), ${total.toLocaleString('fr-FR')} FCFA.<br>
+        Elle ne peut pas être payée par la caisse ${nomEntite(ent)} : ce sont deux sociétés.
+      </div>
+      <button class="btn-gold btn-block" onclick="showEquipeTab('achats','${_achatEntite}')" style="margin-bottom:10px;">
+        ↩ Revenir à la facturette ${nomEntite(_achatEntite)} et l'envoyer</button>
+      <button class="btn-ghost btn-block" onclick="viderFacturette()">
+        🗑 Vider cette facturette et repartir sur ${nomEntite(ent)}</button>
+    </div>`;
+    return;
+  }
+  if (!_achatLignes.length) _achatEntite = ent;
 
   const listeHtml = !_achatLignes.length
     ? '<p class="hint">Aucun achat saisi.</p>'
@@ -1539,9 +2328,28 @@ function renderTabAchats() {
 
   const prestations = prestationsAVenir();
 
-  content.innerHTML = `
+  const manque = (_achatCaisseTenue && _achatSoldeCaisse !== null && total > _achatSoldeCaisse)
+    ? (total - _achatSoldeCaisse) : 0;
+  const soldeHtml = _achatCompteId === null
+    ? `<div class="ent-manque">Aucune caisse ouverte pour <strong>${nomCompletEntite(ent)}</strong>.
+         Demandez à Hello d'ouvrir la caisse ${nomEntite(ent)} — sans elle, la facturette
+         n'aurait aucune caisse à débiter.</div>`
+    : _achatSoldeCaisse === null
+      ? `<div class="ent-manque">Solde de la caisse ${nomEntite(ent)} indisponible (réseau).
+           Vous pouvez saisir : l'envoi se fera au retour du réseau.</div>`
+      : !_achatCaisseTenue
+        ? `<div class="ent-manque">Aucune avance encore déclarée sur la caisse
+             ${nomEntite(ent)}. Vous pouvez envoyer vos achats — pensez à déclarer
+             l'avance reçue pour que le solde devienne juste.</div>`
+      : `<div class="card" style="padding:13px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <span class="hint" style="margin:0;">Caisse ${nomEntite(ent)} disponible</span>
+          <strong style="font-size:17px;color:${_achatSoldeCaisse <= 0 ? '#B3261E' : '#3a6b2a'};">
+            ${_achatSoldeCaisse.toLocaleString('fr-FR')} FCFA</strong>
+        </div>`;
+
+  content.innerHTML = bandeauEntite(ent, 'Ces achats seront payés par la caisse ' + nomEntite(ent)) + soldeHtml + `
     <div class="card">
-      <h2>Facturette d'achat <span class="hint">(quantité × prix : le total se calcule tout seul)</span></h2>
+      <h2>Facturette ${nomEntite(ent)} <span class="hint">(quantité × prix : le total se calcule tout seul)</span></h2>
 
       <div class="field">
         <label>Article</label>
@@ -1584,7 +2392,21 @@ function renderTabAchats() {
         <input type="file" id="achat_photo" accept="image/*">
         <div id="achat_photo_preview" style="margin-top:8px;">${_achatPhoto ? `<img src="${_achatPhoto}" style="max-height:90px;border-radius:6px;">` : ''}</div>
       </div>
-      <button class="btn-gold btn-block" id="btnEnvoyerAchats" onclick="envoyerAchats()">Envoyer la facturette</button>
+      ${manque > 0 ? `<div class="ent-manque">
+        <strong>La caisse ${nomEntite(ent)} ne suffit pas.</strong>
+        Il manque <strong>${manque.toLocaleString('fr-FR')} FCFA</strong>.
+        Déclarez d'abord l'avance reçue dans <em>Caisse ${nomEntite(ent)}</em> —
+        l'argent d'une société ne peut pas payer les achats de l'autre.
+      </div>
+      <button class="btn-gold btn-block" onclick="showEquipeTab('avances','${ent}')" style="margin-bottom:10px;">
+        💰 Déclarer l'avance ${nomEntite(ent)} reçue</button>
+      <!-- Le découvert reste possible, mais il faut le demander expressément.
+           Refuser sèchement ferait perdre un achat DÉJÀ payé de la poche de
+           quelqu'un : la dépense existe, elle doit être enregistrée. -->
+      <button class="btn-ghost btn-block" id="btnEnvoyerAchats" onclick="envoyerAchats(true)">
+        Envoyer quand même, en découvert de ${manque.toLocaleString('fr-FR')} F</button>`
+      : `<button class="btn-gold btn-block" id="btnEnvoyerAchats" onclick="envoyerAchats()">
+        Envoyer la facturette ${nomEntite(ent)}</button>`}
     </div>`;
 
   const photoInput = document.getElementById('achat_photo');
@@ -1624,6 +2446,15 @@ function majIndicePrix() {
   } else { alerte.innerHTML = ''; }
 }
 
+/** Vide la facturette en cours — appelé quand l'équipe change de société. */
+function viderFacturette() {
+  _achatLignes = [];
+  _achatPhoto = null; _achatFournisseur = ''; _achatFicheId = '';
+  _achatEntite = _entiteEcran;
+  toast('Facturette vidée.');
+  renderTabAchats();
+}
+
 function ajouterAchat() {
   const d = document.getElementById('achat_designation').value.trim();
   const q = Number(document.getElementById('achat_quantite').value);
@@ -1645,12 +2476,43 @@ function supprimerAchat(i) {
   _achatLignes.splice(i, 1);
   renderTabAchats();
 }
-async function envoyerAchats() {
+async function envoyerAchats(decouvertAccepte) {
   if (!_achatLignes.length) { toast('Aucun achat a envoyer', true); return; }
   var btn = document.getElementById('btnEnvoyerAchats');
   btn.disabled = true;
+  /* La société est celle du PANIER, pas celle de l'écran : si quelqu'un a
+     navigué entre-temps, c'est l'étiquette sous laquelle les lignes ont été
+     saisies qui fait foi. */
+  var ent = entiteValide(_achatEntite || _entiteEcran);
   try {
     var total = totalFacturette();
+
+    /* Garde de découvert. Le solde est relu MAINTENANT : entre l'ouverture de
+       l'écran et l'envoi, une autre personne a pu dépenser sur la même caisse
+       depuis son propre téléphone. */
+    /* ⚠️ LE REFUS NE VAUT QUE POUR UNE CAISSE RÉELLEMENT TENUE.
+       La règle est : l'argent d'une société ne paie pas les achats de
+       l'autre, donc une facturette au-dessus du solde est refusée. Mais si la
+       caisse n'a JAMAIS reçu d'avance déclarée, son solde à zéro ne veut pas
+       dire « plus d'argent » — il veut dire « les avances ne passent pas par
+       l'application ». Refuser là ne protège aucune caisse : ça renvoie
+       simplement un achat DÉJÀ payé sur un bout de papier, et l'achat est
+       perdu pour la comptabilité. C'est le pire des deux résultats.
+       Une fois la première avance déclarée, la caisse est tenue et la règle
+       s'applique pleinement. */
+    if (!decouvertAccepte) {
+      var etat = null;
+      try { etat = await soldeCaisseEntite(ent); } catch (_) { etat = null; }
+      if (etat && etat.tenue && etat.solde !== null && total > etat.solde) {
+        btn.disabled = false;
+        _achatSoldeCaisse = etat.solde; _achatCompteId = etat.compteId;
+        _achatCaisseTenue = !!etat.tenue;
+        toast('Caisse ' + nomEntite(ent) + ' insuffisante : il manque '
+          + (total - etat.solde).toLocaleString('fr-FR') + ' FCFA. Rien n\'a été envoyé.', true);
+        renderTabAchats();
+        return;
+      }
+    }
     var auteur = getStaffName() || 'Equipe';
     var date   = todayIso();
     // Contexte de la facturette, relu au moment de l'envoi : la personne a pu
@@ -1666,6 +2528,9 @@ async function envoyerAchats() {
     await db.collection('achatsEquipe').doc(refAchat).set({
       lignes: _achatLignes,
       total: total,
+      // La société qui paie. L'ERP s'en sert pour inscrire l'achat dans le
+      // bon registre et le sortir de la bonne trésorerie.
+      entity: ent,
       auteur: auteur,
       date: date,
       fournisseur: fournisseur,
@@ -1686,15 +2551,14 @@ async function envoyerAchats() {
     var compteActifId = null;
     var erreurMeta = null;
     try {
-      var metaSnap = await db.collection('caisseMeta').doc('actif').get();
-      if (metaSnap && metaSnap.exists) compteActifId = metaSnap.data().compteActifId || null;
+      compteActifId = await compteActifIdPour(ent);
     } catch(e2) { erreurMeta = e2; }
 
     if (!compteActifId) {
       btn.disabled = false;
       toast(erreurMeta
-        ? 'Impossible de joindre la caisse. Vérifiez la connexion et réessayez — rien n\'a été envoyé.'
-        : 'Aucun compte de caisse actif. Demandez l\'ouverture d\'une caisse avant d\'envoyer des achats.', true);
+        ? 'Impossible de joindre la caisse ' + nomEntite(ent) + '. Vérifiez la connexion et réessayez — rien n\'a été envoyé.'
+        : 'Aucune caisse ouverte pour ' + nomCompletEntite(ent) + '. Demandez son ouverture avant d\'envoyer ces achats.', true);
       return;
     }
 
@@ -1708,7 +2572,8 @@ async function envoyerAchats() {
         date: date,
         auteur: auteur,
         createdAt: new Date().toISOString(),
-        sourceAchats: true
+        sourceAchats: true,
+        entity: ent,
       };
       payload.compteId = compteActifId;   // garanti non nul (verifie plus haut)
       await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
@@ -1716,7 +2581,10 @@ async function envoyerAchats() {
 
     _achatLignes = [];
     _achatPhoto = null; _achatFournisseur = ''; _achatFicheId = '';
-    toast('Facturette envoyée et enregistrée dans la caisse (' + total.toLocaleString('fr-FR') + ' FCFA)');
+    _achatEntite = _entiteEcran;
+    toast('Facturette ' + nomEntite(ent) + ' envoyée et déduite de la caisse '
+      + nomEntite(ent) + ' (' + total.toLocaleString('fr-FR') + ' FCFA)');
+    await chargerContexteAchats();
     renderTabAchats();
   } catch(e) {
     toast('Erreur : ' + e.message, true);
@@ -2123,7 +2991,7 @@ init();
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789029016931" name="I0_1789029016931" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.fr.u1YzuBbBpqg.O%2Fd%3D1%2Frs%3DAHpOoo8duhQcXZMuEcPyUghpXlpXTVvDfA%2Fm%3D__features__#id=I0_1789029016931&amp;_gfid=I0_1789029016931&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=62291729" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789902590037" name="I0_1789902590037" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.fr.KPiGfX1PM3k.O%2Fd%3D1%2Frs%3DAHpOoo_8RcYeTCnKEnqkKtxNmJo8MWsCKg%2Fm%3D__features__#id=I0_1789902590037&amp;_gfid=I0_1789902590037&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=28792365" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
     <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
       <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
       <div style="margin-bottom:12px;">
