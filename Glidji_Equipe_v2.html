@@ -169,15 +169,15 @@
 .cat-alerte{border:1px solid var(--gold);background:#FDFAF3;border-radius:10px;padding:10px;margin-top:8px;}
 .cat-alerte-titre{font-size:12.5px;font-weight:700;color:var(--gold-deep);margin-bottom:8px;}
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.fr.KPiGfX1PM3k.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo_8RcYeTCnKEnqkKtxNmJo8MWsCKg/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb116353" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb576395" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <div id="app">
     <div class="wrap">
       <div class="top-bar">
         <div style="display:flex;align-items:center;gap:10px;">
-          <button class="btn-back-hub" id="btnBackHub" style="display: inline-block;">← Accueil</button>
-          <h1 id="appTitle">Calendrier des prestations</h1>
+          <button class="btn-back-hub" id="btnBackHub" style="display: none;">← Accueil</button>
+          <h1 id="appTitle">Glidji Équipe</h1>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="btn-ghost" onclick="showGithubModal()" style="padding:8px 12px;font-size:13px;" title="Publier sur GitHub Pages">🐙</button>
@@ -185,61 +185,74 @@
         </div>
       </div>
       <div id="offlineBadge" style="display:none; margin-bottom:14px; background:#FDF3EC; color:#a8631f; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600;"></div>
-      <div id="tabContent"><div class="card" style="display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:12px;">
-      <button class="btn-gold btn-sm" onclick="calSetVue('semaine')">📆 Semaine</button><button class="btn-ghost btn-sm" onclick="calSetVue('mois')">🗓️ Mois</button>
-      <span style="flex:1;"></span>
-      <button class="btn-ghost btn-sm" onclick="calAujourdhui()">Aujourd'hui</button>
+      <div id="tabContent">
+    <div class="hub-welcome">
+      <div class="hub-welcome-name">Bonjour M Gile 👋</div>
+      <div class="hub-welcome-sub" id="hubWelcomeSub">Que voulez-vous faire ? · Sync 10:33</div>
     </div>
-    <div style="margin:-6px 0 12px;font-size:12px;color:var(--muted);">
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
-        <input type="checkbox" style="width:auto;" checked="" onchange="calBasculerPassees()">
-        Masquer les prestations déjà passées
-      </label>
-    </div><div class="card" style="display:flex;align-items:center;gap:8px;padding:12px;margin-bottom:12px;">
-    <button class="btn-ghost btn-sm" onclick="calNav(-1)">◀</button>
-    <div style="flex:1;text-align:center;">
-      <strong style="font-size:14px;">14/09/2026 — 20/09/2026</strong>
-      <div style="font-size:12px;color:var(--muted);">aucune prestation</div>
-    </div>
-    <button class="btn-ghost btn-sm" onclick="calNav(1)">▶</button>
-  </div><div class="card"><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Lundi 14/09/2026
+    <div class="hub-grid">
+      <!-- La cantine est une activité de Conciergerie : la mention l'indique,
+           pour que personne ne cherche « la cantine de SIMAG ». -->
+      <div class="hub-tile" onclick="showEquipeTab('commande')">
+        <div class="hub-tile-ico">🍽️</div>
+        <div class="hub-tile-name">Commande cantine</div>
+        <div class="hub-tile-desc">Saisir le repas du jour · Conciergerie</div>
+        <div class="hub-tile-badge" id="cantineBadgeEquipe" style="display:none;"></div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Mardi 15/09/2026
+      <div class="hub-tile" onclick="showEquipeTab('historique')">
+        <div class="hub-tile-ico">📋</div>
+        <div class="hub-tile-name">Historique</div>
+        <div class="hub-tile-desc">Commandes cantine · Conciergerie</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Mercredi 16/09/2026
+      <div class="hub-tile" onclick="showEquipeTab('fiches')">
+        <div class="hub-tile-ico">📁</div>
+        <div class="hub-tile-name">Fiches équipe</div>
+        <div class="hub-tile-desc">Prestations à venir</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Jeudi 17/09/2026
+      <div class="hub-tile" onclick="showEquipeTab('inventaire')">
+        <div class="hub-tile-ico">📦</div>
+        <div class="hub-tile-name">Inventaire</div>
+        <div class="hub-tile-desc">Compter le matériel</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Vendredi 18/09/2026
+      <!-- DEUX CAISSES, DEUX SOCIÉTÉS. Quatre entrées plutôt qu'un sélecteur :
+           sur le terrain, choisir la société AVANT d'ouvrir l'écran évite de
+           saisir dix lignes puis de découvrir qu'on était sur la mauvaise.
+           Un seul écran derrière, ouvert avec sa société en paramètre — donc
+           aucun code dupliqué. -->
+      <div class="hub-tile" onclick="showEquipeTab('avances','GLIDJI')">
+        <div class="hub-tile-ico">💰</div>
+        <div class="hub-tile-name">Caisse Conciergerie</div>
+        <div class="hub-tile-desc">Avances et dépenses</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">
-        Samedi 19/09/2026
+      <div class="hub-tile hub-tile-simag" onclick="showEquipeTab('avances','SIMAG')">
+        <div class="hub-tile-ico">💵</div>
+        <div class="hub-tile-name">Caisse SIMAG</div>
+        <div class="hub-tile-desc">Avances et dépenses</div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div><div style="padding:10px 0;border-bottom:1px solid var(--platinum-light);background:#FBF6EA;border-radius:8px;padding-left:10px;padding-right:10px;">
-      <div style="font-size:12px;font-weight:700;color:var(--gold-deep);text-transform:uppercase;margin-bottom:6px;">
-        Dimanche 20/09/2026 · aujourd'hui
+      <div class="hub-tile" onclick="showEquipeTab('messages')" style="position:relative;">
+        <div class="hub-tile-ico">💬</div>
+        <div class="hub-tile-name">Messages</div>
+        <div class="hub-tile-desc">Chat avec Hello</div>
+        <div class="hub-tile-badge" id="msgBadgeHub" style="display:none;"></div>
       </div>
-      <div style="font-size:13px;color:var(--muted);">—</div>
-    </div></div></div>
+      <div class="hub-tile" onclick="showEquipeTab('calendrier')">
+        <div class="hub-tile-ico">📅</div>
+        <div class="hub-tile-name">Calendrier</div>
+        <div class="hub-tile-desc">Prestations de la semaine</div>
+      </div>
+      <div class="hub-tile" onclick="showEquipeTab('achats','GLIDJI')">
+        <div class="hub-tile-ico">🛒</div>
+        <div class="hub-tile-name">Achats Conciergerie</div>
+        <div class="hub-tile-desc">Saisir une facturette</div>
+      </div>
+      <div class="hub-tile hub-tile-simag" onclick="showEquipeTab('achats','SIMAG')">
+        <div class="hub-tile-ico">🧺</div>
+        <div class="hub-tile-name">Achats SIMAG</div>
+        <div class="hub-tile-desc">Saisir une facturette</div>
+      </div>
     </div></div>
-<div class="toast" id="toast">✅ App Équipe publiée !</div>
+    </div></div>
+<div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -2991,7 +3004,7 @@ init();
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789902590037" name="I0_1789902590037" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.fr.KPiGfX1PM3k.O%2Fd%3D1%2Frs%3DAHpOoo_8RcYeTCnKEnqkKtxNmJo8MWsCKg%2Fm%3D__features__#id=I0_1789902590037&amp;_gfid=I0_1789902590037&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=28792365" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789986785817" name="I0_1789986785817" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1789986785817&amp;_gfid=I0_1789986785817&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=36905933" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
     <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
       <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
       <div style="margin-bottom:12px;">
