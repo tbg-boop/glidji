@@ -131,6 +131,10 @@
 .inv-saisie-perte input[type=number]{flex:0 0 48px;}
 .inv-saisie-perte select{flex:1 1 auto;}
 .inv-saisie button{flex:0 0 auto;padding:8px 10px;}
+/* Menu retenu sur la fiche : bien lisible en cuisine, sur un petit ecran. */
+.fe-menu{margin:10px 0;border:1px solid var(--platinum);border-left:4px solid var(--gold);border-radius:8px;padding:10px 12px;background:#FFFBF2;}
+.fe-menu-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#8C6A34;margin-bottom:6px;}
+.fe-menu-body{font-size:14px;line-height:1.6;color:var(--onyx);}
 /* Attribution d'un article a une societe, saisie pendant le comptage. */
 .inv-ent-choix{display:flex;gap:4px;align-items:stretch;}
 .inv-ent-btn{flex:1 1 0;min-width:0;padding:7px 4px;font-size:11px;font-weight:700;
@@ -169,7 +173,7 @@
 .cat-alerte{border:1px solid var(--gold);background:#FDFAF3;border-radius:10px;padding:10px;margin-top:8px;}
 .cat-alerte-titre{font-size:12.5px;font-weight:700;color:var(--gold-deep);margin-bottom:8px;}
 </style>
-<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.zhTT8Br0Ho8.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb576395" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.gh7qIZtzO5w.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo84YKT1RVy0T6hcXi5rH3LooB1WCw/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://apis.google.com/js/api.js?onload=__iframefcb975100" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body>
 
 <div id="app">
@@ -188,7 +192,7 @@
       <div id="tabContent">
     <div class="hub-welcome">
       <div class="hub-welcome-name">Bonjour M Gile 👋</div>
-      <div class="hub-welcome-sub" id="hubWelcomeSub">Que voulez-vous faire ? · Sync 10:33</div>
+      <div class="hub-welcome-sub" id="hubWelcomeSub">Que voulez-vous faire ? · Sync 15:16</div>
     </div>
     <div class="hub-grid">
       <!-- La cantine est une activité de Conciergerie : la mention l'indique,
@@ -658,7 +662,7 @@ function showEquipeTab(name, entite) {
   if (name === 'inventaire') renderTabInventaire();
   if (name === 'avances')    renderTabAvances();
   if (name === 'messages')   renderTabMessages();
-  if (name === 'achats')     { renderTabAchats(); chargerContexteAchats().then(renderTabAchats); }
+  if (name === 'achats')     { _histoAchatsCache = null; renderTabAchats(); chargerContexteAchats().then(renderTabAchats); }
   if (name === 'calendrier') renderTabCalendrier();
 }
 
@@ -1680,14 +1684,12 @@ async function renderTabFiches() {
     snap.forEach(d => {
       const f = d.data();
       const dp = f.datePrestation || '';
-      if (!dp) {
-        const md = moisDuNumero(f.numero);
-        // Numero illisible -> on garde. Document ancien -> on masque et on compte.
-        if (md && md < moisPlancher) { sansDateAnciennes++; return; }
-        sansDate.push(f); return;
-      }
+      /* v2_21 (22/09/2026, demande du patron) : l'équipe ne voit que ce qui
+         VIENT. Les fiches sans date et les prestations passées ne s'affichent
+         plus ici ; les fiches sans date sont signalées au patron dans l'ERP
+         (tableau de bord), le seul à pouvoir fixer la date. */
+      if (!dp) return;
       if (dp >= aujourdhui) { aVenir.push(f); return; }
-      if (dp >= limiteBasse) { recentes.push(f); return; }
       // Au-dela de la fenetre, la fiche n'a plus d'utilite operationnelle et
       // alourdirait la liste sur mobile : elle reste visible dans le calendrier.
     });
@@ -1699,17 +1701,17 @@ async function renderTabFiches() {
     if (!sansDate.length && !recentes.length && !aVenir.length) {
       // Si tout ce qui existe est ancien, le dire : « aucune prestation » tout
       // court laisserait croire que les fiches ont ete perdues.
-      wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.${
-        sansDateAnciennes ? `<br><span class="hint">(${sansDateAnciennes} document(s) de plus de ${FENETRE_SANS_DATE_MOIS} mois sans date de prestation ne sont pas affichés.)</span>` : ''
-      }</div></div>`;
+      wrap.innerHTML = `<div class="card"><div class="empty">Aucune prestation à venir pour l'instant.</div></div>`;
       return;
     }
 
     const carteFiche = f => `
         <div class="fe-card">
+          ${f.entity ? `<div class="ent-bandeau ent-${entiteValide(f.entity)}" style="padding:4px 10px;margin:0 0 8px;font-size:12px;border-radius:6px;">${f.entity === 'SIMAG' ? '🏢' : '🔑'} ${escapeHtml(nomCompletEntite(f.entity))}</div>` : ''}
           <div class="num">${escapeHtml(f.type)} N° ${escapeHtml(f.numero)}</div>
           <div class="obj">${escapeHtml(f.objet)}</div>
           ${f.notes ? `<div class="fe-notes-alert"><div class="fe-notes-label">⚠️ Allergies / consignes client / notes complémentaires</div><div class="fe-notes-body">${escapeHtml(f.notes)}</div></div>` : ''}
+          ${(f.menuRetenu || '').trim() ? `<div class="fe-menu"><div class="fe-menu-label">🍽️ Menu retenu</div><div class="fe-menu-body">${escapeHtml(f.menuRetenu.trim()).replace(/\n/g, '<br>')}</div></div>` : ''}
           <div class="fe-row"><div class="l">Client</div><div>${escapeHtml(f.clientNom)}</div></div>
           <div class="fe-row"><div class="l">Lieu</div><div>${escapeHtml(f.lieu)}</div></div>
           <div class="fe-row"><div class="l">Date</div><div>${fmtDate(f.datePrestation)}</div></div>
@@ -1728,10 +1730,7 @@ async function renderTabFiches() {
       : '';
 
     wrap.innerHTML = `<div class="card"><h2>Fiches équipe <span class="hint">(sans information financière)</span></h2>
-      ${section('⚠️ Date à préciser', sansDate)}
       ${section('À venir', aVenir)}
-      ${section('Récentes (' + RETRO_JOURS + ' derniers jours)', recentes)}
-      ${noteAnciennes}
     </div>`;
   } catch (e) {
     wrap.innerHTML = `<div class="card"><p>⛔ Impossible de charger les fiches : ${escapeHtml(e.message)}</p></div>`;
@@ -1847,6 +1846,86 @@ function startMessagesPolling() {
 let avPhotoRecuData = null;
 let avPhotoEnCoursDeTraitement = false;
 
+/* ─── À QUI APPARTIENT CE TÉLÉPHONE (v2_20, 21/09/2026) ────────────────
+   Chaque téléphone appartient à UNE personne de la liste tenue dans l'ERP
+   (Gile, Clément, Samuel…). Gile en a deux : les deux sont liés à Gile.
+   Toute dépense et toute avance reçue saisies ici portent `beneficiaire`
+   = cette personne : c'est ce qui permet de savoir qui a l'argent en main.
+   ⚠️ CONTRAT PARTAGÉ avec l'ERP et le Manager : liste dans
+   `caisseMeta/personnes`, identifiant = nom normalisé (sans accent,
+   minuscules, lettres et chiffres). Les trois fichiers doivent le calculer
+   de la même façon. */
+const PERSONNE_TEL_KEY = 'glidji_equipe_personne_v1';
+const PERSONNES_CACHE_EQ = 'glidji_equipe_personnes_caisse_v1';
+const PERSONNES_DEFAUT_EQ = ['Gile', 'Clément', 'Samuel'];
+const ALIAS_EQ = { 'GILE': 'gile', 'M GILE': 'gile', 'GILE TEST': 'gile', 'VOUS': 'gile', 'HELLO': 'gile',
+  'CLEMENT': 'clement', 'CLEMENT CROUSTILLANT': 'clement', 'LINGUINE': 'clement', 'RIVASCO': 'clement',
+  'CHAMPION': 'clement', 'CROUSTILLANT': 'clement', 'SAMUEL': 'samuel' };
+let avJustifPhoto = null;
+
+function eqNorm(x) {
+  return String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function eqIdPersonne(nom) { return eqNorm(nom).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+function eqPersonnes() {
+  let l = null;
+  try { l = JSON.parse(localStorage.getItem(PERSONNES_CACHE_EQ) || 'null'); } catch (_) {}
+  const noms = (Array.isArray(l) && l.length) ? l : PERSONNES_DEFAUT_EQ;
+  const vus = new Set();
+  return noms.map(n => ({ id: eqIdPersonne(n), nom: String(n).trim() }))
+    .filter(p => p.id && !vus.has(p.id) && vus.add(p.id));
+}
+function eqNomPersonne(id) { const p = eqPersonnes().find(x => x.id === id); return p ? p.nom : (id || ''); }
+async function eqChargerPersonnes() {
+  try {
+    const d = await db.collection('caisseMeta').doc('personnes').get();
+    const l = d && d.exists ? (d.data() || {}).liste : null;
+    if (Array.isArray(l) && l.length) localStorage.setItem(PERSONNES_CACHE_EQ, JSON.stringify(l));
+  } catch (_) {}   // hors réseau : dernière liste connue
+}
+/** La personne liée à CE téléphone, seulement si elle est encore dans la liste. */
+function getMaPersonne() {
+  const id = localStorage.getItem(PERSONNE_TEL_KEY) || '';
+  return eqPersonnes().some(p => p.id === id) ? id : '';
+}
+/** v2_25 (W3) : carte « À qui appartient ce téléphone ? », partagée par les
+    onglets Caisse et Achats. Sans cette liaison, un achat partait sans nom
+    et pouvait n'apparaître dans l'historique de personne. */
+function carteLierTelephone(ent, apres) {
+  const wrap = document.getElementById('tabContent');
+  const prop = personneProposee();
+  wrap.innerHTML = bandeauEntite(ent) + `<div class="card">
+    <h2>📱 À qui appartient ce téléphone ?</h2>
+    <p class="hint">Une seule fois. Les achats, dépenses et avances saisis ici seront à ce nom : c'est ce qui permet à chacun de retrouver son historique.</p>
+    <div class="field"><select id="cx_personneTel"><option value="">— Choisir —</option>
+      ${eqPersonnes().map(p => `<option value="${escapeHtml(p.id)}"${p.id === prop ? ' selected' : ''}>${escapeHtml(p.nom)}</option>`).join('')}
+    </select></div>
+    <button class="btn-gold btn-block" id="btnLierPersonne">Confirmer</button>
+    <p class="hint" style="margin-top:8px;">Votre nom n'est pas dans la liste ? Demandez à Gile de l'ajouter dans l'ERP.</p>
+  </div>`;
+  document.getElementById('btnLierPersonne').addEventListener('click', () => {
+    const v = document.getElementById('cx_personneTel').value;
+    if (!v) { toast('Choisissez un nom.', true); return; }
+    localStorage.setItem(PERSONNE_TEL_KEY, v);
+    apres();
+  });
+}
+/** Proposition tirée du prénom saisi au premier lancement (jamais enregistrée sans confirmation). */
+function personneProposee() {
+  const k = eqNorm(getStaffName());
+  if (ALIAS_EQ[k]) return ALIAS_EQ[k];
+  const p = eqPersonnes().find(x => eqNorm(x.nom) === k || eqNorm(x.nom) === k.split(' ')[0]);
+  return p ? p.id : '';
+}
+function eqBeneficiaire(m) {
+  if (m && m.beneficiaire) return m.beneficiaire;
+  const k = eqNorm(m && m.auteur);
+  if (ALIAS_EQ[k]) return ALIAS_EQ[k];
+  const p = eqPersonnes().find(x => eqNorm(x.nom) === k);
+  return p ? p.id : '';
+}
+
 async function renderTabAvances() {
   // La photo n'appartient qu'a la saisie en cours. Sans cette remise a zero,
   // photographier un recu puis quitter l'onglet sans envoyer laissait la photo
@@ -1877,18 +1956,23 @@ async function renderTabAvances() {
 
   let mouvements = [];
   try {
+/* ⚠️ Un mouvement supprimé (_deleted) ne compte JAMAIS : le 23/09 le téléphone de Gile affichait -163 900 F à cause de lignes supprimées dans l'ERP mais encore lues ici. */
     const snap = await db.collection('caisseMouvements').where('compteId', '==', compteActifId).get();
-    snap.forEach(d => mouvements.push({ id: d.id, ...d.data() }));
+    snap.forEach(d => { const x = d.data(); if (x && !x._deleted) mouvements.push({ id: d.id, ...x }); });
   } catch (e) {
     try {
       const snap = await db.collection('caisseMouvements').get();
-      snap.forEach(d => { const data = d.data(); if (data.compteId === compteActifId) mouvements.push({ id: d.id, ...data }); });
+      snap.forEach(d => { const data = d.data(); if (data && !data._deleted && data.compteId === compteActifId) mouvements.push({ id: d.id, ...data }); });
     } catch (e2) {
       wrap.innerHTML = `<div class="card"><p class="hint">⛔ ${escapeHtml(e2.message)}</p></div>`;
       return;
     }
   }
   mouvements.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  await eqChargerPersonnes();
+
+  const moi = getMaPersonne();
+  if (!moi) { carteLierTelephone(ent, renderTabAvances); return; }
 
   // Les mouvements encore en file d'attente ne sont PAS dans Firestore mais
   // l'argent est bel et bien sorti de la caisse. Les ignorer affichait un solde
@@ -1905,19 +1989,40 @@ async function renderTabAvances() {
   const totalDepenses = mouvements.filter(m => m.type === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0) + attDepenses;
   const solde = totalAvances - totalDepenses;
   const nbAttente = enAttente.length;
+  // Mon argent en main : ce que J'AI reçu moins ce que J'AI dépensé.
+  const miens = mouvements.concat(enAttente).filter(m => eqBeneficiaire(m) === moi);
+  const monRecu = miens.filter(m => m.type === 'avance').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+  const monDep  = miens.filter(m => m.type === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+  const monReste = monRecu - monDep;
+  /* v2_21 : chacun ne voit que SES mouvements. Avant, la liste montrait toute
+     la caisse, y compris les dépenses saisies par le patron dans l'ERP. Le
+     patron garde la vue complète dans l'ERP et le Manager. */
+  const mesMouvements = mouvements.concat(enAttente.filter(m => !mouvements.some(x => x.id && x.id === m.clientRef)))
+    .filter(m => eqBeneficiaire(m) === moi)
+    .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
 
   wrap.innerHTML = bandeauEntite(ent, 'Cette caisse ne paie que les achats de cette société') + `
-    <div class="card">
-      <h2>Caisse ${nomEntite(ent)} <span class="hint">(visible par toute l'équipe)</span></h2>
+    <div class="card" style="display:none;" id="cx_totalCaisse">
+      <h2>Caisse ${nomEntite(ent)}</h2>
       <div style="display:flex; justify-content:space-around; text-align:center; margin:16px 0; font-size:14px;">
         <div><div class="hint">Avances</div><strong>${totalAvances.toLocaleString('fr-FR')} FCFA</strong></div>
         <div><div class="hint">Dépensé</div><strong>${totalDepenses.toLocaleString('fr-FR')} FCFA</strong></div>
         <div><div class="hint">Solde</div><strong style="color:${solde < 0 ? '#B3261E' : '#3a6b2a'};">${solde.toLocaleString('fr-FR')} FCFA</strong></div>
       </div>
-      ${nbAttente ? `<div style="background:#fff8e1;border-left:3px solid #e65100;border-radius:6px;padding:8px 10px;font-size:12px;color:#5d4037;">
+      ${''}${nbAttente ? `<div style="background:#fff8e1;border-left:3px solid #e65100;border-radius:6px;padding:8px 10px;font-size:12px;color:#5d4037;">
         ⏳ <strong>${nbAttente} mouvement(s) en attente d'envoi</strong> — déjà déduit(s) du solde ci-dessus.
         Ils partiront automatiquement dès le retour du réseau.
       </div>` : ''}
+    </div>
+
+    <div class="card" id="cx_monSolde">
+      <h2>Mon argent en main <span class="hint">(${escapeHtml(eqNomPersonne(moi))})</span></h2>
+      <div style="display:flex; justify-content:space-around; text-align:center; margin:12px 0; font-size:14px;">
+        <div><div class="hint">Reçu</div><strong>${monRecu.toLocaleString('fr-FR')} FCFA</strong></div>
+        <div><div class="hint">Dépensé</div><strong>${monDep.toLocaleString('fr-FR')} FCFA</strong></div>
+        <div><div class="hint">Reste</div><strong style="color:${monReste < 0 ? '#B3261E' : '#3a6b2a'};">${monReste.toLocaleString('fr-FR')} FCFA</strong></div>
+      </div>
+      <div class="hint" style="font-size:12px;">📱 Téléphone de ${escapeHtml(eqNomPersonne(moi))} · <a href="#" id="lnkChangerPersonne">changer</a></div>
     </div>
 
     <div class="card">
@@ -1935,21 +2040,35 @@ async function renderTabAvances() {
     <div class="card">
       <h2>Ajouter une avance reçue de ${nomEntite(ent)}</h2>
       <div class="field"><label>Montant reçu (FCFA)</label><input type="number" id="cx_montantAvance" min="0"></div>
+      <div class="field"><label>Justificatif <span class="hint">(référence OU photo)</span></label>
+        <input type="text" id="cx_justifRef" placeholder="N° Flooz / T-Money / reçu">
+        <input type="file" id="cx_justifPhoto" accept="image/*" capture="environment" style="margin-top:6px;">
+        <div id="cx_justif_preview" class="hint" style="margin-top:4px;"></div>
+      </div>
       <button class="btn-ghost btn-block" id="btnAjouterAvanceEquipe">Envoyer</button>
     </div>
 
     <div class="card">
-      <h2>Mouvements récents</h2>
-      ${!mouvements.length ? '<div class="empty">Aucun mouvement pour l\'instant.</div>' : mouvements.map(m => `
+      <h2>Mes mouvements</h2>
+      ${!mesMouvements.length ? '<div class="empty">Aucun mouvement à votre nom pour l\'instant.</div>' : mesMouvements.map(m => `
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--platinum); font-size:14px;">
           <div>
             <div>${m.type === 'avance' ? '↑ Avance' : '↓ ' + escapeHtml(m.nom || '')}</div>
-            <div class="hint" style="font-size:12px;">${escapeHtml(m.auteur || 'Équipe')} · ${m.date || ''}</div>
+            <div class="hint" style="font-size:12px;">${escapeHtml(eqBeneficiaire(m) ? eqNomPersonne(eqBeneficiaire(m)) : (m.auteur || 'Équipe'))} · ${m.date || ''}${m.type === 'avance' ? ((m.photoB64 || String(m.justifRef || '').trim()) ? ' · 📎' : ' · ⚠️ sans justificatif') : ''}</div>
           </div>
           <div style="font-weight:600; color:${m.type === 'avance' ? '#3a6b2a' : '#B3261E'};">${(m.montant || 0).toLocaleString('fr-FR')} FCFA</div>
         </div>`).join('')}
     </div>
+
+    <div class="card" id="cx_periodes">
+      <h2>Mes périodes précédentes</h2>
+      <p class="hint">Les mouvements des caisses déjà clôturées. Ils ne comptent plus dans « Mon argent en main ».</p>
+      <button class="btn-ghost btn-block" id="btnPeriodesPrec">🕘 Afficher mon historique</button>
+      <div id="cx_periodes_liste"></div>
+    </div>
   `;
+
+  document.getElementById('btnPeriodesPrec').addEventListener('click', () => afficherPeriodesPrecedentes(ent, compteActifId, moi));
 
   document.getElementById('cx_photo').addEventListener('change', async (e) => {
     const file = e.target.files[0];
@@ -1959,7 +2078,8 @@ async function renderTabAvances() {
     btn.disabled = true;
     btn.textContent = 'Traitement de la photo…';
     try {
-      avPhotoRecuData = await compressImageFile(file);
+      // 1000 px : à 300 px (réglage d'origine) un ticket de caisse est illisible.
+      avPhotoRecuData = await compressImageFile(file, 1000, 0.55);
       document.getElementById('cx_photo_preview').innerHTML = `<img src="${avPhotoRecuData}" style="max-height:90px; border-radius:6px;">`;
     } catch (err) {
       toast('Impossible de traiter cette image.', true);
@@ -1967,6 +2087,25 @@ async function renderTabAvances() {
     avPhotoEnCoursDeTraitement = false;
     btn.disabled = false;
     btn.textContent = 'Envoyer';
+  });
+
+  document.getElementById('lnkChangerPersonne').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!confirm('Changer la personne liée à ce téléphone ?\n\nLes mouvements déjà envoyés gardent leur nom.')) return;
+    localStorage.removeItem(PERSONNE_TEL_KEY);
+    renderTabAvances();
+  });
+  avJustifPhoto = null;
+  document.getElementById('cx_justifPhoto').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const btn = document.getElementById('btnAjouterAvanceEquipe');
+    btn.disabled = true;
+    try {
+      avJustifPhoto = await compressImageFile(file, 1000, 0.55);
+      document.getElementById('cx_justif_preview').innerHTML = `<img src="${avJustifPhoto}" style="max-height:90px; border-radius:6px;">`;
+    } catch (err) { toast('Impossible de traiter cette image.', true); }
+    btn.disabled = false;
   });
 
   // Revérifie le compte actif REELLEMENT courant juste avant l'envoi, plutôt
@@ -2000,7 +2139,8 @@ async function renderTabAvances() {
     }
     const payload = {
       compteId: compteActifId, type: 'depense', nom, montant,
-      date: todayIso(), auteur: getStaffName() || 'Équipe',
+      date: todayIso(), auteur: eqNomPersonne(moi) || getStaffName() || 'Équipe',
+      beneficiaire: moi, saisiPar: moi, origine: 'equipe',
       photoB64: avPhotoRecuData || null, createdAt: new Date().toISOString(),
       entity: ent,          // pour que l'ERP sache dans quelle trésorerie l'inscrire
     };
@@ -2027,13 +2167,19 @@ async function renderTabAvances() {
       renderTabAvances();
       return;
     }
+    const justifRef = document.getElementById('cx_justifRef').value.trim();
+    if (!justifRef && !avJustifPhoto && !confirm('Avance SANS justificatif (ni référence, ni photo).\n\nElle sera signalée à Gile. Envoyer quand même ?')) {
+      btn.disabled = false; return;
+    }
     const payload = {
       compteId: compteActifId, type: 'avance', nom: '', montant,
-      date: todayIso(), auteur: getStaffName() || 'Équipe',
-      photoB64: null, createdAt: new Date().toISOString(),
+      date: todayIso(), auteur: eqNomPersonne(moi) || getStaffName() || 'Équipe',
+      beneficiaire: moi, saisiPar: moi, origine: 'equipe', justifRef,
+      photoB64: avJustifPhoto || null, createdAt: new Date().toISOString(),
       entity: ent,          // pour que l'ERP sache de quelle caisse l'argent sort
     };
     const resultat = await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
+    avJustifPhoto = null;
     btn.disabled = false;
     toast(resultat.viaFile
       ? '✅ Avance enregistrée sur cet appareil — elle partira dès le retour du réseau.'
@@ -2042,6 +2188,119 @@ async function renderTabAvances() {
   });
 }
 
+
+/** v2_25 (W2) : historique des caisses clôturées, à MON nom, pour CETTE société.
+    Chargé seulement sur demande : la lecture de toute la collection coûte
+    plus cher (photos), inutile de la faire à chaque ouverture de l'onglet. */
+function lignesMouvementsHtml(liste) {
+  return liste.map(m => `
+    <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--platinum); font-size:13px;">
+      <div><div>${m.type === 'avance' ? '↑ Avance' : '↓ ' + escapeHtml(m.nom || '')}</div>
+        <div class="hint" style="font-size:11px;">${escapeHtml(fmtDate(m.date || ''))}</div></div>
+      <div style="font-weight:600; color:${m.type === 'avance' ? '#3a6b2a' : '#B3261E'};">${(Number(m.montant) || 0).toLocaleString('fr-FR')} FCFA</div>
+    </div>`).join('');
+}
+function periodesPrecedentes(tous, ent, compteActifId, moi) {
+  const parCompte = {};
+  tous.forEach(m => {
+    if (!m || m._deleted || !m.compteId || m.compteId === compteActifId) return;
+    if (entiteValide(m.entity || ENTITE_DEFAUT) !== ent) return;
+    if (eqBeneficiaire(m) !== moi) return;
+    (parCompte[m.compteId] = parCompte[m.compteId] || []).push(m);
+  });
+  return Object.keys(parCompte).map(cid => {
+    const l = parCompte[cid].sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''));
+    const dates = l.map(m => m.date || '').filter(Boolean).sort();
+    const recu = l.filter(m => m.type === 'avance').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+    const dep  = l.filter(m => m.type === 'depense').reduce((s, m) => s + (Number(m.montant) || 0), 0);
+    return { compteId: cid, lignes: l, du: dates[0] || '', au: dates[dates.length - 1] || '', recu, dep };
+  }).sort((a, b) => (b.au || '').localeCompare(a.au || ''));
+}
+async function afficherPeriodesPrecedentes(ent, compteActifId, moi) {
+  const zone = document.getElementById('cx_periodes_liste');
+  const btn = document.getElementById('btnPeriodesPrec');
+  if (!zone) return;
+  zone.innerHTML = '<p class="hint">Chargement…</p>';
+  if (btn) btn.disabled = true;
+  let tous = [];
+  try {
+    const snap = await db.collection('caisseMouvements').get();
+    snap.forEach(d => tous.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    zone.innerHTML = `<p class="hint">⛔ Impossible de charger l'historique (${escapeHtml(e.message)}). Vérifiez le réseau.</p>`;
+    if (btn) btn.disabled = false;
+    return;
+  }
+  const periodes = periodesPrecedentes(tous, ent, compteActifId, moi);
+  if (btn) btn.style.display = 'none';
+  zone.innerHTML = !periodes.length
+    ? '<div class="empty">Aucun mouvement à votre nom dans les caisses précédentes.</div>'
+    : periodes.map(p => `<details style="margin-top:10px;border:1px solid var(--platinum);border-radius:8px;padding:8px 10px;">
+        <summary style="cursor:pointer;font-size:14px;"><strong>${escapeHtml(fmtDate(p.du))} → ${escapeHtml(fmtDate(p.au))}</strong>
+          <span class="hint"> · ${p.lignes.length} mouvement(s) · reçu ${p.recu.toLocaleString('fr-FR')} F · dépensé ${p.dep.toLocaleString('fr-FR')} F</span></summary>
+        ${lignesMouvementsHtml(p.lignes)}
+      </details>`).join('');
+}
+
+/** v2_25 (W1) : mes facturettes envoyées (60 derniers jours, cette société). */
+const HISTO_ACHATS_JOURS = 60;
+/* Cache de l'historique : renderTabAchats est rappelé à chaque article
+   ajouté ; sans cache, chaque ajout relançait une lecture Firestore. */
+let _histoAchatsCache = null;
+function mesFacturettes(docs, ent, moi, depuis) {
+  return docs.filter(a => {
+    if (!a || !Array.isArray(a.lignes)) return false;
+    if (entiteValide(a.entity || ENTITE_DEFAUT) !== ent) return false;
+    if ((a.date || '') < depuis) return false;
+    const qui = a.beneficiaire || eqBeneficiaire({ auteur: a.auteur });
+    return qui === moi;
+  }).sort((a, b) => (b.createdAt || b.date || '').localeCompare(a.createdAt || a.date || ''));
+}
+function dateMoinsJours(n) {
+  const d = new Date(); d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+async function chargerHistoriqueAchats(ent, moi) {
+  const zone = document.getElementById('achat_historique');
+  if (!zone) return;
+  const cle = ent + '|' + moi;
+  if (_histoAchatsCache && _histoAchatsCache.cle === cle) { zone.innerHTML = _histoAchatsCache.html; return; }
+  const depuis = dateMoinsJours(HISTO_ACHATS_JOURS);
+  let docs = [];
+  try {
+    const snap = await db.collection('achatsEquipe').where('date', '>=', depuis).get();
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    zone.innerHTML = `<p class="hint">⛔ Historique indisponible (${escapeHtml(e.message)}).</p>`;
+    return;
+  }
+  // Les facturettes encore en file d'attente (hors réseau) sont aussi les miennes.
+  const enAttente = getOfflineQueue().filter(it => it && it.collection === 'achatsEquipe').map(it => ({ ...it.payload, _attente: true }));
+  const liste = mesFacturettes(docs.concat(enAttente), ent, moi, depuis);
+  const html = !liste.length
+    ? '<div class="empty">Aucune facturette envoyée ces ' + HISTO_ACHATS_JOURS + ' derniers jours.</div>'
+    : liste.map(a => {
+        const statut = a._deleted
+          ? '<span style="color:#B3261E;font-weight:700;">🗑 supprimée par Gile</span>'
+          : a._attente ? '<span style="color:#e65100;font-weight:700;">⏳ en attente de réseau</span>'
+          : '<span style="color:#3a6b2a;font-weight:700;">✅ envoyée</span>';
+        const total = Number(a.total) || (a.lignes || []).reduce((s, l) => s + (Number(l.montant) || 0), 0);
+        return `<details style="margin-top:8px;border:1px solid var(--platinum);border-radius:8px;padding:8px 10px;${a._deleted ? 'opacity:.65;' : ''}">
+          <summary style="cursor:pointer;font-size:14px;display:flex;justify-content:space-between;gap:8px;">
+            <span><strong>${escapeHtml(fmtDate(a.date || ''))}</strong> · ${statut}<br>
+              <span class="hint" style="font-size:12px;">${escapeHtml(a.fournisseur || 'Fournisseur non précisé')}${a.clientNom ? ' · ' + escapeHtml(a.clientNom) : ''}</span></span>
+            <strong style="white-space:nowrap;${a._deleted ? 'text-decoration:line-through;' : ''}">${total.toLocaleString('fr-FR')} F</strong>
+          </summary>
+          ${(a.lignes || []).map(l => `<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--platinum-light);">
+            <span>${escapeHtml(l.designation || '')} <span class="hint">${Number(l.quantite) || 1} × ${(Number(l.prixUnitaire) || Number(l.montant) || 0).toLocaleString('fr-FR')} F</span></span>
+            <span>${(Number(l.montant) || 0).toLocaleString('fr-FR')} F</span></div>`).join('')}
+          ${a.photoB64 ? `<img src="${a.photoB64}" alt="Reçu" style="max-width:100%;max-height:260px;margin-top:8px;border-radius:6px;">` : ''}
+        </details>`;
+      }).join('');
+  _histoAchatsCache = { cle, html };
+  const zoneFinale = document.getElementById('achat_historique');   // l'écran a pu être redessiné entre-temps
+  if (zoneFinale) zoneFinale.innerHTML = html;
+}
 
 async function renderTabMessages() {
   const wrap = document.getElementById('tabContent');
@@ -2187,11 +2446,11 @@ async function soldeCaisseEntite(entite) {
   let mouvements = [];
   try {
     const snap = await db.collection('caisseMouvements').where('compteId', '==', compteId).get();
-    snap.forEach(d => mouvements.push(d.data()));
+    snap.forEach(d => { const x = d.data(); if (x && !x._deleted) mouvements.push(x); });
   } catch (_) {
     try {
       const snap = await db.collection('caisseMouvements').get();
-      snap.forEach(d => { const m = d.data(); if (m && m.compteId === compteId) mouvements.push(m); });
+      snap.forEach(d => { const m = d.data(); if (m && !m._deleted && m.compteId === compteId) mouvements.push(m); });
     } catch (e2) { return { compteId: compteId, solde: null }; }
   }
   const enAttente = getOfflineQueue()
@@ -2234,6 +2493,7 @@ let _achatPhoto = null;
 
 /** Charge la référence de prix et les prestations à venir, sans bloquer. */
 async function chargerContexteAchats() {
+  try { await eqChargerPersonnes(); } catch (_) {}
   /* Le solde de la caisse de CETTE société : c'est lui qui dira si la
      facturette peut être payée, et c'est la première chose que l'équipe doit
      voir en haut de l'écran. */
@@ -2316,6 +2576,10 @@ function renderTabAchats() {
     return;
   }
   if (!_achatLignes.length) _achatEntite = ent;
+
+  /* v2_25 (W3) : on sait à qui appartient le téléphone avant toute saisie. */
+  const moi = getMaPersonne();
+  if (!moi) { carteLierTelephone(ent, () => { renderTabAchats(); chargerHistoriqueAchats(ent, getMaPersonne()); }); return; }
 
   const listeHtml = !_achatLignes.length
     ? '<p class="hint">Aucun achat saisi.</p>'
@@ -2420,7 +2684,14 @@ function renderTabAchats() {
         Envoyer quand même, en découvert de ${manque.toLocaleString('fr-FR')} F</button>`
       : `<button class="btn-gold btn-block" id="btnEnvoyerAchats" onclick="envoyerAchats()">
         Envoyer la facturette ${nomEntite(ent)}</button>`}
+    </div>
+
+    <div class="card">
+      <h2>Mes facturettes envoyées <span class="hint">(${HISTO_ACHATS_JOURS} derniers jours · ${escapeHtml(eqNomPersonne(moi))})</span></h2>
+      <div id="achat_historique"><p class="hint">Chargement…</p></div>
+      <div class="hint" style="font-size:12px;margin-top:8px;">📱 Téléphone de ${escapeHtml(eqNomPersonne(moi))} · <a href="#" onclick="event.preventDefault(); if (confirm('Changer la personne liée à ce téléphone ?')) { localStorage.removeItem(PERSONNE_TEL_KEY); renderTabAchats(); }">changer</a></div>
     </div>`;
+  chargerHistoriqueAchats(ent, moi);
 
   const photoInput = document.getElementById('achat_photo');
   if (photoInput) photoInput.addEventListener('change', async (e) => {
@@ -2526,7 +2797,12 @@ async function envoyerAchats(decouvertAccepte) {
         return;
       }
     }
-    var auteur = getStaffName() || 'Equipe';
+    /* v2_25 (W3) : la facturette porte le nom de la personne liée au
+       téléphone. Sans elle, l'achat n'apparaissait dans l'historique de
+       personne. */
+    var moiEnvoi = getMaPersonne();
+    if (!moiEnvoi) { btn.disabled = false; toast('Indiquez d\'abord à qui appartient ce téléphone.', true); renderTabAchats(); return; }
+    var auteur = eqNomPersonne(moiEnvoi) || getStaffName() || 'Equipe';
     var date   = todayIso();
     // Contexte de la facturette, relu au moment de l'envoi : la personne a pu
     // remplir le fournisseur ou choisir la prestation APRÈS avoir saisi ses lignes.
@@ -2545,6 +2821,7 @@ async function envoyerAchats(decouvertAccepte) {
       // bon registre et le sortir de la bonne trésorerie.
       entity: ent,
       auteur: auteur,
+      beneficiaire: moiEnvoi,
       date: date,
       fournisseur: fournisseur,
       // Rattachement à la prestation : c'est lui qui permettra à l'ERP de
@@ -2586,8 +2863,12 @@ async function envoyerAchats(decouvertAccepte) {
         auteur: auteur,
         createdAt: new Date().toISOString(),
         sourceAchats: true,
+        achatRef: refAchat,   // v2_22 : lien exact vers la facturette (sa suppression dans l'ERP retire ces lignes)
         entity: ent,
       };
+      // Qui a payé : la personne liée au téléphone, si elle l'a été.
+      var moiAchat = getMaPersonne();
+      if (moiAchat) { payload.beneficiaire = moiAchat; payload.saisiPar = moiAchat; payload.origine = 'equipe'; }
       payload.compteId = compteActifId;   // garanti non nul (verifie plus haut)
       await envoyerAvecRepliHorsLigne('caisseMouvements', payload);
     }
@@ -2595,6 +2876,7 @@ async function envoyerAchats(decouvertAccepte) {
     _achatLignes = [];
     _achatPhoto = null; _achatFournisseur = ''; _achatFicheId = '';
     _achatEntite = _entiteEcran;
+    _histoAchatsCache = null;   // la facturette qui vient de partir doit apparaître
     toast('Facturette ' + nomEntite(ent) + ' envoyée et déduite de la caisse '
       + nomEntite(ent) + ' (' + total.toLocaleString('fr-FR') + ' FCFA)');
     await chargerContexteAchats();
@@ -3004,7 +3286,7 @@ init();
 </script>
 
 
-<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1789986785817" name="I0_1789986785817" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.zhTT8Br0Ho8.O%2Fd%3D1%2Frs%3DAHpOoo-7LeULGjNQZRvhdu3G71akb6JY6A%2Fm%3D__features__#id=I0_1789986785817&amp;_gfid=I0_1789986785817&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=36905933" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1790349351799" name="I0_1790349351799" src="https://glidji-conciergerie.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBXTOIUdlJqgIU43QqT7obqMf--dWSxnxc&amp;appName=%5BDEFAULT%5D&amp;v=10.14.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.gh7qIZtzO5w.O%2Fd%3D1%2Frs%3DAHpOoo84YKT1RVy0T6hcXi5rH3LooB1WCw%2Fm%3D__features__#id=I0_1790349351799&amp;_gfid=I0_1790349351799&amp;parent=https%3A%2F%2Fglidji-conciergerie.web.app&amp;pfname=&amp;rpctoken=19795329" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe><div id="gh-modal-equipe" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;">
     <div style="background:#fff;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px #0004;">
       <h2 style="margin:0 0 16px;font-size:18px;">🐙 Publier sur GitHub Pages</h2>
       <div style="margin-bottom:12px;">
